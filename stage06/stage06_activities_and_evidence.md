@@ -2,10 +2,10 @@
 
 Complete this one group record. Link actual issues, diffs, tests and reviews; avoid copying entire histories. Blank fields are intentional. Duplicate rows as needed. Use synthetic data only. Every member records their own meaningful contribution. Do not invent results, reviews or Copilot use.
 
-- Group/tutorial: [response]
-- Members, GitHub usernames and cohorts: [response]
-- Repository URL: [response]
-- Starting SHA: [response]
+- Group/tutorial: Tue 1:30 - 3:30 Group 1
+- Members, GitHub usernames and cohorts: UG - Alicia Hurst - Blahuee, UG - Aagney Mani Sharma - Aagneyf1r3, UG - Ngedup Jigme Lhazeen - njlhazin
+- Repository URL: https://github.com/Blahuee/st1-assignment-3
+- Starting SHA: 78e45fe
 
 ## A Requirement to issue activities
 

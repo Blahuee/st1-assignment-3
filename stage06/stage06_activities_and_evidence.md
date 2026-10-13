@@ -22,14 +22,23 @@ Complete this one group record. Link actual issues, diffs, tests and reviews; av
 
 ### FR-06 Appointment Cancellation with FR-07 retained history
 
-- Title: [response]
-- Context: [response]
-- Requirement: [response]
-- Acceptance criteria: [response]
-- Scope: [response]
-- Definition of Done: [response]
-- Owner: [response]
-- Actual issue link: [response]
+- **Title:** Add Appointment Cancellation with retained history (FR-06 and FR-07) 
+- **Context:** Clinic staff should cancel any appointments that are not supposed to happen, and they must keep a record of those cancellations for the rest of the session. Right now, the AppointmentService.cancel_appointment method is still a TODO in the starter code, which means cancellation isn't possible through the service layer yet.
+- **Requirement:**
+-  FR-06 - Appointment cancellation
+- FR-07 - Retaining the appointment cancellation history 
+
+- **Acceptance criteria:** - Cancelling a SCHEDULED appointment changes its status to CANCELLED and after the cancellation the same appointment can still be found by the IDs with status cancellation. Therefore, the schedule is not deleted and stored in the object. 
+- a blank or invalid ID raises a ValueError. 
+
+- **Scope: **- including the cancellation of appointment code into the code and also for retaining the memory then adding tests for it. 
+- not included practitioner and patient lookup, rescheduling and deleting appointments. 
+
+- **Definition of Done:** - cancel appointment meets all the requirements 
+- tests cover cancellation successfully and history is retained after cancelling. 
+- **Owner:** Ngedup
+- **Actual issue link:** https://github.com/Blahuee/st1-assignment-3/issues/1#issue-5828750575 
+
 
 ## B Commit quality
 

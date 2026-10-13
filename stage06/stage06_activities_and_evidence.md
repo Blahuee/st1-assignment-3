@@ -11,14 +11,24 @@ Complete this one group record. Link actual issues, diffs, tests and reviews; av
 
 ### FR-02 Patient Search
 
-- Title: [response]
-- Context: [response]
-- Requirement: [response]
-- Acceptance criteria: [response]
-- Scope: [response]
-- Definition of Done: [response]
-- Owner: [response]
-- Actual issue link: [response]
+- **Title:** Implement patient lookup by patient ID (FR-02)
+- **Context:** SmartCare needs to have the ability to retrieve existing patient records so other workflows can identify the correct patient. The current starter implementation in `PatientService.find_patient()` is incomplete
+- **Requirement:** Implement patient lookup by patient ID. The method must return the existing stored `Patient` object when the ID is valid and exists. It also must raise `ValueError` for a blank or invalid ID `LookupError` when the patient does not exist. It must not create a replacement patient.
+- **Acceptance criteria:** 
+  - A valid existing patient ID returns the corresponding stored patient object
+  - A blank or invalid patient ID raises `ValueError`
+  - A valid ID that does not exist raises `LookupError`
+  - Looking up a patient does not register, replace, or modify patient records
+  - Existing patient records remain unchanged when lookup fails
+- **Scope:** Implement `PatientService.find_patient()` in `project/smartcare/services.py` by using project/smartcare/services.py using the existing data store. Add or update focused tests for successful lookup, invalid IDs, missing patients, and preservation of existing records. Do not change patient registration or introduce new storage mechanisms
+- **Definition of Done:**
+  - Implementation meets the requirement and acceptance criteria
+  - Relevant automated tests pass
+  - Changes are committed on a feature branch and submitted through a pull request linked to this issue
+  - Another group member reviews the actual diff, feedback is addressed, and approval is recorded before merging
+  - The merged code is verified and the issue is closed
+- **Owner:** Alicia
+- **Actual issue link:** https://github.com/Blahuee/st1-assignment-3/issues/3#issue-5829342862
 
 ### FR-06 Appointment Cancellation with FR-07 retained history
 
@@ -31,7 +41,7 @@ Complete this one group record. Link actual issues, diffs, tests and reviews; av
 - **Acceptance criteria:** - Cancelling a SCHEDULED appointment changes its status to CANCELLED and after the cancellation the same appointment can still be found by the IDs with status cancellation. Therefore, the schedule is not deleted and stored in the object. 
 - a blank or invalid ID raises a ValueError. 
 
-- **Scope: **- including the cancellation of appointment code into the code and also for retaining the memory then adding tests for it. 
+- **Scope:**- including the cancellation of appointment code into the code and also for retaining the memory then adding tests for it. 
 - not included practitioner and patient lookup, rescheduling and deleting appointments. 
 
 - **Definition of Done:** - cancel appointment meets all the requirements 

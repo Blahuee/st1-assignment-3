@@ -52,22 +52,22 @@ Complete this one group record. Link actual issues, diffs, tests and reviews; av
 
 ## B Commit quality
 
-| Original example | Strong or Weak | Reason |
-|---|---|---|
-| changes | [select] | [response] |
-| final version | [select] | [response] |
-| Add patient search by ID | [select] | [response] |
-| fix stuff | [select] | [response] |
-| Prevent cancellation of completed appointments | [select] | [response] |
+| Original example                               | Strong or Weak | Reason                                                                                              |
+| ---------------------------------------------- | -------------- | --------------------------------------------------------------------------------------------------- |
+| changes                                        | Weak           | Does not describe what was changed, this makes it difficult to understand the purpose of the commit |
+| final version                                  | Weak           | Does not explain what was finalised or what changes were made                                       |
+| Add patient search by ID                       | Strong         | Clearly descibes what feature was worked on                                                         |
+| fix stuff                                      | Weak           | Vague and does not indicate what was fixed                                                          |
+| Prevent cancellation of completed appointments | Strong         | Clearly describes the behaviour being changed                                                       |
 
 ## C Over scoped PR review
 
 A cancellation PR also renames unrelated patient fields, restructures unrelated code and adds a new dependency.
 
-- Scope concerns: [response]
-- Responsibility and architecture concerns: [response]
-- Testing and review concerns: [response]
-- Changes to remove or separate, with reasons: [response]
+- Scope concerns: The PR includes unrelated changes that could increase the complexity and make it harder to review the appointment cancellation feature
+- Responsibility and architecture concerns: Renaming and restructuring unrelated code could break existing functionality. Cancellation should use the existing appointment service and domain logic where applicable.
+- Testing and review concerns: Any code changes must be tested again before merging. Unrelated changes increase the testing required and passing tests do not guarantee that all changes are necessary or that the code is well designed.
+- Changes to remove or separate, with reasons: Keep the changes needed for appointment cancellation. Remove unrelated patient field renaming and code restructuring, or move them into separate PR's. Remove the dependency if its unnecessary. After making these changes, rerun the relevant tests and review the final code before merging.
 
 ## D Challenge a weak Copilot review
 
@@ -83,23 +83,23 @@ GitHub Copilot says: "Looks good; tests pass."
 
 ## E Team workflow agreement
 
-| Practice | Team agreement |
-|---|---|
-| Branch naming | [response] |
-| Commit message convention | [response] |
-| PR size | [response] |
-| Another-member review requirement | [response] |
-| Merge rule | [response] |
-| Significant Copilot disclosure rule | [response] |
+| Practice                            | Team agreement |
+| ----------------------------------- | -------------- |
+| Branch naming                       | Use descriptive names with prefixes, such as feature/patient-search, feature/appointment-cancellation and documentation/stage06. Each member works on their own branch rather than directly on main. |
+| Commit message convention           | Use short, descriptive messages that explain what changed, such as Implement patient search by ID or Add appointment cancellation tests. Avoid vague messages such as updates or final version. |
+| PR size                             | Keep pull requests focused on one issue or feature you are assigned. Avoid unrelated changes to other features/areas. |
+| Another-member review requirement   | very PR must be reviewed by at least one other group member. The reviewer checks the code diff, tests and acceptance criteria, and provides feedback before approval. |
+| Merge rule                          | Merge into main only after the PR has been reviewed, feedback addressed and relevant tests passed. Do not push directly to main. Resolve conflicts and retest before merging. Add comments going over review and merge approval in PR |
+| Significant Copilot disclosure rule | Record significant Copilot assistance in the assignment evidence document, including what it suggested, how the team evaluated it, what was accepted or changed, and how the result was verified. Team members remain responsible for their submitted code. |
 
 ## F Issue and backlog index
 
 Create at least two focused issues. Add a linked practitioner-lookup issue or an explicit supporting criterion with the tutor if needed to cover all three service targets.
 
-| Issue link | Requirement | Owner | Acceptance criteria or precise link | Status |
-|---|---|---|---|---|
-| [issue 1] | [response] | [response] | [response] | [response] |
-| [issue 2] | [response] | [response] | [response] | [response] |
+| Issue link | Requirement | Owner      | Acceptance criteria or precise link | Status     |
+| ---------- | ----------- | ---------- | ----------------------------------- | ---------- |
+| [issue 1]  | [response]  | [response] | [response]                          | [response] |
+| [issue 2]  | [response]  | [response] | [response]                          | [response] |
 
 ## G Pull request evidence
 

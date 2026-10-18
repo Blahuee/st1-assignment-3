@@ -162,56 +162,55 @@ Repeat per member. Include only categories that describe actual work; write not 
 ## K Exit question
 
 Why is a high commit count not necessarily evidence of strong contribution?
-
-[response]
+A high commit count only shows how often someone saved changes, not how useful those changes were. Someone can make many tiny, cosmetic or repeated commits and look busy, while another person makes one precise review comment or test that prevents a serious bug. Real contribution includes implementation, testing, debugging, reviewing, design discussion,helping teammates and each should be backed by links to actual diffs, assertions or comments.
 
 ## L Stage 6 formative questions
 
 1. What is version control?
 
-[response]
+A system that records changes to files over time. It lets a team see the history, compare versions, recover earlier work and collaborate without overwriting each other.
 
 2. Why is a feature branch useful?
 
-[response]
+It keeps one focused change separate from "main" while it’s being built and reviewed. That protects the shared working version and makes each change easy to review.
 
 3. What makes a commit a good engineering commit?
 
-[response]
+It’s one coherent change with a clear message that says what and why. It’s tested, contains no unrelated edits or secrets, and is small enough to review.
 
 4. What is a pull request?
 
-[response]
+A request on GitHub to merge one branch into another, such as a feature branch into "main". It’s where the change is described, linked to an issue, discussed and reviewed before merging.
 
 5. What is the purpose of code review?
 
-[response]
+To have another person check the actual change against the requirement. They look for defects, weak tests, unrelated changes and responsibility problems, and the review also spreads understanding of the code across the team.
 
 6. What does a Git diff show?
 
-[response]
+The exact lines added and removed between two versions, such as the working tree versus the last commit, or a branch versus "main". It lets you check that every change has a purpose.
 
 7. What is a Definition of Done?
 
-[response]
+A checklist of what must be true before a piece of work counts as finished. Here that means the criteria are met, the tests pass, another member has reviewed and approved it, and it’s merged and verified.
 
 8. What is the appropriate role of GitHub Copilot in pull-request review?
 
-[response]
+It’s a support tool that gives a second opinion after the human review. Its suggestions must be checked against the code, requirements and tests, and each is accepted, modified or rejected with a reason. It can’t approve a PR or replace the review by another member.
 
 9. Why should individual contribution not be judged only by commit count?
 
-[response]
+Commit count ignores quality and the kind of work. Reviewing, testing, debugging, design and mentoring don’t always produce many commits, and counts can be inflated with trivial commits.
 
 10. What is the Stage 6 engineering rule?
 
-[response]
+The rule is that every change is traceable and evidence-based. A requirement goes into an issue, gets built on a focused branch with meaningful tests, then is reviewed on the actual diff by a different member and is merged only after approval from another member. Then everyone verifies the integrated main. Nothing, including Copilot’s output, counts as correct without evidence being checked properly.
 
 ## M Completion and handover
 
-- Starting SHA: [response]
-- Final Stage 6 code SHA: [response]
-- Test command: [response]
+- Starting SHA: 78e45fe
+- Final Stage 6 code SHA: python -m pytest
+- Test command: project/
 - Working directory: [response]
 - Observed result: [response]
 - PR and another-member reviewer: [links]

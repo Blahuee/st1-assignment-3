@@ -88,7 +88,7 @@ GitHub Copilot says: "Looks good; tests pass."
 | Branch naming                       | Use descriptive names with prefixes, such as feature/patient-search, feature/appointment-cancellation and documentation/stage06. Each member works on their own branch rather than directly on main. |
 | Commit message convention           | Use short, descriptive messages that explain what changed, such as Implement patient search by ID or Add appointment cancellation tests. Avoid vague messages such as updates or final version. |
 | PR size                             | Keep pull requests focused on one issue or feature you are assigned. Avoid unrelated changes to other features/areas. |
-| Another-member review requirement   | very PR must be reviewed by at least one other group member. The reviewer checks the code diff, tests and acceptance criteria, and provides feedback before approval. |
+| Another-member review requirement   | Every PR must be reviewed by at least one other group member. The reviewer checks the code diff, tests and acceptance criteria, and provides feedback before approval. |
 | Merge rule                          | Merge into main only after the PR has been reviewed, feedback addressed and relevant tests passed. Do not push directly to main. Resolve conflicts and retest before merging. Add comments going over review and merge approval in PR |
 | Significant Copilot disclosure rule | Record significant Copilot assistance in the assignment evidence document, including what it suggested, how the team evaluated it, what was accepted or changed, and how the result was verified. Team members remain responsible for their submitted code. |
 

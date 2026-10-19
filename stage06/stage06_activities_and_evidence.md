@@ -188,9 +188,9 @@ The rule is that every change is traceable and evidence-based. A requirement goe
 
 ## M Completion and handover
 - Starting SHA: `78e45fe`
-- Final Stage 6 code SHA: `python -m pytest`
-- Test command: `project/`
-- Working directory: [response]
+- Final Stage 6 code SHA:
+- Test command: `python -m pytest`
+- Working directory: `project/`
 - Observed result: [response]
 - PR and another-member reviewer: [links]
 - Unresolved issue or none: [response]

@@ -71,13 +71,13 @@ A cancellation PR also renames unrelated patient fields, restructures unrelated 
 ## D Challenge a weak Copilot review
 GitHub Copilot says: "Looks good; tests pass."
 
-- Missing evidence: [response]
-- Follow-up review question 1: [response]
-- Follow-up review question 2: [response]
-- Follow-up review question 3: [response]
-- Follow-up review question 4: [response]
-- Follow-up review question 5: [response]
-- Additional questions if useful: [response]
+- Missing evidence: The comment doesn’t say which requirement or acceptance criteria were checked, or which code changes were reviewed. It gives no test command, folder or result, so “tests pass” is just a claim and Copilot hasn’t actually run the tests. It also doesn’t say whether the tests check anything meaningful, whether error cases were looked at, whether there are unrelated changes, or what wasn’t checked.
+- Follow-up review question 1: Which requirement and acceptance criteria did you compare the changes against and which ones are met?
+- Follow-up review question 2: What exact command ran the tests, in which folder and on which commit and what was the result?
+- Follow-up review question 3: Do the test assertions check specific values or errors and would they fail if the code behaved incorrectly?
+- Follow-up review question 4: What happens with a blank, invalid or unknown ID, or an invalid appointment state and does the stored data stay unchanged afterwards?
+- Follow-up review question 5: Does the change include anything unrelated to the issue and does each part of the code (service, domain object, data store) keep its own job?
+- Additional questions if useful: What did you not check and how could someone verify your conclusion independently?
 
 ## E Team workflow agreement
 | Practice                            | Team agreement |

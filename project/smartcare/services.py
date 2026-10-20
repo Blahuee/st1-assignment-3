@@ -29,7 +29,7 @@ class PatientService:
         return patient
 
     def find_patient(self, patient_id: str) -> Patient:
-        """Stage 6 TODO: return the stored patient for a valid patient ID.
+        """Return's the stored patient for a valid patient ID.
 
         Completion must raise LookupError for absence and ValueError for
         a blank/invalid ID. It must not create a replacement patient.
@@ -66,7 +66,7 @@ class PractitionerService:
         return practitioner
 
     def find_practitioner(self, practitioner_id: str) -> Practitioner:
-        """Stage 6 TODO: return the stored practitioner for a valid ID.
+        """Return's the stored practitioner for a valid ID.
 
         Completion must raise LookupError for absence and ValueError for
         a blank/invalid ID. It must not create a replacement

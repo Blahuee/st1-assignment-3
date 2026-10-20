@@ -94,8 +94,8 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
 
 | Issue link | Requirement | Owner      | Acceptance criteria or precise link | Status     |
 | ---------- | ----------- | ---------- | ----------------------------------- | ---------- |
-| [issue 1]  | [response]  | [response] | [response]                          | [response] |
-| [issue 2]  | [response]  | [response] | [response]                           | [response] |
+| [Implement patient lookup by patient ID (FR-02)](https://github.com/Blahuee/st1-assignment-3/issues/3#issue-5829342862)  | Implement patient lookup by patient ID. The method must return the existing stored Patient object when the ID is valid and exists. It also must raise ValueError for a blank or invalid ID LookupError when the patient does not exist. It must not create a replacement patient.  | Alicia |  A valid existing patient ID returns the corresponding stored patient object. A blank or invalid patient ID raises ValueError. A valid ID that does not exist raises LookupError. Looking up a patient does not register, replace, or modify patient records. Existing patient records remain unchanged when lookup fails.                          |Pending |
+| [Add Appointment Cancellation with retained history (FR-06 and FR-07)](https://github.com/Blahuee/st1-assignment-3/issues/1#issue-5828750575)  | FR-06 - Appointment cancellation. FR-07 - Retaining the appointment cancellation history  | Cancelling a SCHEDULED appointment changes its status to CANCELLED and after the cancellation the same appointment can still be found by the IDs with status cancellation. Therefore, the schedule is not deleted and stored in the object.a blank or invalid ID raises a ValueError. | Ngedup                           | Not Started |
 
 ## G Pull request evidence
 Repeat this block per PR. Record actual events, not planned approvals.

@@ -12,31 +12,24 @@ All Assignment 3 stage materials are provided from the beginning. Complete this 
 
 For each requirement, propose one positive test, one negative test and the key assertion.
 
-| Requirement | Positive test | Negative test | Key assertion |
-|---|---|---|---|
-| FR-01 Register patient | [response] | [response] | [response] |
-| FR-05 Prevent practitioner conflict | [response] | [response] | [response] |
-| FR-06 Cancel appointment | [response] | [response] | [response] |
-| FR-07 Retain cancelled history | [response] | [response] | [response] |
+| Requirement                         | Positive test                                                                               | Negative test                                                                                                                                     | Key assertion                                                                                                                                               |
+| ----------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| FR-01 Register patient              | Register a patient with a unique ID and required name, then check they are stored correctly | Attempt to register another patient using an existing patient ID                                                                                  | Check the patient is stored with the correct details and that duplicate registration raises ValueError without overwriting the original patient             |
+| FR-05 Prevent practitioner conflict | Schedule an appointment for a practitioner at a particular date and time.                   | Attempt to schedule another appointment for the same practitioner at the exact same date and time while the first appointment is still SCHEDULED. | Check that the first appointment is retained, the second booking raises ValueError, and a booking with a different practitioner at the same time is allowed |
+| FR-06 Cancel appointment            | Cancel a scheduled appointment                                                              | Attempt to cancel an already cancelled appointment                                                                                                | Check that the status becomes CANCELLED for the valid cancellation and that a second cancellation raises ValueError                                         |
+| FR-07 Retain cancelled history      | Cancel an appointment and then retrieve it from the appointment history                     | Attempt to cancel an appointment and check that it is not deleted from the history                                                                | Check that the same appointment remains retrievable with its original ID and CANCELLED status after cancellation                                            |
 
 ### Activity 2 Strong or weak assertion
 
 For each, select Strong for stated behaviour or Weak/unclear and explain why. State the behaviour and limits.
 
-`assert True`
-Judgement: [Strong for stated behaviour / Weak/unclear]  Why: [response]
-
-`assert appointment is not None`
-Judgement: [Strong for stated behaviour / Weak/unclear]  Why: [response]
-
-`assert appointment.status == AppointmentStatus.CANCELLED`
-Judgement: [Strong for stated behaviour / Weak/unclear]  Why: [response]
-
-`assert len(results) > 0`
-Judgement: [Strong for stated behaviour / Weak/unclear]  Why: [response]
-
-`assert data_store.find_appointment('A1') is appointment`
-Judgement: [Strong for stated behaviour / Weak/unclear]  Why: [response]
+| Example Assertion                                          | Strong or Weak? | Why                                                                                                                                                                                 |
+| ---------------------------------------------------------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `assert True`                                              | Weak            | It always passes, regardless of whether SmartCare works correctly. It does not check any behaviour                                                                                  |
+| `assert appointment is not None`                           | Weak            | It only checks that an appointment exists. It does not check whether the appointment has the correct ID, patient, practitioner, time or status                                      |
+| `assert appointment.status == AppointmentStatus.CANCELLED` | Strong          | It checks that the appointment's status actually changed to CANCELLED, which directly verifies the expected cancellation behaviour                                                  |
+| `assert len(results) > 0`                                  | Weak            | It only checks that the results contain at least one item. It does not check whether the correct appointment or appointments were returned                                          |
+| `assert data_store.find_appointment('A1') is appointment`  | Strong          | It checks that looking up appointment A1 returns the exact same appointment object. This is useful for verifying that the stored appointment has been retained rather than replaced |
 
 ### Activity 3 Boundary thinking
 
@@ -48,12 +41,12 @@ For each input/state, expected result and supporting contract: [response]
 GitHub Copilot generates five tests, all of which pass. Two only assert that objects are not None, one asserts True, and two assume SMS notifications exist. Identify what is wrong and rewrite the test intentions.
 
 | Candidate | What is wrong | Rewritten test intention |
-|---|---|---|
-| 1 | [response] | [response] |
-| 2 | [response] | [response] |
-| 3 | [response] | [response] |
-| 4 | [response] | [response] |
-| 5 | [response] | [response] |
+| --------- | ------------- | ------------------------ |
+| 1         | [response]    | [response]               |
+| 2         | [response]    | [response]               |
+| 3         | [response]    | [response]               |
+| 4         | [response]    | [response]               |
+| 5         | [response]    | [response]               |
 
 ### Tutorial exit question
 
@@ -64,49 +57,49 @@ Why can 100% code coverage coexist with poor software verification?
 
 Assign TEST IDs before implementation or generation. Use canonical AC IDs with their actual meaning; quote supporting revision 2 contracts when no canonical AC is assigned. Blank-ID validation is not AC-01.2. Identify supplied versus student-authored evidence.
 
-| Requirement | Acceptance criterion | Test ID | Test type | Test name / location | Expected behaviour | Result / observed status | Supplied or student-authored |
-|---|---|---|---|---|---|---|---|
-| [complete] | [complete] | [complete] | [complete] | [complete] | [complete] | [complete] | [complete] |
+| Requirement | Acceptance criterion | Test ID    | Test type  | Test name / location | Expected behaviour | Result / observed status | Supplied or student-authored |
+| ----------- | -------------------- | ---------- | ---------- | -------------------- | ------------------ | ------------------------ | ---------------------------- |
+| [complete]  | [complete]           | [complete] | [complete] | [complete]           | [complete]         | [complete]               | [complete]                   |
 
 ## C Test Design
 
 Use descriptive test names such as test_cancel_changes_status() or test_blank_patient_id_is_rejected(). Explain what new evidence each case adds.
 
-| Test ID | Requirement | Acceptance criterion | Positive / Negative / Boundary | Test intention | Observable result expected | Added evidence beyond supplied tests |
-|---|---|---|---|---|---|---|
-| [complete] | [complete] | [complete] | [complete] | [complete] | [complete] | [complete] |
+| Test ID    | Requirement | Acceptance criterion | Positive / Negative / Boundary | Test intention | Observable result expected | Added evidence beyond supplied tests |
+| ---------- | ----------- | -------------------- | ------------------------------ | -------------- | -------------------------- | ------------------------------------ |
+| [complete] | [complete]  | [complete]           | [complete]                     | [complete]     | [complete]                 | [complete]                           |
 
 ## D Arrange Act Assert Record
 
 Arrange test data; act on one meaningful behaviour; assert the required observable outcome. Use the specific current exception with pytest.raises where needed.
 
-| Test ID | Arrange | Act | Assert | Why meaningful / why assertion proves criterion |
-|---|---|---|---|---|
-| [complete] | [complete] | [complete] | [complete] | [complete] |
+| Test ID    | Arrange    | Act        | Assert     | Why meaningful / why assertion proves criterion |
+| ---------- | ---------- | ---------- | ---------- | ----------------------------------------------- |
+| [complete] | [complete] | [complete] | [complete] | [complete]                                      |
 
 ## E Domain Test Evidence
 
 Cover Patient/Practitioner construction and validation; Appointment construction, initial status, cancellation and illegal/repeated transitions. Preserve the four reference intentions described in handout Part C.
 
-| Test ID | Behaviour | Test file/function | Result |
-|---|---|---|---|
-| [complete] | [complete] | [complete] | [complete] |
+| Test ID    | Behaviour  | Test file/function | Result     |
+| ---------- | ---------- | ------------------ | ---------- |
+| [complete] | [complete] | [complete]         | [complete] |
 
 ## F Service Test Evidence
 
 Use fresh shared SmartCareDataStore state, registered objects and completed Stage 6 services.
 
-| Test ID | Behaviour | Requirement / criterion | Test file/function | Result |
-|---|---|---|---|---|
-| [complete] | [complete] | [complete] | [complete] | [complete] |
+| Test ID    | Behaviour  | Requirement / criterion | Test file/function | Result     |
+| ---------- | ---------- | ----------------------- | ------------------ | ---------- |
+| [complete] | [complete] | [complete]              | [complete]         | [complete] |
 
 ## G Negative and Boundary Cases
 
 Connect cases to actual contracts and verify unchanged state after rejection.
 
-| Behaviour | Boundary/invalid input | Expected result | Test ID |
-|---|---|---|---|
-| [complete] | [complete] | [complete] | [complete] |
+| Behaviour  | Boundary/invalid input | Expected result | Test ID    |
+| ---------- | ---------------------- | --------------- | ---------- |
+| [complete] | [complete]             | [complete]      | [complete] |
 
 ## H GitHub Copilot Test Design
 
@@ -142,9 +135,9 @@ Accepted / modified / rejected test decisions and evidence: [link actual decisio
 
 Run python -m pytest from project/. Retain all accumulated tests. Record the tested SHA accurately.
 
-| Command | Working directory | Code SHA | Passed | Failed | Failure summary | Product defect / test defect / unresolved | Evidence and interpretation |
-|---|---|---|---|---|---|---|---|
-| [complete] | [complete] | [complete] | [complete] | [complete] | [complete] | [complete] | [complete] |
+| Command    | Working directory | Code SHA   | Passed     | Failed     | Failure summary | Product defect / test defect / unresolved | Evidence and interpretation |
+| ---------- | ----------------- | ---------- | ---------- | ---------- | --------------- | ----------------------------------------- | --------------------------- |
+| [complete] | [complete]        | [complete] | [complete] | [complete] | [complete]      | [complete]                                | [complete]                  |
 
 Individual test runs and changed-order independence evidence: [commands, results, links]
 Optional tutor-led demonstration notes: [optional; leave blank if not used]
@@ -162,17 +155,17 @@ Optional fixtures/parametrisation used and why, if any: [response or not used]
 
 Use links rather than copying GitHub history. Continue the Stage 6 workflow; no commit/PR count, conflict or individual test quota is imposed.
 
-| Issue/task | Branch | PR | Reviewer | Key feedback | Outcome |
-|---|---|---|---|---|---|
-| [complete] | [complete] | [complete] | [complete] | [complete] | [complete] |
+| Issue/task | Branch     | PR         | Reviewer   | Key feedback | Outcome    |
+| ---------- | ---------- | ---------- | ---------- | ------------ | ---------- |
+| [complete] | [complete] | [complete] | [complete] | [complete]   | [complete] |
 
 ## M Contribution Evidence
 
 Record actual work in test design, implementation, review, traceability, diagnosis, necessary fixes and integration. Do not include confidential peer ratings.
 
-| Member | Actual contribution | Evidence link |
-|---|---|---|
-| [complete] | [complete] | [complete] |
+| Member     | Actual contribution | Evidence link |
+| ---------- | ------------------- | ------------- |
+| [complete] | [complete]          | [complete]    |
 
 ## N Formative Questions
 

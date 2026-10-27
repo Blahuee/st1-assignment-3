@@ -36,6 +36,14 @@ For each, select Strong for stated behaviour or Weak/unclear and explain why. St
 Design boundary or edge cases for blank identifiers, whitespace-only names, same-time practitioner bookings, cancelled appointments and invalid status transitions.
 For each input/state, expected result and supporting contract: [response]
 
+| Boundary/Edge Case             | Input/State | Output | Contract Supporting Expectation |
+| ------------------------------ | ----------- | ------ | ------------------------------- |
+| Blank Identifier               | Register patient with ID `""` (empty string)  | `ValueError('Expected a Patient object')` | Revision 2 FR-01 |
+| White-Space Only Name          | Register patient with name `""` (empty string) | `ValueError(Patient Name cannot be blank')` | Revision 2 FR-01 |
+| Same-Time Practitioner Booking | Book two appointments with the same practitioner at exactly 10:00 on the same date, with the first appointment still SCHEDULED | Reject the second booking and raise ValueError | FR-05, AC-04.1: a practitioner cannot have conflicting scheduled appointments at the same date and time |
+| Cancelled Appointment          | Cancel an appointment, then check its status and retrieve it from the store | Its status becomes CANCELLED, and the appointment remains available in the current-session history | FR-06, AC-05.1, and FR-07, AC-05.2 |
+| Invalid Status Transition      | Cancel an appointment that is already CANCELLED, or one that is COMPLETED | Reject the cancellation and raise ValueError; the existing status must remain unchanged | FR-06, AC-05.3 covers repeated cancellation. The domain contract should define which other status transitions are invalid |
+
 ### Activity 4 Critique GitHub Copilot tests
 
 GitHub Copilot generates five tests, all of which pass. Two only assert that objects are not None, one asserts True, and two assume SMS notifications exist. Identify what is wrong and rewrite the test intentions.

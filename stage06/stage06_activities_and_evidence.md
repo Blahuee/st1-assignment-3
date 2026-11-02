@@ -98,25 +98,59 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
 | [Add Appointment Cancellation with retained history (FR-06 and FR-07)](https://github.com/Blahuee/st1-assignment-3/issues/1#issue-5828750575)  | FR-06 - Appointment cancellation. FR-07 - Retaining the appointment cancellation history  | Ngedup | Cancelling a SCHEDULED appointment changes its status to CANCELLED and after the cancellation the same appointment can still be found by the IDs with status cancellation. Therefore, the schedule is not deleted and stored in the object.a blank or invalid ID raises a ValueError.                           | Pending |
 
 ## G Pull request evidence
-Repeat this block per PR. Record actual events, not planned approvals.
+- PR link and title: https://github.com/Blahuee/st1-assignment-3/pull/8, "Implement patient search by ID"
+- Linked issue and requirement: Issue #3 (https://github.com/Blahuee/st1-assignment-3/issues/3), FR-02 Patient Search
+- Feature branch: feature/patient-search
+- Changed behaviour: Implements patient lookup by ID in project/smartcare/services.py (1 file changed, +4/−2). [Confirm on Files changed.]
+- Meaningful commits: https://github.com/Blahuee/st1-assignment-3/commit/e514dda
+- Test command, directory and observed result: None recorded on the PR. [Add the result if the author ran python -m pytest from project/.]
+- Another-member reviewer: None. The PR shows no reviews (author: Blahuee).
+- Human observations recorded before Copilot: None recorded.
+- Requirement, responsibilities, test assertions and unrelated-scope checks: None recorded on the PR.
+- Key feedback: None recorded.
+- Author response/change and verification: Not applicable.
+- Reviewer recheck and approval: No approval recorded; the author merged the PR.
+- Merge outcome and SHA: Merged into main on 2026-10-20, b5ddb1760ac109c6d742b2c485906e4e55d615df
+- Significant Copilot assistance: None recorded.
+- Linked issue closure: Issue #3 remained open after the merge.
+- Each member updated main: [pending: member and confirmation]
+- Integrated verification after merge: [pending: command, directory, result and code SHA]
 
-- PR link and title: [response]
-- Linked issue and requirement: [response]
-- Feature branch: [response]
-- Changed behaviour: [response]
-- Meaningful commits: [links]
-- Test command, directory and observed result: [response]
-- Another-member reviewer: [response]
-- Human observations recorded before Copilot: [link and time]
-- Requirement, responsibilities, test assertions and unrelated-scope checks: [response]
-- Key feedback: [response]
-- Author response/change and verification: [response]
-- Reviewer recheck and approval: [link]
-- Merge outcome and SHA: [response]
-- Significant Copilot assistance: [summary or none]
-- Linked issue closure: [response]
-- Each member updated main: [member and confirmation]
-- Integrated verification after merge: [command, directory, result and code SHA]
+- PR link and title: https://github.com/Blahuee/st1-assignment-3/pull/9, "Implement practitoner search by ID" (title as shown on GitHub)
+- Linked issue and requirement: Linked on the PR to issue #1 (FR-06/FR-07). The PR implements practitioner lookup, which has no separate issue yet.
+- Feature branch: feature/appointment-cancellation
+- Changed behaviour: Implements practitioner lookup by ID in project/smartcare/services.py (1 file changed, +4/−2). [Confirm on Files changed.]
+- Meaningful commits: https://github.com/Blahuee/st1-assignment-3/commit/82f2b21
+- Test command, directory and observed result: None recorded on the PR.
+- Another-member reviewer: None. The PR shows no reviews (author: Blahuee).
+- Human observations recorded before Copilot: None recorded.
+- Requirement, responsibilities, test assertions and unrelated-scope checks: None recorded on the PR.
+- Key feedback: None recorded.
+- Author response/change and verification: Not applicable.
+- Reviewer recheck and approval: No approval recorded; the author merged the PR.
+- Merge outcome and SHA: Merged into main on 2026-10-20, c99841ef7c2899ec677090ec2f9814dd69411db0
+- Significant Copilot assistance: None recorded.
+- Linked issue closure: Issue #1 remains open; this PR does not implement cancellation.
+- Each member updated main: [pending: member and confirmation]
+- Integrated verification after merge: [pending: command, directory, result and code SHA]
+
+- PR link and title: https://github.com/Blahuee/st1-assignment-3/pull/10, "Stage 06 F issue and backlog index"
+- Linked issue and requirement: None linked. Section F (issue and backlog index) of the Stage 6 record, which supports the issue-to-PR traceability requirement.
+- Feature branch: documentation/stage06
+- Changed behaviour: None. Documentation only (2 commits, 1 file, +2/−2).
+- Meaningful commits: https://github.com/Blahuee/st1-assignment-3/commit/d2fb1b3 and https://github.com/Blahuee/st1-assignment-3/commit/d6c248d ("issue link updated")
+- Test command, directory and observed result: Not applicable (documentation only).
+- Another-member reviewer: Aagneyf1r3 (author: njlhazin). Blahuee was also requested and did not submit a review.
+- Human observations recorded before Copilot: Aagneyf1r3 submitted a review requesting changes on the PR [add the link to the review]. No Copilot was used.
+- Requirement, responsibilities, test assertions and unrelated-scope checks: The review checked that the backlog table linked to the actual GitHub issues.
+- Key feedback: "put the issue links (the git hub links)".
+- Author response/change and verification: njlhazin pushed commit d6c248d "issue link updated".
+- Reviewer recheck and approval: No re-review or formal approval recorded after the update; Aagneyf1r3 merged the PR after the update.
+- Merge outcome and SHA: Merged into main on 2026-10-20, f5725d7f5621dbd684133bb2e4235e9d09894027
+- Significant Copilot assistance: None recorded.
+- Linked issue closure: Not applicable.
+- Each member updated main: [pending: member and confirmation]
+- Integrated verification after merge: [pending: command, directory, result and code SHA]
 
 ## H Copilot collaboration record
 Record meaningful required use, not every trivial completion. Repeat per significant interaction.

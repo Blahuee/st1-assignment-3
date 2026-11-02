@@ -91,6 +91,7 @@ Assign TEST IDs before implementation or generation. Use canonical AC IDs with t
 | FR-06 Cancel appointment | AC-05.3 Repeated cancellation is rejected (service), plus COMPLETED guard | T-22 | Service, negative |  | ValueError for repeated or COMPLETED cancellation; state unchanged |  | Student-authored |
 | FR-06 Cancel appointment | Supporting contract: unknown valid ID raises LookupError; blank ID raises ValueError | T-23 | Service, boundary |  | LookupError for unknown ID; ValueError for blank ID; nothing changes |  | Student-authored |
 | FR-08 Appointment lookup | AC-06.1 A known appointment ID returns that appointment | T-24 | Service, positive |  | Returns the same appointment object |  | Student-authored |
+| FR-04 Book appointment | Supporting contract: a duplicate appointment ID is rejected without overwriting | T-25 | Service, negative |  | ValueError raised; original appointment and its date/time unchanged |  | Supplied |
 
 ## C Test Design
 

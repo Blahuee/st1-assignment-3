@@ -4,8 +4,8 @@ UG and PG | One evolving group project | Complete this blank record using the St
 
 All Assignment 3 stage materials are provided from the beginning. Complete this stage only after the previous applicable stage has been integrated, verified and recorded. Use this supplied record in stage08/ in your EXISTING repository. Preserve project/, all earlier tests, records and responses. Do not download another starter or copy staff solutions. The Stage 8 preparation utility is supplied or run by teaching staff when Stage 8 begins. Follow your tutor’s controlled workflow and the handout. If temporarily supplied, keep it outside the repository in a sibling Stage_8_Assets/ folder; exclude it from Git and the final submission.
 
-Group/tutorial: [complete]
-Members and UG/PG cohorts: [complete]
+Group/tutorial: Tue 1:30 - 3:30 Group 1
+Members and UG/PG cohorts: UG - Alicia Hurst - Blahuee, UG - Aagney Mani Sharma - Aagneyf1r3, UG - Ngedup Jigme Lhazeen - njlhazin
 Record owner / contribution links for each member: [complete]
 
 Use concise results and accessible artefact links rather than copying entire logs. Keep human-first entries before consulting GitHub Copilot. Link shared evidence once; do not repeat it across sections. No entries below are specimen answers or claimed results.
@@ -14,14 +14,13 @@ Use concise results and accessible artefact links rather than copying entire log
 
 ### A.1 Classify all five statements
 For each, choose symptom, evidence or hypothesis/opinion, and explain your reason. These are discussion statements, not confirmed diagnoses.
-- Appointment disappears after cancellation.
-- The data-store removal path is probably being called.
-- The failing test shows store.find_appointment('A1') returns None.
-- The service layer is badly designed.
-- Traceback points to smartcare/services.py line 42 in the example.
-The example line number is illustrative; inspect the actual line in your run. The removal hypothesis must be tested against the current project, which has no public delete operation.
-
-Response and reason: [complete]
+| Statement                                                        | Classification | Reason                                                                                            |
+| ---------------------------------------------------------------- | -------------- | ------------------------------------------------------------------------------------------------- |
+| Appointment disappears after cancellation                        | Symptom        | Describes what the user observes without explaining why it happens                                |
+| The data-store removal path is probably being called             | Hypothesis     | Suggests a possible cause that needs investigation                                                |
+| The failing test shows store.find_appointment('A1') returns None | Evidence       | Describes an observable result from a test                                                        |
+| The service layer is badly designed                              | Opinion        | A subjective judgement without supporting evidence                                                |
+| Traceback points to smartcare/services.py line 42 in the example | Evidence       | A traceback identifies where an exception occurred or propagated. The actual line must be checked |
 
 ### A.2 Build a debugging record
 Choose the cancelled-history scenario or a same-practitioner/time booking. Before changing code, record expected behaviour, observed behaviour, minimal reproduction, a hypothesis and evidence to inspect. Use a requirement to justify the expectation. Keep the initial hypothesis even if later evidence disproves it.
@@ -123,13 +122,13 @@ Final human conclusion and comparison with initial hypothesis: [complete]
 
 ## G. Failing to passing regression evidence
 
-| Checkpoint | Code SHA or precise diff | Command and working directory | Actual result and artefact reference |
-|---|---|---|---|
-| F8-01 before repair | [complete] | [complete] | [complete] |
-| F8-01 after repair | [complete] | [complete] | [complete] |
-| F8-02 before repair | [complete] | [complete] | [complete] |
-| F8-02 after repair | [complete] | [complete] | [complete] |
-| Full suite after both repairs, before refactor | [complete] | [complete] | [complete] |
+| Checkpoint                                     | Code SHA or precise diff | Command and working directory | Actual result and artefact reference |
+| ---------------------------------------------- | ------------------------ | ----------------------------- | ------------------------------------ |
+| F8-01 before repair                            | [complete]               | [complete]                    | [complete]                           |
+| F8-01 after repair                             | [complete]               | [complete]                    | [complete]                           |
+| F8-02 before repair                            | [complete]               | [complete]                    | [complete]                           |
+| F8-02 after repair                             | [complete]               | [complete]                    | [complete]                           |
+| Full suite after both repairs, before refactor | [complete]               | [complete]                    | [complete]                           |
 
 Explain how the assertions detect each relevant incorrect result and protect previous behaviour: [complete]
 Unrelated failures investigated / resolution: [complete or not applicable with reason]

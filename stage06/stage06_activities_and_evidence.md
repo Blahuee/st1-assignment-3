@@ -98,59 +98,90 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
 | [Add Appointment Cancellation with retained history (FR-06 and FR-07)](https://github.com/Blahuee/st1-assignment-3/issues/1#issue-5828750575)  | FR-06 - Appointment cancellation. FR-07 - Retaining the appointment cancellation history  | Ngedup | Cancelling a SCHEDULED appointment changes its status to CANCELLED and after the cancellation the same appointment can still be found by the IDs with status cancellation. Therefore, the schedule is not deleted and stored in the object.a blank or invalid ID raises a ValueError.                           | Pending |
 
 ## G Pull request evidence
-- PR link and title: https://github.com/Blahuee/st1-assignment-3/pull/8, "Implement patient search by ID"
-- Linked issue and requirement: Issue #3 (https://github.com/Blahuee/st1-assignment-3/issues/3), FR-02 Patient Search
-- Feature branch: feature/patient-search
-- Changed behaviour: Implements patient lookup by ID in project/smartcare/services.py (1 file changed, +4/−2). [Confirm on Files changed.]
-- Meaningful commits: https://github.com/Blahuee/st1-assignment-3/commit/e514dda
-- Test command, directory and observed result: None recorded on the PR. [Add the result if the author ran python -m pytest from project/.]
-- Another-member reviewer: None. The PR shows no reviews (author: Blahuee).
-- Human observations recorded before Copilot: None recorded.
-- Requirement, responsibilities, test assertions and unrelated-scope checks: None recorded on the PR.
-- Key feedback: None recorded.
-- Author response/change and verification: Not applicable.
-- Reviewer recheck and approval: No approval recorded; the author merged the PR.
-- Merge outcome and SHA: Merged into main on 2026-10-20, b5ddb1760ac109c6d742b2c485906e4e55d615df
-- Significant Copilot assistance: None recorded.
-- Linked issue closure: Issue #3 remained open after the merge.
-- Each member updated main: [pending: member and confirmation]
-- Integrated verification after merge: [pending: command, directory, result and code SHA]
+- **PR link and title:** https://github.com/Blahuee/st1-assignment-3/pull/8, "Implement patient search by ID"
+- **Linked issue and requirement:** Issue #3 (https://github.com/Blahuee/st1-assignment-3/issues/3), FR-02 Patient Search
+- **Feature branch:** feature/patient-search
+- **Changed behaviour:** The commit implements the `find_patient()` method by replacing the `NotImplementedError` placeholder with a call to the data store. It returns the existing patient when found and raises a `LookupError` when the patient does not exist. This allows the service to retrieve patients without creating replacement records.
+- **Meaningful commits:** https://github.com/Blahuee/st1-assignment-3/commit/e514dda
+- **Test command, directory and observed result:** From `project/`, ran `python main.py` successfully. Then ran `python -m pytest`, which reported 8 passed.
+- **Another-member reviewer:** Aagney (over video call) but pushed/merged by Alicia
+- **Human observations recorded before Copilot:** None recorded.
+- **Requirement, responsibilities, test assertions and unrelated-scope checks:** The PR diff was limited to services.py, with no unrelated files changed. Although Aagney provided informal feedback during a video call, no documented requirement-to-test mapping, dedicated patient lookup assertions or explicit unrelated-scope review was recorded. The eight baseline tests passed but did not verify the Stage 6 service TODOs.
+- **Key feedback:** None recorded.
+- **Author response/change and verification:** Not applicable.
+- **Reviewer recheck and approval:** No approval recorded; the author merged the PR.
+- **Merge outcome and SHA:** Merged into main on 2026-10-20, b5ddb1760ac109c6d742b2c485906e4e55d615df
+- **Significant Copilot assistance:** None recorded.
+- **Linked issue closure:** Issue #3 Closed
+- **Each member updated main:**
+  - Alicia: Confirmed, updated successfully
+  - Aagney: Confirmed, updated successfully
+  - Ngedup: Confirmed, updated successfully
+- **Integrated verification after merge:** e514dda244cfbf256642a0eed7fe8d9bcf9f45d0
 
-- PR link and title: https://github.com/Blahuee/st1-assignment-3/pull/9, "Implement practitoner search by ID" (title as shown on GitHub)
-- Linked issue and requirement: Linked on the PR to issue #1 (FR-06/FR-07). The PR implements practitioner lookup, which has no separate issue yet.
-- Feature branch: feature/appointment-cancellation
-- Changed behaviour: Implements practitioner lookup by ID in project/smartcare/services.py (1 file changed, +4/−2). [Confirm on Files changed.]
-- Meaningful commits: https://github.com/Blahuee/st1-assignment-3/commit/82f2b21
-- Test command, directory and observed result: None recorded on the PR.
-- Another-member reviewer: None. The PR shows no reviews (author: Blahuee).
-- Human observations recorded before Copilot: None recorded.
-- Requirement, responsibilities, test assertions and unrelated-scope checks: None recorded on the PR.
-- Key feedback: None recorded.
-- Author response/change and verification: Not applicable.
-- Reviewer recheck and approval: No approval recorded; the author merged the PR.
-- Merge outcome and SHA: Merged into main on 2026-10-20, c99841ef7c2899ec677090ec2f9814dd69411db0
-- Significant Copilot assistance: None recorded.
-- Linked issue closure: Issue #1 remains open; this PR does not implement cancellation.
-- Each member updated main: [pending: member and confirmation]
-- Integrated verification after merge: [pending: command, directory, result and code SHA]
+- **PR link and title:** https://github.com/Blahuee/st1-assignment-3/pull/9, "Implement practitoner search by ID"
+- **Linked issue and requirement:** Linked on the PR to issue #1 (FR-06/FR-07). The PR implements practitioner lookup, which has no separate issue yet.
+- **Feature branch:** feature/appointment-cancellation
+- **Changed behaviour:** The commit implements the `find_practitioner()` method by replacing the `NotImplementedError` placeholder with a call to the data store. It returns the existing practitioner when found and raises a `LookupError` when the practitioner does not exist. This allows the service to retrieve practitioners without creating replacement records.
+- **Meaningful commits:** https://github.com/Blahuee/st1-assignment-3/commit/82f2b21
+- **Test command, directory and observed result:** None recorded on the PR.
+- **Another-member reviewer:** None. The PR shows no reviews (author: Blahuee).
+- **Human observations recorded before Copilot:** None recorded.
+- **Requirement, responsibilities, test assertions and unrelated-scope checks:** None recorded on the PR.
+- **Key feedback:** None recorded.
+- **Author response/change and verification:** Not applicable.
+- **Reviewer recheck and approval:** No approval recorded; the author merged the PR.
+- **Merge outcome and SHA:** Merged into main on 2026-10-20, c99841ef7c2899ec677090ec2f9814dd69411db0
+- **Significant Copilot assistance:** None recorded.
+- **Linked issue closure:** Issue #1 remains open; this PR does not implement cancellation.
+- **Each member updated main:**
+  - Alicia: Confirmed, updated successfully
+  - Aagney: Confirmed, updated successfully
+  - Ngedup: Confirmed, updated successfully
+- **Integrated verification after merge:** e514dda244cfbf256642a0eed7fe8d9bcf9f45d0
 
-- PR link and title: https://github.com/Blahuee/st1-assignment-3/pull/10, "Stage 06 F issue and backlog index"
-- Linked issue and requirement: None linked. Section F (issue and backlog index) of the Stage 6 record, which supports the issue-to-PR traceability requirement.
-- Feature branch: documentation/stage06
-- Changed behaviour: None. Documentation only (2 commits, 1 file, +2/−2).
+- **PR link and title:** https://github.com/Blahuee/st1-assignment-3/pull/10, "Stage 06 F issue and backlog index"
+- **Linked issue and requirement:** None linked. Section F (issue and backlog index) of the Stage 6 record, which supports the issue-to-PR traceability requirement.
+- **Feature branch:** documentation/stage06
+- **Changed behaviour:** None. Documentation only (2 commits, 1 file, +2/−2).
 - Meaningful commits: https://github.com/Blahuee/st1-assignment-3/commit/d2fb1b3 and https://github.com/Blahuee/st1-assignment-3/commit/d6c248d ("issue link updated")
-- Test command, directory and observed result: Not applicable (documentation only).
-- Another-member reviewer: Aagneyf1r3 (author: njlhazin). Blahuee was also requested and did not submit a review.
-- Human observations recorded before Copilot: Aagneyf1r3 submitted a review requesting changes on the PR [add the link to the review]. No Copilot was used.
-- Requirement, responsibilities, test assertions and unrelated-scope checks: The review checked that the backlog table linked to the actual GitHub issues.
-- Key feedback: "put the issue links (the git hub links)".
-- Author response/change and verification: njlhazin pushed commit d6c248d "issue link updated".
-- Reviewer recheck and approval: No re-review or formal approval recorded after the update; Aagneyf1r3 merged the PR after the update.
-- Merge outcome and SHA: Merged into main on 2026-10-20, f5725d7f5621dbd684133bb2e4235e9d09894027
-- Significant Copilot assistance: None recorded.
-- Linked issue closure: Not applicable.
-- Each member updated main: [pending: member and confirmation]
-- Integrated verification after merge: [pending: command, directory, result and code SHA]
+- **Test command, directory and observed result:** Not applicable (documentation only).
+- **Another-member reviewer:** Aagneyf1r3 (author: njlhazin). Blahuee was also requested and did not submit a review.
+- **Human observations recorded before Copilot:** Aagneyf1r3 submitted a review requesting changes on the PR https://github.com/Blahuee/st1-assignment-3/pull/10#pullrequestreview-5580903010. No Copilot was used.
+- **Requirement, responsibilities, test assertions and unrelated-scope checks:** The review checked that the backlog table linked to the actual GitHub issues.
+- **Key feedback:** "put the issue links https://github.com/Blahuee/st1-assignment-3/pull/10#pullrequestreview-5580903010".
+- **Author response/change and verification:** njlhazin pushed commit d6c248d "issue link updated".
+- **Reviewer recheck and approval:** No re-review or formal approval recorded after the update; Aagneyf1r3 merged the PR after the update.
+- **Merge outcome and SHA:** Merged into main on 2026-10-20, f5725d7f5621dbd684133bb2e4235e9d09894027
+- **Significant Copilot assistance:** None recorded.
+- **Linked issue closure:** Not applicable.
+- **Each member updated main:**
+  - Alicia: Confirmed, updated successfully
+  - Aagney: Confirmed, updated successfully
+  - Ngedup: Confirmed, updated successfully
+- **Integrated verification after merge:** f5725d7f5621dbd684133bb2e4235e9d09894027
+
+- **PR link and title:** PR #15 – Add Appointment Cancellation
+- **Linked issue and requirement:** Issue #1 – Add Appointment Cancellation with retained history. FR-06 (Appointment Cancellation) and FR-07 (retained appointment history).
+- **Feature branch:** feature/appointment-cancellation (merged into main).
+- **Changed behaviour:** Implemented AppointmentService.cancel_appointment() to cancel an existing appointment and return the cancelled appointment object. Unknown appointment IDs raise LookupError. Invalid cancellation transitions raise ValueError without changing the appointment's existing state.
+- **Test command, directory and observed result:** Run from the project/ directory:
+  - **Command:** python -m pytest
+  - **Expected verification:** tests pass, including appointment cancellation, unknown appointment IDs and invalid cancellation transitions.
+- **Another-member reviewer:** Aagneyf1r3 commented "All good" on the PR. GitHub shows no formal review submission.
+- **Human observations recorded before Copilot:** The cancellation service needed to delegate the operation to the existing appointment/domain logic, return the cancelled object and preserve the appointment's history. Unknown IDs and invalid state transitions needed separate handling.
+- **Requirement, responsibilities, test assertions and unrelated-scope checks:** The change addresses FR-06 and FR-07. The service is responsible for locating the appointment and delegating cancellation. Assertions should verify the returned appointment, its cancelled status, `LookupError` for unknown IDs, `ValueError` for invalid transitions and unchanged state after a failed cancellation. Unrelated patient and practitioner functionality should remain unchanged.
+- **Key feedback:** The reviewer responded "All good". No formal review comments or requested code changes are visible on GitHub.
+- **Author response/change and verification:** The author implemented the requested appointment cancellation behaviour in `AppointmentService.cancel_appointment()`. The PR description confirms the expected exception handling and that invalid transitions leave the appointment state unchanged. The PR was subsequently merged.
+- **Reviewer recheck and approval:** Aagneyf1r3 commented "All good". No formal GitHub approval review is recorded.
+- **Merge outcome and SHA:** Merged into main on 3 November 2026. Merge commit: 5244ad3.
+- **Significant Copilot assistance:** None recorded
+- **Linked issue closure:** Issue #1 was automatically linked to the PR and is now closed.
+- **Each member updated main:**
+  - Alicia: Confirmed, updated successfully
+  - Aagney: Confirmed, updated successfully
+  - Ngedup: Confirmed, updated successfully
+- **Integrated verification after merge:** Needs confirmation that the group ran python -m pytest from project/ against the updated main branch and recorded the results.
 
 ## H Copilot collaboration record
 Record meaningful required use, not every trivial completion. Repeat per significant interaction.

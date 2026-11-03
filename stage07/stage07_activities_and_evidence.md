@@ -50,11 +50,11 @@ GitHub Copilot generates five tests, all of which pass. Two only assert that obj
 
 | Candidate | What is wrong | Rewritten test intention |
 | --------- | ------------- | ------------------------ |
-| 1         | [response]    | [response]               |
-| 2         | [response]    | [response]               |
-| 3         | [response]    | [response]               |
-| 4         | [response]    | [response]               |
-| 5         | [response]    | [response]               |
+| 1 | It only asserts that the registered patient is not none. This passes even if the ID or name is wrong or empty, so it does not prove FR-01 (register patient) | Register patient P1 "Alexander Stewart," then check the data store returns that same patient with ID P1 and name 'Alexander Stewart". |
+| 2 | Only asserts that the booked appointemnt is not None. It would pass with the wrong patient, practitioner, time or status, so it does not prove booking works. | Book Appointment1 (A1) for Patient1 (p1) with Practitioner1 (D1) at a fixed time, then check the stored appointment has that patient, that practitioner, that time and the status SCHEDULED. |
+| 3 | Assert True always passes whatever the code does. It tests nothing and give false confidence | Cancel appotintment A1 and check its status is AppointmentStatus.CANCELLED (FR-06). Check the appointment is still in the data store (FR-07). |
+| 4 | Assume an SMS is sent after booking. SMS is not in the requirements baseline and the project has no notification code, so the test checks a feature that does not exist. | Test a real rule instead. A second booking for the same practitioner at the same time is rejected with ValueError, and the store still holds only the first appointment (FR-05)|
+| 5 | It assumes an SMS cancellation message is sent. Thos is also an unrequested feature, so it would need fake code just to pass | test the cancellation rules, cancelling an appointment twixe is rejected with ValueError, and the appointmentstays CANCELLED and unchanged.  |
 
 ### Tutorial exit question
 

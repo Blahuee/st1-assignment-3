@@ -41,10 +41,12 @@ def create_test_services():
 
 # Check that a known patient is returned and an unknown patient is rejected
 def test_find_patient_returns_known_patient_and_rejects_unknown():
-    _, patient_service, _, _ = create_test_services()
+    data_store, patient_service, _, _ = create_test_services()
 
+    registered_patient = data_store.find_patient("P1")
     original_patient = patient_service.find_patient("P1")
 
+    assert original_patient is registered_patient
     assert original_patient.patient_id == "P1"
     assert original_patient.name == "Test Patient"
 
@@ -70,10 +72,12 @@ def test_find_patient_rejects_blank_ids():
 
 # Check that a known practitioner is returned and an unknown one is rejected
 def test_find_practitioner_returns_known_and_rejects_unknown():
-    _, _, practitioner_service, _ = create_test_services()
+    data_store, _, practitioner_service, _ = create_test_services()
 
+    registered_practitioner = data_store.find_practitioner("D1")
     original_practitioner = practitioner_service.find_practitioner("D1")
 
+    assert original_practitioner is registered_practitioner
     assert original_practitioner.practitioner_id == "D1"
     assert original_practitioner.name == "Dr Smith"
 

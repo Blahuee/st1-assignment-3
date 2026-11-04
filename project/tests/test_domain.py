@@ -6,7 +6,6 @@ from smartcare.domain import (
     Patient,
     Practitioner,
 )
-from smartcare.console import parse_date_time
 
 # PATIENT TESTS
 

@@ -6,19 +6,20 @@ Complete this one group record. Link actual issues, diffs, tests and reviews; av
 - Repository URL: https://github.com/Blahuee/st1-assignment-3
 - Starting SHA: `78e45fe`
 
-## A Requirement to issue activities
+## Requirement to Issue Activities
 
 ### FR-02 Patient Search
 - **Title:** Implement patient lookup by patient ID (FR-02)
-- **Context:** SmartCare needs to have the ability to retrieve existing patient records so other workflows can identify the correct patient. The current starter implementation in `PatientService.find_patient()` is incomplete
-- **Requirement:** Implement patient lookup by patient ID. The method must return the existing stored `Patient` object when the ID is valid and exists. It also must raise `ValueError` for a blank or invalid ID `LookupError` when the patient does not exist. It must not create a replacement patient.
+- **Context:** SmartCare needs the ability to retrieve existing patient records so that other workflows can identify the correct patient. The current starter implementation in `PatientService.find_patient()` is incomplete.
+- **Requirement:** Implement patient lookup by patient ID. The method must return the existing stored `Patient` object when the ID is valid and exists. It must also raise `ValueError` for a blank or invalid ID, and raise  `LookupError` when the patient does not exist. It must not create a replacement patient.
 - **Acceptance criteria:** 
   - A valid existing patient ID returns the corresponding stored patient object
   - A blank or invalid patient ID raises `ValueError`
   - A valid ID that does not exist raises `LookupError`
   - Looking up a patient does not register, replace, or modify patient records
-  - Existing patient records remain unchanged when lookup fails
-- **Scope:** Implement `PatientService.find_patient()` in `project/smartcare/services.py` by using project/smartcare/services.py using the existing data store. Add or update focused tests for successful lookup, invalid IDs, missing patients, and preservation of existing records. Do not change patient registration or introduce new storage mechanisms
+  - Existing patient records remain unchanged when a lookup fails.
+- **Scope:** Implement `PatientService.find_patient()` in project/smartcare/services.py using the existing data store.
+-  Add or update focused tests for successful lookup, invalid IDs, missing patients, and preservation of existing records. Do not change patient registration or introduce new storage mechanisms.
 - **Definition of Done:**
   - Implementation meets the requirement and acceptance criteria
   - Relevant automated tests pass
@@ -54,10 +55,10 @@ Complete this one group record. Link actual issues, diffs, tests and reviews; av
 ## B Commit quality
 | Original example                               | Strong or Weak | Reason                                                                                              |
 | ---------------------------------------------- | -------------- | --------------------------------------------------------------------------------------------------- |
-| changes                                        | Weak           | Does not describe what was changed, this makes it difficult to understand the purpose of the commit |
-| final version                                  | Weak           | Does not explain what was finalised or what changes were made                                       |
-| Add patient search by ID                       | Strong         | Clearly descibes what feature was worked on                                                         |
-| fix stuff                                      | Weak           | Vague and does not indicate what was fixed                                                          |
+| Changes                                        | Weak           | Does not describe what was changed, this makes it difficult to understand the purpose of the commit |
+| Final version                                  | Weak           | Does not explain what was finalised or what changes were made                                       |
+| Add patient search by ID                       | Strong         | Clearly describes what feature was worked on                                                         |
+| Fix stuff                                      | Weak           | Vague and does not indicate what was fixed                                                          |
 | Prevent cancellation of completed appointments | Strong         | Clearly describes the behaviour being changed                                                       |
 
 ## C Over scoped PR review
@@ -95,10 +96,10 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
 | Issue link | Requirement | Owner      | Acceptance criteria or precise link | Status     |
 | ---------- | ----------- | ---------- | ----------------------------------- | ---------- |
 | [Implement patient lookup by patient ID (FR-02)](https://github.com/Blahuee/st1-assignment-3/issues/3#issue-5829342862)  | Implement patient lookup by patient ID. The method must return the existing stored Patient object when the ID is valid and exists. It also must raise ValueError for a blank or invalid ID LookupError when the patient does not exist. It must not create a replacement patient.  | Alicia |  A valid existing patient ID returns the corresponding stored patient object. A blank or invalid patient ID raises ValueError. A valid ID that does not exist raises LookupError. Looking up a patient does not register, replace, or modify patient records. Existing patient records remain unchanged when lookup fails.                          |Completed |
-| [Add Appointment Cancellation with retained history (FR-06 and FR-07)](https://github.com/Blahuee/st1-assignment-3/issues/1#issue-5828750575)  | FR-06 - Appointment cancellation. FR-07 - Retaining the appointment cancellation history  | Ngedup | Cancelling a SCHEDULED appointment changes its status to CANCELLED and after the cancellation the same appointment can still be found by the IDs with status cancellation. Therefore, the schedule is not deleted and stored in the object.a blank or invalid ID raises a ValueError.                           | Pending |
+| [Add Appointment Cancellation with retained history (FR-06 and FR-07)](https://github.com/Blahuee/st1-assignment-3/issues/1#issue-5828750575)  | FR-06 - Appointment cancellation. FR-07 - Retaining the appointment cancellation history  | Ngedup | Cancelling a SCHEDULED appointment changes its status to CANCELLED and after the cancellation the same appointment can still be found by the IDs with status cancellation. Therefore, the schedule is not deleted and stored in the object. A blank or invalid ID raises a ValueError. | Completed |
 
 ## G Pull request evidence
-- **PR link and title:** https://github.com/Blahuee/st1-assignment-3/pull/8, "Implement patient search by ID"
+- **PR link and title:** https://github.com/Blahuee/st1-assignment-3/pull/8, "Implement Patient Search by ID"
 - **Linked issue and requirement:** Issue #3 (https://github.com/Blahuee/st1-assignment-3/issues/3), FR-02 Patient Search
 - **Feature branch:** feature/patient-search
 - **Changed behaviour:** The commit implements the `find_patient()` method by replacing the `NotImplementedError` placeholder with a call to the data store. It returns the existing patient when found and raises a `LookupError` when the patient does not exist. This allows the service to retrieve patients without creating replacement records.
@@ -119,7 +120,7 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
   - Ngedup: Confirmed, updated successfully
 - **Integrated verification after merge:** e514dda244cfbf256642a0eed7fe8d9bcf9f45d0
 
-- **PR link and title:** https://github.com/Blahuee/st1-assignment-3/pull/9, "Implement practitoner search by ID"
+- **PR link and title:** https://github.com/Blahuee/st1-assignment-3/pull/9, "Implement Practitoner Search by ID"
 - **Linked issue and requirement:** Linked on the PR to issue #1 (FR-06/FR-07). The PR implements practitioner lookup, which has no separate issue yet.
 - **Feature branch:** feature/appointment-cancellation
 - **Changed behaviour:** The commit implements the `find_practitioner()` method by replacing the `NotImplementedError` placeholder with a call to the data store. It returns the existing practitioner when found and raises a `LookupError` when the practitioner does not exist. This allows the service to retrieve practitioners without creating replacement records.

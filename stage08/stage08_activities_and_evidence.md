@@ -130,14 +130,14 @@ Traceback — exception/assertion; expected/observed values; test line; call pat
 Complete both entries BEFORE Copilot. C/D supply observed/expected/reproduction/test; retain those initial facts and link them here.
 
 ### F8-01 human entry
-Likely cause and why plausible: [complete]
-Evidence intended to inspect / competing explanation / discriminating check: [complete]
-Member and saved sequence/time or commit showing this preceded consultation: [complete]
+Likely cause and why plausible: The practitioner conflict checking logic may be incorrectly comparing practitioner IDs. This makes sense because the system allows two appointments with the same practitioner at the same date and time, even though the booking should normally be rejected.\ 
+Evidence intended to inspect / competing explanation / discriminating check: I will inspect the implementation of has_practitioner_conflict() within data_store.py and check how practitioner IDs, appointment dates and appointment statuses are compared. Alternatively, it may be attributed to the booking service not calling the conflict checking function correctly. I would check whether the function is called during booking and compare the results for appointments involving the same practitioner versus different practitioners at the same time.\ 
+Member and saved sequence/time or commit showing this preceded consultation: Ngedup Jigme Lhazeen, Stage 8 documentation saved on 07/11/2026 at 21:30, before copilot consultation. 
 
 ### F8-02 human entry
-Likely cause and why plausible: [complete]
-Evidence intended to inspect / competing explanation / discriminating check: [complete]
-Member and saved sequence/time or commit showing this preceded consultation: [complete]
+Likely cause and why plausible: I suspect the appointment lookup logic may be incorrectly filtering the cancelled appointments. This is plausible because the appointment is expected to remain in the system's history after cancellation, but attempting to retrieve it by its appointment ID results in a LookupError.\
+Evidence intended to inspect / competing explanation / discriminating check: I would inspect the find_appointment() function in data_store.py to determine whether cancelled appointments are being excluded during the lookup process. Another possible explanation is that the cancellation process is removing the appointment from the data store. I would check whether the appointment still exists in the stored records after cancellation and whether searching for it by ID returns the appointment.\
+Member and saved sequence/time or commit showing this preceded consultation: Ngedup Jigme Lhazeen, stage 8 documentation saved on 07/11/2026 at 21:30, before copilot consultation. 
 
 ## F. GitHub Copilot prompts, findings and human decisions
 

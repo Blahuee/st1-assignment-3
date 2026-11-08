@@ -351,7 +351,7 @@ Member: Alicia
 > Do not rewrite the application.
 > Do not invent requirements.
 > Treat all suggested explanations as hypotheses.
-> 
+
 | Ranked Suggestion                                                                                                                                            | Evidence                                                                                                                                                       | Observed                                                                                                                                                                                                                                                                                             | Classification | Decision                                                                                                                                                                        |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `find_appointment()` contains a status filter that prevents appointments with a cancelled status from being returned, even when their appointment ID matches | Inspected `find_appointment()` in `data_store.py`, particularly the condition `appointment.status.value != "cancelled"`                                        | The faulty code checked both the appointment ID and whether its status was not cancelled. After cancellation, the appointment still existed in storage, but the status condition prevented it from being returned. Removing the status restriction allowed the cancelled appointment to be retrieved | Correct        | The code directly supported this explanation. The focused tests passed after removing the status restriction while retaining appointment ID matching                            |
@@ -381,13 +381,20 @@ Member: Alicia
 
 ## H. Refactoring decision and before/after verification
 
-Smell and exact location: [complete]\
-Small proposed structural change / why justified: [complete before editing]\
-External behaviour to preserve / relevant tests: [complete]\
-Before result: see G, full passing suite.\
-Actual change / diff / separate refactor SHA: [complete]\
-Focused and full after-refactor commands / working directory / results / evidence: [complete]\
-Result — accepted, revised or rejected / reason / behaviour-preservation conclusion: [complete]
+**Smell and exact location:** No significant code smell was identified in the repaired methods. `has_practitioner_conflict()` and `find_appointment()` have relatively simple logic, and their conditions are clear. No unnecessary duplication or structural complexity was identified that justified refactoring\
+**Small proposed structural change / why justified:** No structural change was proposed because the repaired methods are already straightforward and readable. Further restructuring would add complexity without providing a clear maintainability benefit. The existing implementation was therefore retained\
+**External behaviour to preserve / relevant tests:** The existing external behaviour must remain unchanged. This includes:
+- Preventing two scheduled appointments for the same practitioner at the exact same date and time
+- Allowing appointments for different practitioners or different times
+- Excluding the appointment being updated from conflict detection where applicable
+- Allowing appointments to be retrieved by ID regardless of whether they are scheduled, cancelled or completed
+- Raising the appropriate exceptions for invalid IDs, missing appointments and invalid cancellation transitions
+
+Relevant tests include `tests/test_services.py`, `tests/test_starter.py` and the full test suite\
+**Before result:** Before refactoring, the repaired application passed the complete test suite: 37 passed, 0 failed. The result was recorded in Section G\
+**Actual change / diff / separate refactor SHA:** No refactoring changes were made. The existing repaired implementation was retained. No additional diff or separate refactoring commit was created\
+**Focused and full after-refactor commands / working directory / results / evidence:** Not applicable. No refactoring changes were made, so there was no separate after-refactor test run. The repaired implementation remained unchanged from the passing full-suite result recorded in Section G\
+**Result — accepted, revised or rejected / reason / behaviour-preservation conclusion:** Rejected, no refactoring performed. The proposed refactoring was not considered necessary because the repaired methods were already simple and readable. Making structural changes without a clear benefit would introduce unnecessary risk. The existing implementation was retained, preserving the behaviour verified by the passing test suite.
 
 ## I. Git, human review and integration
 

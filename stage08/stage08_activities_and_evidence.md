@@ -85,59 +85,132 @@ Why is changing code immediately after seeing a failure often a poor debugging s
 
 Response and reason: [complete]
 
-
-Classification responses (1–5, each with reason): [complete]
-Tutorial debugging record — expected; observed; reproduction; hypothesis; evidence to inspect: [complete]
-Traceback — exception/assertion; expected/observed values; test line; call path; requirement; ranked causes and discriminating checks: [complete]
+**Classification responses (1–5, each with reason):** Completed in the relevant Part A sections above\
+**Tutorial debugging record — expected; observed; reproduction; hypothesis; evidence to inspect:** [complete]\
+**Traceback — exception/assertion; expected/observed values; test line; call path; requirement; ranked causes and discriminating checks:** [complete]
 
 ## B. Stage 7 baseline and safe preparation
 
-- Stage 7 code SHA and requirement baseline: [complete]
-- Baseline test command / working directory / observed result / evidence: [complete]
-- Clean preparation SHA if a record-only commit followed Stage 7: [complete]
-- Branch and preparer / how teammates obtained this branch: [complete]
-- Downloaded tool version, source SHA256 and --check outcome: [complete]
-- --apply and --verify output summaries / artefact references: [complete]
-- Bounded diff inspected and recovery location (not committed): [complete]
-- Prepared faulty-state commit SHA: [complete]
-- Preparation or recovery issues and resolution, if any: [complete]
-- Initial prepared full-suite command / result / key failures: [complete]
+- **Stage 7 code SHA and requirement baseline:**\
+  e6b3579c1c29e57894abef33fcae152c9d4f8c7b, SmartCare Assignment 3 Requirements Baseline, Revision 2
+- **Baseline test command / working directory / observed result / evidence:**
+  - **Command:** `python -m pytest -vv -s`
+  - **Working directory:** `D:\_Scripts\Repos\st1-assignment-3\project`
+  - **Observed result:** 37 passed, 0 failed in 0.12 seconds.
+  - **Evidence:** 37 tests passed before Stage 8 preparation.
+- **Clean preparation SHA if a record-only commit followed Stage 7:**\
+  No separate record-only commit was made between the Stage 7 baseline and Stage 8 preparation. The clean preparation SHA remained e6b3579c1c29e57894abef33fcae152c9d4f8c7b
+- **Branch and preparer / how teammates obtained this branch:**
+  - **Branch:** debug/stage08
+  - **Preparer:** Alicia
+  - **How teammates obtained the branch:** Aagney and Ngedup were instructed to run the following commands from their local repository:\
+    `git switch main`\
+    `git fetch origin`\
+    `git switch --track origin/debug/stage08`\
+  This created a local tracking branch for origin/debug/stage08, allowing teammates to access the prepared Stage 8 changes.
+- **Downloaded tool version, source SHA256 and --check outcome:**
+  - **Tool version:** Stage 8 tool 1.1
+  - **--check outcome:** Preflight passed; project remained unchanged; both proposed fault signatures were verified in a temporary copy.
+- **--apply and --verify output summaries / artefact references:**\
+  - **--apply:** Successfully prepared F8-01 (practitioner conflict) and F8-02 (retained-history lookup).
+  - **Expected failures:** test_f8_01_conflict and test_f8_02_history (2 failed).
+  - **Backup:** Backup and hash recorded in .stage8_faults.
+  - **--verify:** Confirmed exactly two expected failures and both approved symptom signatures.
+- **Bounded diff inspected and recovery location (not committed):**\
+  Inspected commit `b99a90f` using `git show`. The diff contains changes to two files:
+  - project/smartcare/data_store.py: introduced F8-01 by changing the practitioner comparison from `==` to `!=`, and F8-02 by excluding cancelled appointments from `find_appointment()`
+  - .gitignore: removed the prepare_debugging.py exclusion while retaining .stage8_faults/.
+  The recovery backup is stored locally in project/.stage8_faults/. This directory is excluded from Git and was not committed.
+- **Prepared faulty-state commit SHA:**\
+  b99a90f474f67b9e47b3f196adc8d6d78e7346e0
+- **Preparation or recovery issues and resolution, if any:**\
+  No issues encountered
+- **Initial prepared full-suite command / result / key failures:**
+  - Command: python -m pytest -v
+  - Working directory: D:\_Scripts\Repos\st1-assignment-3\project
+  - Observed result: 33 passed, 4 failed (37 tests total).
+  - Key failures:
+    - F8-01 – Practitioner conflict: `test_booking_conflict_only_applies_to_exact_datetime` and `test_conflict_rule_and_different_practitioner` failed because the system did not raise the expected `ValueError` when booking the same practitioner at the same time
+    - F8-02 – Retained-history lookup: `test_cancelled_appointment_remains_in_history` and `test_repeated_and_completed_cancellation_are_rejected` failed because cancelled appointments could not be retrieved, resulting in `LookupError: Appointment not found`
 
 ## C. F8-01 diagnosis and repair
 
-- Symptom / observed behaviour: [complete]
-- Expected behaviour and requirement: [complete]
-- Minimal synthetic reproduction steps: [complete]
-- Meaningful failing test path/name and exact relevant failure: [complete]
-- Human hypothesis and intended checks: see E, F8-01.
-- Supported root cause and inspected code/runtime evidence: [complete after diagnosis]
-- Smallest justified fix / diff / why other behaviour is preserved: [complete]
-- Repair SHA / focused verification result: [complete]
+- **Symptom / observed behaviour:**\
+  The system allowed a second appointment to be booked for the same practitioner at the same date and time. The expected ValueError was not raised, meaning the booking conflict rule was not correctly enforced
+- **Expected behaviour and requirement:**\
+  The system should prevent a practitioner from having two scheduled appointments at the same date and time. Appointments for different practitioners at the same time should still be permitted. Appointments at different times should also be permitted
+- **Minimal synthetic reproduction steps:**
+  1. Create the SmartCare test services.
+  2. Register or use an existing practitioner with ID D1.
+  3. Book an appointment for patient P1, practitioner D1, at 2026-11-05 10:00.
+  4. Attempt to book another appointment for the same practitioner at the same date and time.
+  5. Observe whether the system raises the expected `ValueError`.
+- **Meaningful failing test path/name and exact relevant failure:**\
+  - **Test:** tests/test_services.py::test_booking_conflict_only_applies_to_exact_datetime
+  - **Failure:** `Failed: DID NOT RAISE <class 'ValueError'>`
+  - **Location:** `tests/test_services.py, line 99`, when the test checks that booking a second appointment with the same practitioner at the same date and time raises a `ValueError`.\
+  A second test also encountered the problem:
+  - **Test:** tests/test_starter.py::test_conflict_rule_and_different_practitioner
+  - **Failure:** `Failed: DID NOT RAISE <class 'ValueError'>`
+  - **Location:** tests/test_starter.py, line 127, when the test checks that a booking conflict is rejected while allowing appointments with different practitioners.
+- **Human hypothesis and intended checks: see E, F8-01.**
+- **Supported root cause and inspected code/runtime evidence:**\
+  Inspection of project/smartcare/data_store.py, inside `has_practitioner_conflict()`, identified an incorrect comparison operator. The practitioner ID comparison used `!=` instead of `==`.
+  This caused the conflict check to identify appointments belonging to different practitioners rather than appointments belonging to the same practitioner. The initial test failures supported this diagnosis.
+- **Smallest justified fix / diff / why other behaviour is preserved:**
+  - Changed the practitioner ID comparison in project/smartcare/data_store.py, inside `has_practitioner_conflict()`, from `!=` to `==`.
+  - The appointment ID exclusion condition (`!=`), exact date/time comparison (`==`) and scheduled-status check were preserved. This ensures that only another scheduled appointment for the same practitioner at the same date and time is treated as a conflict.
+- **Repair SHA / focused verification result:**
+  - **Repair SHA:** ed76dc8af625654d916a3345e274d138bb05978d
+  - **Focused verification result:**
+    - `test_booking_conflict_only_applies_to_exact_datetime` - PASSED
+    - `test_conflict_rule_and_different_practitioner` - PASSED
+    - **Result:** 2 passed, 0 failed in 0.02 seconds.
 
 ## D. F8-02 diagnosis and repair
 
-- Symptom / observed behaviour: [complete]
-- Expected behaviour and requirement: [complete]
-- Minimal synthetic reproduction steps: [complete]
-- Meaningful failing test path/name and exact relevant failure: [complete]
-- Human hypothesis and intended checks: see E, F8-02.
-- Supported root cause and inspected code/runtime evidence: [complete after diagnosis]
-- Smallest justified fix / diff / why other behaviour is preserved: [complete]
-- Repair SHA / focused verification result: [complete]
+- **Symptom / observed behaviour:**\
+  After an appointment was cancelled, attempting to retrieve it by its appointment ID returned no result. The service then raised `LookupError: Appointment not found`, even though the cancelled appointment remained stored.
+- **Expected behaviour and requirement:**\
+  The system must retain cancelled appointments in its history and allow them to be retrieved using their appointment ID. This supports FR-07 (retained appointment history). Cancellation must change the appointment status without removing the appointment from the data store.
+- **Minimal synthetic reproduction steps:**
+  1. Create the SmartCare test services.
+  2. Book an appointment with ID A1 for patient P1 and practitioner D1.
+  3. Cancel appointment A1.
+  4. Attempt to retrieve appointment A1 using `appointment_service.find_appointment("A1")`.
+  5. Observe whether the cancelled appointment is returned or a `LookupError` is raised.
+- **Meaningful failing test path/name and exact relevant failure:**
+  - **Test:** tests/test_services.py::test_cancelled_appointment_remains_in_history
+  - **Failure:** `LookupError: Appointment not found`
+  - **Location:** smartcare/services.py, line 136, when `find_appointment()` receives `None` from the data store.\
+    A second affected test was:
+  - **Test:** tests/test_services.py::test_repeated_and_completed_cancellation_are_rejected
+  - **Failure:** `LookupError: Appointment not found`
+  - **Location:** smartcare/services.py, line 149, when `cancel_appointment()` cannot retrieve the previously cancelled appointment.
+- **Human hypothesis and intended checks: see E, F8-02.**
+- **Supported root cause and inspected code/runtime evidence:** [complete after diagnosis]
+- **Smallest justified fix / diff / why other behaviour is preserved:** [complete]
+- **Repair SHA / focused verification result:**
+  - **Repair SHA:** bb070749a483e84011dac9f2d2ed0f23730f8264
+  - **Focused verification:**
+  - `test_cancelled_appointment_remains_in_history` - PASSED
+  - `test_repeated_and_completed_cancellation_are_rejected` - PASSED
+  - `test_find_appointment_returns_same_object` - PASSED
+  - **Result:** 3 passed, 0 failed in 0.02 seconds.
 
 ## E. Human-first hypotheses
 
 Complete both entries BEFORE Copilot. C/D supply observed/expected/reproduction/test; retain those initial facts and link them here.
 
 ### F8-01 human entry
-Likely cause and why plausible: [complete]
-Evidence intended to inspect / competing explanation / discriminating check: [complete]
-Member and saved sequence/time or commit showing this preceded consultation: [complete]
+**Likely cause and why plausible:** The practitioner conflict checking logic may be incorrectly comparing practitioner IDs. This makes sense because the system allows two appointments with the same practitioner at the same date and time, even though the booking should normally be rejected.\
+**Evidence intended to inspect / competing explanation / discriminating check:**  I will inspect the implementation of `has_practitioner_conflict()` within data_store.py and check how practitioner IDs, appointment dates and appointment statuses are compared. Alternatively, it may be attributed to the booking service not calling the conflict checking function correctly. I would check whether the function is called during booking and compare the results for appointments involving the same practitioner versus different practitioners at the same time.\
+**Member and saved sequence/time or commit showing this preceded consultation:** Ngedup Jigme Lhazeen, Stage 8 documentation saved on 07/11/2026 at 21:30, before Copilot consultation.
 
 ### F8-02 human entry
-Likely cause and why plausible: [complete]
-Evidence intended to inspect / competing explanation / discriminating check: [complete]
-Member and saved sequence/time or commit showing this preceded consultation: [complete]
+**Likely cause and why plausible:** I suspect the appointment lookup logic may be incorrectly filtering the cancelled appointments. This is plausible because the appointment is expected to remain in the system's history after cancellation, but attempting to retrieve it by its appointment ID results in a `LookupError`.\
+**Evidence intended to inspect / competing explanation / discriminating check:** I will inspect the `find_appointment()` function inside data_store.py to find out whether cancelled appointments are being excluded during the lookup process. Another possibility is that the cancellation process removes the appointment from the data store. I will check whether the appointment still exists in storage after it is canceled and confirm whether a search using its ID can still locate it.\
+**Member and saved sequence/time or commit showing this preceded consultation:** Ngedup Jigme Lhazeen, Stage 8 documentation saved on 07/11/2026 at 21:30, before Copilot consultation.
 
 ## F. GitHub Copilot prompts, findings and human decisions
 
@@ -161,9 +234,9 @@ Final human conclusion and comparison with initial hypothesis: [complete]
 
 | Checkpoint                                     | Code SHA or precise diff | Command and working directory | Actual result and artefact reference |
 | ---------------------------------------------- | ------------------------ | ----------------------------- | ------------------------------------ |
-| F8-01 before repair                            | [complete]               | [complete]                    | [complete]                           |
+| F8-01 before repair                            | b99a90f474f67b9e47b3f196adc8d6d78e7346e0 | python -m pytest -v | [complete]                           |
 | F8-01 after repair                             | [complete]               | [complete]                    | [complete]                           |
-| F8-02 before repair                            | [complete]               | [complete]                    | [complete]                           |
+| F8-02 before repair                            | b99a90f474f67b9e47b3f196adc8d6d78e7346e0 | python -m pytest -v | [complete]                           |
 | F8-02 after repair                             | [complete]               | [complete]                    | [complete]                           |
 | Full suite after both repairs, before refactor | [complete]               | [complete]                    | [complete]                           |
 

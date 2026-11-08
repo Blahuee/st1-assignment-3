@@ -217,40 +217,180 @@ Complete both entries BEFORE Copilot. C/D supply observed/expected/reproduction/
 Use the full handout prompt separately for BOTH defects, after E. Keep each actual prompt or accessible reference; include observed behaviour, expected behaviour, reproduction, failing test, human hypothesis, relevant code, three ranked causes and discriminating checks, with the no-rewrite/no-invented-requirements constraints.
 
 ### F8-01 Copilot review
-Actual prompt / output reference and member: [complete]
+**Actual prompt / output reference and member:**\
+Member: Alicia
+> I am investigating a deliberately introduced defect in the
+> SmartCare application. Do not rewrite the application or
+> suggest changes yet. Treat all explanations as hypotheses.
+>
+> Observed behaviour:
+> Booking a second appointment with the same practitioner at
+> the same date and time does not raise a ValueError.
+>
+> Expected behaviour:
+> The system must reject two scheduled appointments for the
+> same practitioner at the exact same date and time.
+> Different practitioners and different appointment times
+> must still be allowed.
+>
+> Steps to reproduce:
+> 1. Create the test services.
+> 2. Book appointment A1 for patient P1 with practitioner D1
+>    at 2026-11-05 10:00.
+> 3. Attempt to book another appointment with practitioner D1
+>    at the same date and time.
+> 4. Observe that the expected ValueError is not raised.
+>
+> Failing test:
+> tests/test_services.py::test_booking_conflict_only_applies_to_exact_datetime
+> Failure: Failed: DID NOT RAISE <class 'ValueError'>
+> Location: tests/test_services.py, line 99.
+>
+> Human hypothesis:
+> The practitioner conflict checking logic may be incorrectly
+> comparing practitioner IDs.
+>
+> Relevant code:
+>  def has_practitioner_conflict(
+>         self,
+>         practitioner_id: str,
+>         date_time: datetime,
+>         exclude_appointment_id: str | None = None,
+>     ) -> bool:
+>         for appointment in self.list_appointments():
+>             if (appointment.appointment_id != exclude_appointment_id
+>                     and appointment.practitioner.practitioner_id != practitioner_id
+>                     and appointment.date_time == date_time
+>                     and appointment.status.value == "scheduled"):
+>                 return True
+>         return False
+>
+> Task:
+> Rank the three most likely causes of this defect.
+> For each cause:
+> - Explain why it is plausible.
+> - Identify the specific code or test evidence I should inspect.
+> - Explain what evidence would distinguish it from the
+>   other possible causes.
+>
+> Do not rewrite the application.
+> Do not invent requirements.
+> Treat all suggested explanations as hypotheses.
 1. Ranked suggestion / evidence check / observed evidence / correct, partly correct or wrong / accept, modify or reject with reason: [complete]
 2. Ranked suggestion / evidence check / observed evidence / correct, partly correct or wrong / accept, modify or reject with reason: [complete]
 3. Ranked suggestion / evidence check / observed evidence / correct, partly correct or wrong / accept, modify or reject with reason: [complete]
-Final human conclusion and comparison with initial hypothesis: [complete]
+
+
+| Ranked Suggestion                                                                                                                                               | Evidence Check                                                                                                                                                                            | Observed Evidence                                                                                                                                                                                                                                                                                                  | Classification | Decision                                                                                                                                                                     |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The practitioner conflict predicate uses `!=` instead of `==`, meaning it detects appointments for different practitioners rather than the same practitioner    | Inspected `has_practitioner_conflict()` in `data_store.py` and checked the practitioner comparison. Also reviewed the failing test `test_booking_conflict_only_applies_to_exact_datetime` | The faulty code used `appointment.practitioner.practitioner_id != practitioner_id`. In the test scenario, both appointments use practitioner ID D1, so the comparison evaluates to `False` and the conflict is not detected. After changing the comparison to `==`, the two focused F8-01 tests passed             | Correct        | **Accept.** The code directly supports this explanation, and the focused tests confirmed that correcting the comparison resolved the observed failure                        |
+| The booking process may be passing an incorrect practitioner ID to `has_practitioner_conflict()`, or the stored practitioner ID may not match the supplied ID   | Inspected the call to `has_practitioner_conflict()` and the practitioner ID values used by the booking process                                                                            | The test scenario uses practitioner ID `D1` for both appointments. The failure was explained by the incorrect `!=` comparison in the conflict predicate. Correcting that comparison resolved the focused tests without needing to change practitioner creation, storage or the booking call                        | Wrong          | **Reject.** There was no evidence of an incorrect practitioner ID being passed or stored. The existing comparison operator was the cause of the failure                      |
+| The existing appointment may not be returned by `list_appointments()`, or another condition in the predicate may prevent it from being recognised as a conflict | Inspected the appointment iteration and the remaining conflict conditions, including appointment ID exclusion, date/time matching and scheduled status                                    | The existing appointment was available to the conflict check, and the appointment ID exclusion, exact date/time comparison and scheduled-status condition were not responsible for the failure. The practitioner comparison was the incorrect condition. The focused tests passed after correcting that comparison | Wrong          | **Reject.** The evidence did not indicate a problem with appointment retrieval or the other predicate conditions. The failure was isolated to the practitioner ID comparison |
+
+**Final human conclusion and comparison with initial hypothesis:**\
+- The investigation confirmed that the F8-01 defect was caused by an incorrect practitioner ID comparison in `has_practitioner_conflict()`. The faulty code used `!=` instead of `==`, meaning appointments for different practitioners could be identified as conflicts while appointments for the same practitioner were not correctly detected.
+- My initial human hypothesis was that the practitioner conflict logic was incorrectly comparing practitioner IDs. Copilot's first-ranked suggestion supported this hypothesis, and inspection of the code confirmed it. I accepted the first suggestion and rejected the other two because the evidence did not support them. I corrected the comparison while retaining the existing appointment exclusion, exact date/time comparison and scheduled-status check. The two focused F8-01 tests passed after the repair.
+
+**Final human conclusion and comparison with initial hypothesis:**\
+- The investigation confirmed that the F8-01 defect was caused by an incorrect practitioner ID comparison in `has_practitioner_conflict()`. The faulty code used `!=` instead of `==`, meaning appointments for different practitioners could be identified as conflicts while appointments for the same practitioner were not correctly detected.
+- My initial hypothesis was that the practitioner conflict logic was incorrectly comparing practitioner IDs. Copilot's first-ranked suggestion supported this hypothesis, and inspection of the code confirmed it. I accepted the first suggestion and rejected the other two because the evidence did not support them. I corrected the comparison while retaining the existing appointment exclusion, exact date/time comparison and scheduled-status check. The two focused F8-01 tests passed after the repair.
 
 ### F8-02 Copilot review
-Actual prompt / output reference and member: [complete]
-1. Ranked suggestion / evidence check / observed evidence / correct, partly correct or wrong / accept, modify or reject with reason: [complete]
-2. Ranked suggestion / evidence check / observed evidence / correct, partly correct or wrong / accept, modify or reject with reason: [complete]
-3. Ranked suggestion / evidence check / observed evidence / correct, partly correct or wrong / accept, modify or reject with reason: [complete]
-Final human conclusion and comparison with initial hypothesis: [complete]
+**Actual prompt / output reference and member:**\
+Member: Alicia
+> I am investigating a deliberately introduced defect in the
+> SmartCare application. Do not rewrite the application or
+> suggest changes yet. Treat all explanations as hypotheses.
+>
+> Observed behaviour:
+> After an appointment is cancelled, attempting to retrieve
+> it by its appointment ID results in LookupError:
+> Appointment not found.
+>
+> Expected behaviour:
+> Cancelled appointments must remain in the appointment
+> history and be retrievable by their appointment ID.
+> Cancellation should change the appointment status without
+> removing the stored record.
+>
+> Steps to reproduce:
+> 1. Create the test services.
+> 2. Book appointment A1 for patient P1 with practitioner D1
+>    at 2026-11-05 10:00.
+> 3. Cancel appointment A1.
+> 4. Attempt to retrieve appointment A1 using find_appointment.
+> 5. Observe that LookupError is raised.
+>
+> Failing tests:
+> tests/test_services.py::test_cancelled_appointment_remains_in_history
+> Failure: LookupError: Appointment not found
+> Location: tests/test_services.py, line 182.
+>
+> tests/test_services.py::test_repeated_and_completed_cancellation_are_rejected
+> Failure: LookupError: Appointment not found
+> Location: tests/test_services.py, line 207.
+>
+> Human hypothesis:
+> The appointment lookup logic may be incorrectly filtering
+> out cancelled appointments.
+>
+> Relevant code:
+> def find_appointment(self, appointment_id: str) -> Appointment | None:
+>         if not isinstance(appointment_id, str) or not appointment_id.strip():
+>             raise ValueError("Appointment ID cannot be blank")
+>         for appointment in self.list_appointments():
+>             if (appointment.appointment_id == appointment_id.strip()
+>                     and appointment.status.value != "cancelled"):
+>                 return appointment
+>         return None
+>
+> Task:
+> Rank the three most likely causes of this defect.
+> For each cause:
+> - Explain why it is plausible.
+> - Identify the specific code or test evidence I should inspect.
+> - Explain what evidence would distinguish it from the
+>   other possible causes.
+>
+> Do not rewrite the application.
+> Do not invent requirements.
+> Treat all suggested explanations as hypotheses.
+> 
+| Ranked Suggestion                                                                                                                                            | Evidence                                                                                                                                                       | Observed                                                                                                                                                                                                                                                                                             | Classification | Decision                                                                                                                                                                        |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `find_appointment()` contains a status filter that prevents appointments with a cancelled status from being returned, even when their appointment ID matches | Inspected `find_appointment()` in `data_store.py`, particularly the condition `appointment.status.value != "cancelled"`                                        | The faulty code checked both the appointment ID and whether its status was not cancelled. After cancellation, the appointment still existed in storage, but the status condition prevented it from being returned. Removing the status restriction allowed the cancelled appointment to be retrieved | Correct        | The code directly supported this explanation. The focused tests passed after removing the status restriction while retaining appointment ID matching                            |
+| The cancellation process may be deleting the appointment from storage rather than changing its status                                                        | Inspected the cancellation process and the appointment storage/lookup logic to determine whether cancellation removes the record                               | The appointment remained stored after cancellation. The problem was that `find_appointment()` excluded cancelled appointments when searching by ID. Removing that filter restored access to the existing record                                                                                      | Wrong          | The evidence showed that cancellation did not remove the appointment. The record remained in storage, but the lookup condition prevented it from being returned                 |
+| `list_appointments()` may be excluding cancelled appointments before they reach the ID comparison in `find_appointment()`                                    | Inspected `list_appointments()` and the iteration used by `find_appointment()` to determine whether cancelled appointments were available to the lookup method | The issue was within the status condition in `find_appointment()`, rather than an upstream filter in `list_appointments()`. Removing the status condition allowed the existing cancelled appointment to be returned                                                                                  | Wrong          | There was no evidence that `list_appointments()` was responsible for excluding the record. The defect was isolated to the additional status restriction in `find_appointment()` |
+
+**Final human conclusion and comparison with initial hypothesis:**
+- The investigation confirmed that F8-02 was caused by `find_appointment()` excluding appointments with a cancelled status. This meant that cancelled appointments remained stored but could no longer be retrieved using their appointment ID, resulting in a LookupError.
+- My initial hypothesis was that the lookup logic was incorrectly filtering out cancelled appointments. Copilot's first-ranked suggestion supported this hypothesis, and inspection of the code confirmed it. I accepted the first suggestion and rejected the other two because the evidence did not support them. I removed the cancelled-status restriction while retaining the existing blank ID validation and appointment ID matching. The focused tests passed after the repair.
 
 ## G. Failing to passing regression evidence
 
-| Checkpoint                                     | Code SHA or precise diff | Command and working directory | Actual result and artefact reference |
-| ---------------------------------------------- | ------------------------ | ----------------------------- | ------------------------------------ |
-| F8-01 before repair                            | b99a90f474f67b9e47b3f196adc8d6d78e7346e0 | python -m pytest -v | [complete]                           |
-| F8-01 after repair                             | [complete]               | [complete]                    | [complete]                           |
-| F8-02 before repair                            | b99a90f474f67b9e47b3f196adc8d6d78e7346e0 | python -m pytest -v | [complete]                           |
-| F8-02 after repair                             | [complete]               | [complete]                    | [complete]                           |
-| Full suite after both repairs, before refactor | [complete]               | [complete]                    | [complete]                           |
+| Checkpoint                                     | Code SHA or precise diff                 | Command and working directory                                 | Actual result and artefact reference                                                                                                                                                                                                                           |
+| ---------------------------------------------- | ---------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F8-01 before repair                            | b99a90f474f67b9e47b3f196adc8d6d78e7346e0 | **Directory:** project **Command:** `python -m pytest -vv -s` | Failed: `DID NOT RAISE ValueError` in `test_booking_conflict_only_applies_to_exact_datetime`. Initial full-suite result: 33 passed, 4 failed. Evidence: Initial Stage 8 pytest terminal output.                                                                |
+| F8-01 after repair                             | ed76dc8af625654d916a3345e274d138bb05978d | **Directory:** project **Command:** `python -m pytest -vv -s` | Passed: F8-01 conflict tests passed. Evidence: Focused test output showing 2 passed, 0 failed.                                                                                                                                                                 |
+| F8-02 before repair                            | b99a90f474f67b9e47b3f196adc8d6d78e7346e0 | python -m pytest -v                                           | Failed: `LookupError: Appointment not found` in `test_cancelled_appointment_remains_in_history` and `test_repeated_and_completed_cancellation_are_rejected`. Initial full-suite result: 33 passed, 4 failed. Evidence: Initial Stage 8 pytest terminal output. |
+| F8-02 after repair                             | bb070749a483e84011dac9f2d2ed0f23730f8264 | **Directory:** project **Command:** `python -m pytest -vv -s` | **Passed:** 3 focused F8-02 tests passed, 0 failed (2 tests in the first run and 1 in the second). Evidence: Focused pytest terminal outputs.                                                                                                                  |
+| Full suite after both repairs, before refactor | bb070749a483e84011dac9f2d2ed0f23730f8264 | **Directory:** project **Command:** `python -m pytest -vv -s` | **Passed:** 37 passed, 0 failed. Evidence: Final full-suite pytest terminal output.                                                                                                                                                                            |
 
-Explain how the assertions detect each relevant incorrect result and protect previous behaviour: [complete]
-Unrelated failures investigated / resolution: [complete or not applicable with reason]
+**Explain how the assertions detect each relevant incorrect result and protect previous behaviour:** 
+- The F8-01 assertions check that booking a second appointment with the same practitioner at the exact same date and time raises a `ValueError`. They also verify that appointments with different practitioners or different appointment times are still permitted. This ensures the conflict rule works without incorrectly rejecting valid bookings.
+- The F8-02 assertions check that a cancelled appointment remains retrievable by its appointment ID and that the original appointment object is returned. They also verify that repeated cancellations and cancellations of completed appointments are rejected with a ValueError. This ensures appointment history is retained while existing cancellation rules remain enforced.\
+
+**Unrelated failures investigated / resolution:**
+- Not applicable. All four initial test failures were associated with the two identified Stage 8 faults (F8-01 and F8-02). No unrelated failures were identified during the initial full-suite run. After both repairs, the complete test suite passed with 37 passed and 0 failed.
 
 ## H. Refactoring decision and before/after verification
 
-Smell and exact location: [complete]
-Small proposed structural change / why justified: [complete before editing]
-External behaviour to preserve / relevant tests: [complete]
-Before result: see G, full passing suite.
-Actual change / diff / separate refactor SHA: [complete]
-Focused and full after-refactor commands / working directory / results / evidence: [complete]
+Smell and exact location: [complete]\
+Small proposed structural change / why justified: [complete before editing]\
+External behaviour to preserve / relevant tests: [complete]\
+Before result: see G, full passing suite.\
+Actual change / diff / separate refactor SHA: [complete]\
+Focused and full after-refactor commands / working directory / results / evidence: [complete]\
 Result — accepted, revised or rejected / reason / behaviour-preservation conclusion: [complete]
 
 ## I. Git, human review and integration

@@ -129,34 +129,75 @@ Use descriptive test names such as test_cancel_changes_status() or test_blank_pa
 
 Arrange test data; act on one meaningful behaviour; assert the required observable outcome. Use the specific current exception with pytest.raises where needed.
 
-| Test ID    | Arrange    | Act        | Assert     | Why meaningful / why assertion proves criterion |
-| ---------- | ---------- | ---------- | ---------- | ----------------------------------------------- |
-| [complete] | [complete] | [complete] | [complete] | [complete]                                      |
+| Test ID | Arrange | Act | Assert | Why meaningful / why assertion proves criterion |
+| ------- | ------- | --- | ------ | ----------------------------------------------- |
+| T-08 | Invalid patient IDs: "", " " and None | Construct Patient(id, "Test Patient") for each | pytest.raises(ValueError) each time | Proves blank and invalid IDs are rejected; it would fail if the constructor accepted an empty or None ID |
+| T-13 | Patient P1, practitioner D1, new SCHEDULED appointment A1 | Call appointment.cancel() | status is CANCELLED | Checks the domain transition on its own; it would fail if status did not change |
+| T-14 | A1 cancelled once; separate appointment built as COMPLETED | Call cancel() again; call cancel() on the COMPLETED one | ValueError each time; status stays CANCELLED and COMPLETED | Proves illegal transitions are rejected and state is unchanged |
+| T-15 | Fresh store with registered P1 "Test Patient" | find_patient("P1"); find_patient("P99") | Result is the store's registered object, ID and name match; P99 raises LookupError | Identity check proves the actual registered object is returned, not a copy or replacement |
+| T-18 | A1 booked for P1/D1 at 2026-11-05 10:00 | Book A2 at 10:00; then book A3 at 10:01 | A2 raises ValueError; list is [A1], A1 SCHEDULED; A3 accepted and two appointments stored | Proves conflict is the exact datetime only and a rejected booking changes nothing |
+| T-19 | A1 booked at 10:00 and cancelled | Book A2 for the same practitioner and time | A2 stored, id "A2", SCHEDULED | Proves a cancelled booking no longer blocks the slot |
+| T-20 | A1 booked | cancel_appointment("A1") | Returned object is A1 itself with status CANCELLED | Identity check proves the same object is cancelled, not recreated |
+| T-21 | A1 booked then cancelled | find_appointment("A1"); list_appointments() | Found object is A1, CANCELLED; list equals [A1] | Proves history is retained instead of deleted (FR-07) |
+| T-22 | A1 booked and cancelled; a COMPLETED appointment A2 added through the store with registered participants | cancel_appointment("A1") again; cancel_appointment("A2") | ValueError each time; A1 stays CANCELLED, A2 stays COMPLETED | Proves service-level guards and unchanged state after rejection |
+| T-23 | A1 booked | cancel_appointment("A99"), then "" and " " | LookupError for A99; ValueError for blank IDs; list equals [A1]; A1 SCHEDULED | Separates unknown IDs from invalid IDs and shows failed attempts change nothing |
+| T-24 | A1 booked | find_appointment("A1") | Result is A1 itself | Identity check shows the stored object is returned |                                    |
 
 ## E Domain Test Evidence
 
 Cover Patient/Practitioner construction and validation; Appointment construction, initial status, cancellation and illegal/repeated transitions. Preserve the four reference intentions described in handout Part C.
 
-| Test ID    | Behaviour  | Test file/function | Result     |
-| ---------- | ---------- | ------------------ | ---------- |
-| [complete] | [complete] | [complete]         | [complete] |
-
+| Test ID | Behaviour | Test file/function | Result |
+| ------- | --------- | ------------------ | ------ |
+| T-01 | Blank patient ID and blank specialty rejected (supplied) | `test_required_fields`, project/tests/test_starter.py | Passed (37 passed on main, SHA 71ef3a4) |
+| T-07 | Domain cancellation and repeated-cancel guard (supplied) | `test_domain_cancellation_and_guard`, project/tests/test_starter.py | Passed (37 passed on main, SHA 71ef3a4) |
+| T-08 | Blank, spaces-only and None patient IDs rejected | `test_patient_id_must_not_be_blank_or_invalid`, project/tests/test_domain.py | Passed (SHA 71ef3a4) |
+| T-09 | Patient details trimmed | `test_patient_details_are_trimmed`, project/tests/test_domain.py | Passed (SHA 71ef3a4) |
+| T-10 | Practitioner ID, name and specialty must be non-blank | `test_practitioner_id_must_not_be_blank_or_invalid`; `test_practitioner_name_must_not_be_blank`; `test_practitioner_specialty_must_not_be_blank`, project/tests/test_domain.py | Passed (SHA 71ef3a4) |
+| T-11 | New appointment starts SCHEDULED | `test_new_appointment_is_scheduled`, project/tests/test_domain.py | Passed (SHA 71ef3a4) |
+| T-12 | Invalid participants, seconds in time, non-datetime and invalid status rejected | `test_appointment_requires_valid_participants`; `test_appointment_requires_minute_precision`; `test_appointment_rejects_invalid_datetime`; `test_appointment_rejects_invalid_status`, project/tests/test_domain.py | Passed (SHA 71ef3a4) |
+| T-13 | SCHEDULED appointment can be cancelled | `test_scheduled_appointment_can_be_cancelled`, project/tests/test_domain.py | Passed (SHA 71ef3a4) |
+| T-14 | Repeated and COMPLETED cancellation rejected | `test_cancelled_appointment_cannot_be_cancelled_again`; `test_completed_appointment_cannot_be_cancelled`, project/tests/test_domain.py | Passed (SHA 71ef3a4) |
+| T-26 | Blank patient name rejected | `test_patient_name_must_not_be_blank`, project/tests/test_domain.py | Passed (SHA 71ef3a4) |
+| T-27 | Patient ID is case-sensitive | `test_patient_id_preserves_case`, project/tests/test_domain.py | Passed (SHA 71ef3a4) |
+| T-28 | Patient ID is read-only | `test_patient_id_cannot_be_changed`, project/tests/test_domain.py | Passed (SHA 71ef3a4) |
+| T-29 | Practitioner details trimmed | `test_practitioner_details_are_trimmed`, project/tests/test_domain.py | Passed (SHA 71ef3a4) |
+| T-30 | Practitioner ID is case-sensitive | `test_practitioner_id_preserves_case`, project/tests/test_domain.py | Passed (SHA 71ef3a4) |
+| T-31 | Practitioner ID is read-only | `test_practitioner_id_cannot_be_changed`, project/tests/test_domain.py | Passed (SHA 71ef3a4) |
 ## F Service Test Evidence
 
 Use fresh shared SmartCareDataStore state, registered objects and completed Stage 6 services.
 
-| Test ID    | Behaviour  | Requirement / criterion | Test file/function | Result     |
-| ---------- | ---------- | ----------------------- | ------------------ | ---------- |
-| [complete] | [complete] | [complete]              | [complete]         | [complete] |
-
+| Test ID | Behaviour | Requirement / criterion | Test file/function | Result |
+| ------- | --------- | ----------------------- | ------------------ | ------ |
+| T-15 | Known patient returns the registered object; unknown raises LookupError | FR-02, AC-02.1 and AC-02.2 | `test_find_patient_returns_known_patient_and_rejects_unknown`, project/tests/test_services.py | Passed (SHA 71ef3a4) |
+| T-16 | Blank patient ID raises ValueError, not LookupError | FR-02, revision 2 contract | `test_find_patient_rejects_blank_ids`, project/tests/test_services.py | Passed (SHA 71ef3a4) |
+| T-17 | Known practitioner returns the registered object; unknown raises LookupError | FR-03 supporting contract | `test_find_practitioner_returns_known_and_rejects_unknown`, project/tests/test_services.py | Passed (SHA 71ef3a4) |
+| T-18 | Conflict only at the exact datetime | FR-05, AC-04.1 boundary | `test_booking_conflict_only_applies_to_exact_datetime`, project/tests/test_services.py | Passed (SHA 71ef3a4) |
+| T-19 | Cancelled booking frees the slot | FR-05 supporting contract | `test_cancelled_appointment_slot_can_be_reused`, project/tests/test_services.py | Passed (SHA 71ef3a4) |
+| T-20 | cancel_appointment returns the same object, CANCELLED | FR-06, AC-05.1 | `test_cancel_appointment_returns_cancelled_object`, project/tests/test_services.py | Passed (SHA 71ef3a4) |
+| T-21 | Cancelled appointment remains retrievable and listed | FR-07, AC-05.2 | `test_cancelled_appointment_remains_in_history`, project/tests/test_services.py | Passed (SHA 71ef3a4) |
+| T-22 | Repeated and COMPLETED cancellation rejected | FR-06, AC-05.3 | `test_repeated_and_completed_cancellation_are_rejected`, project/tests/test_services.py | Passed (SHA 71ef3a4) |
+| T-23 | Unknown ID LookupError, blank ID ValueError, state unchanged | FR-06 supporting contract | `test_cancel_appointment_rejects_unknown_and_blank_ids`, project/tests/test_services.py | Passed (SHA 71ef3a4) |
+| T-24 | find_appointment returns the stored object | FR-08, AC-06.1 | `test_find_appointment_returns_same_object`, project/tests/test_services.py | Passed (SHA 71ef3a4) |
+| T-02, T-03, T-04, T-05, T-06, T-25 | Supplied service checks: duplicates rejected, booking, unknown participants, conflicts | FR-01, FR-03, FR-04, FR-05 | `test_duplicate_patient_preserves_original`; `test_duplicate_practitioner_preserves_original`; `test_registration_and_booking`; `test_unregistered_participants_rejected`; `test_conflict_rule_and_different_practitioner`; `test_duplicate_appointment_preserves_original`, project/tests/test_starter.py | Passed (supplied; SHA 71ef3a4) |
 ## G Negative and Boundary Cases
 
 Connect cases to actual contracts and verify unchanged state after rejection.
 
-| Behaviour  | Boundary/invalid input | Expected result | Test ID    |
-| ---------- | ---------------------- | --------------- | ---------- |
-| [complete] | [complete]             | [complete]      | [complete] |
-
+| Behaviour | Boundary/invalid input | Expected result | Test ID |
+| --------- | ---------------------- | --------------- | ------- |
+| Patient registration | Empty, spaces-only or None patient ID | ValueError | T-08 |
+| Patient registration | Empty or spaces-only name | ValueError | T-26 |
+| Practitioner registration | Blank or None ID, blank name or specialty | ValueError | T-10 |
+| Appointment construction | Time with seconds; non-datetime; invalid status; non-Patient or non-Practitioner | ValueError | T-12 |
+| Patient lookup | Blank ID versus unknown valid ID | ValueError versus LookupError | T-16, T-15 |
+| Practitioner lookup | Unknown valid ID | LookupError | T-17 |
+| Booking conflict | Same time versus one minute later | Rejected, state unchanged; later accepted | T-18 |
+| Booking after cancellation | Same practitioner and time as a cancelled appointment | Accepted | T-19 |
+| Cancellation | Already CANCELLED; COMPLETED | ValueError, state unchanged | T-14, T-22 |
+| Cancellation | Unknown ID; empty or spaces-only ID | LookupError; ValueError; nothing changes | T-23 |
+| Duplicate IDs (supplied) | Existing patient, practitioner or appointment ID | ValueError, original unchanged | T-02, T-03, T-25 |
 ## H GitHub Copilot Test Design
 
 Select ONE real acceptance criterion. Complete human-first fields before using Copilot. Do not require an accepted generated test.
@@ -191,9 +232,9 @@ Accepted / modified / rejected test decisions and evidence: [link actual decisio
 
 Run python -m pytest from project/. Retain all accumulated tests. Record the tested SHA accurately.
 
-| Command    | Working directory | Code SHA   | Passed     | Failed     | Failure summary | Product defect / test defect / unresolved | Evidence and interpretation |
-| ---------- | ----------------- | ---------- | ---------- | ---------- | --------------- | ----------------------------------------- | --------------------------- |
-| [complete] | [complete]        | [complete] | [complete] | [complete] | [complete]      | [complete]                                | [complete]                  |
+| Command | Working directory | Code SHA | Passed | Failed | Failure summary | Product defect / test defect / unresolved | Evidence and interpretation |
+| ------- | ----------------- | -------- | ------ | ------ | --------------- | ----------------------------------------- | --------------------------- |
+| `python -m pytest -v` | `project/` | 71ef3a41e142c6bd836b597f2c651fb844194c89 | 37 | 0 | None | None | Full suite on clean main after `git pull --ff-only` (Python 3.14.3, pytest 8.3.5): 8 supplied, 19 domain and 10 service tests, 37 passed in 0.13s. It shows the accumulated tests pass; it does not prove behaviour the tests do not check (see section K). |
 
 Individual test runs and changed-order independence evidence: [commands, results, links]
 Optional tutor-led demonstration notes: [optional; leave blank if not used]
@@ -202,10 +243,10 @@ Requirement → test → failure/observation → diagnosis → change → verifi
 
 ## K What the Suite Still Does Not Prove
 
-What does your test suite still not prove? [response]
-Coverage if used: [result or not used]
-Which uncovered areas matter, and why does coverage percentage alone not establish correctness? [response]
-Optional fixtures/parametrisation used and why, if any: [response or not used]
+What does your test suite still not prove? It does not test Stage 9 behaviour (query functions, the console menu), the main.py demo, or that data is lost at the end of a session. Within Stages 6-7 it also has no test for timezone-aware datetimes, for trimmed duplicate IDs such as registering " P1 " when P1 exists, for a COMPLETED appointment not blocking a slot, or for a blank appointment ID at booking.
+Coverage if used: Not used.
+Which uncovered areas matter, and why does coverage percentage alone not establish correctness? The untested edge cases above are contract rules, so a defect there would pass the suite unnoticed. Coverage only counts lines executed, so a test with a weak or missing assertion still raises the percentage without detecting a wrong result.
+Optional fixtures/parametrisation used and why, if any: A plain helper function, create_test_services(), builds a fresh data store and services for each test so setup is independent. pytest fixtures and parametrisation were not used. Loops over several invalid inputs stop at the first failure, whereas parametrisation would report each case separately.
 
 ## L Git and Review Evidence
 
@@ -226,40 +267,35 @@ Record actual work in test design, implementation, review, traceability, diagnos
 ## N Formative Questions
 
 1. What question does verification answer?
-[response]
+Verification asks whether we built the product right, meaning it meets its specification.
 
 2. What question does validation answer?
-[response]
+Validation asks whether we built the right product, meaning it meets what users actually need.
 
 3. What is a unit test?
-[response]
+A unit test checks one small piece of behaviour, such as one function or class, in isolation with controlled setup.
 
 4. What is a pytest fixture?
-[response]
+A pytest fixture is reusable setup code that pytest provides to tests, such as creating a fresh data store.
 
 5. What is parametrisation in pytest?
-[response]
+Parametrisation runs one test function over several input sets, with each case reported separately.
 
 6. What is regression testing?
-[response]
+Regression testing re-runs the accumulated tests after changes to check that earlier behaviour still works.
 
 7. What does code coverage tell us, and what does it not prove?
-[response]
+Coverage tells us which lines or branches ran during tests. It doesn’t prove the assertions are meaningful or the behaviour correct.
 
 8. What makes an assertion weak?
-[response]
+An assertion is weak when it would still pass if the behaviour were wrong, for example assert True, is not None, or a test that never checks the result.
 
 9. What is the appropriate role of GitHub Copilot as a test assistant?
-[response]
+Copilot is a test assistant that suggests candidates. Each must be checked against the requirement, the assertions and an actual run, and it can’t replace human test design.
 
 10. What is the Stage 7 engineering rule?
-[response]
+The Stage 7 engineering rule: every test traces to a real requirement, asserts specific required behaviour that could fail for the right reason, and counts as evidence only if it was actually run and recorded with its tested SHA.
 
 ## O Stage Completion
 
-Tested Stage 7 main SHA: [complete]
-Full-suite result: [complete]
-Unresolved defects and effect on baseline: [complete or none]
-Clean working tree and integration evidence: [complete]
-Stage 8 handover status: [complete; no Stage 8 work assigned]
-All tutorial/formative responses and traceability/Copilot decisions complete: [confirm]
+Tested Stage 7 main SHA: 71ef3a41e142c6bd836b597f2c651fb844194c89  Full-suite result: `python -m pytest -v` in project/: 37 passed, 0 failed (Python 3.14.3, pytest 8.3.5)  Unresolved defects and effect on baseline: None found by the Stage 7 suite  Clean working tree and integration evidence: `git status` clean on main after `git pull --ff-only` before the run  Stage 8 handover status: Stage 7 baseline complete; Stage 8 work is on a separate branch (debug/stage08)  All tutorial/formative responses and traceability/Copilot decisions complete: [confirm only after sections H and I are done]

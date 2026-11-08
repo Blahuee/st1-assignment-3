@@ -398,14 +398,30 @@ Relevant tests include `tests/test_services.py`, `tests/test_starter.py` and the
 
 ## I. Git, human review and integration
 
-Issues for both defects / refactor scope and owners: [complete]
-Branch / prepared, repair and refactor checkpoints: [link B/C/D/H]
-PR link and another member's reviewer identity: [complete]
-Key human feedback, difference from Copilot findings and response/outcome: [complete]
-Actual review approval / merge evidence: [complete]
-Integrated code SHA and team pull/retest command / working directory / result: [complete]
-Evidence-only later SHA / explanation if different: [complete or not applicable]
-Each member's substantive contribution and artefact: [complete]
+**Issues for both defects / refactor scope and owners:**
+- [F8-01 - Practitioner conflict detection defect](https://github.com/Blahuee/st1-assignment-3/issues/19)
+- [F8-02 – Cancelled appointments excluded from history lookup](https://github.com/Blahuee/st1-assignment-3/issues/20)
+- Issue Owners: Alicia (Blahuee)
+
+**Branch / prepared, repair and refactor checkpoints:**
+| Checkpoint                    | Git SHA                                  | Description                                     |
+| ----------------------------- | ---------------------------------------- | ----------------------------------------------- |
+| Stage 7 baseline              | e6b3579c1c29e57894abef33fcae152c9d4f8c7b | Last known passing Stage 7 baseline             |
+| Stage 8 prepared faulty state | b99a90f474f67b9e47b3f196adc8d6d78e7346e0 | Deliberately introduced F8-01 and F8-02 defects |
+| F8-01 repair                  | ed76dc8af625654d916a3345e274d138bb05978d | Corrected practitioner comparison               |
+| F8-02 repair                  | bb070749a483e84011dac9f2d2ed0f23730f8264 | Restored cancelled appointment lookup           |
+| Refactor checkpoint           | Not applicable                           | No refactoring performed                        |
+
+Stage 8 was completed in `debug/stage08`. The prepared faulty state and later repairs are identifiable through the Git commit history. F8-01 and F8-02 were repaired in separate commits. No separate refactoring commit was created because the refactoring decision was to retain the existing repaired implementation.
+
+**PR link and another member's reviewer identity:**
+- PR: [Stage 8 – Repair appointment conflict and history lookup defects, completed sections I to H](https://github.com/Blahuee/st1-assignment-3/pull/21)
+- Reviewer: Alicia (Blahuee).
+**Key human feedback, difference from Copilot findings and response/outcome:** [complete]
+**Actual review approval / merge evidence:** [complete]
+**Integrated code SHA and team pull/retest command / working directory / result:** [complete]
+**Evidence-only later SHA / explanation if different:** [complete or not applicable]
+**Each member's substantive contribution and artefact:** [complete]
 
 ## J. Required reflections
 

@@ -5,7 +5,7 @@ Baseline: Stage 6 foundation, 2026 revision 2. This starter deliberately leaves 
 
 ## Group index
 
-- **Group and tutorial:** Tue 1:30 - 3:30 Group 1\
+- **Group and tutorial:** Tue 1:30 - 3:30 Group 1
 - **Member names, GitHub usernames and UG/PG cohorts:**
   - Alicia Hurst (Blahuee) - UG
   - Aagney Mani Sharma (Aagneyf1r3) - UG

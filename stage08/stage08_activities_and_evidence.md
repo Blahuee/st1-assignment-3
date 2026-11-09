@@ -459,8 +459,8 @@ Evidence:\
 Stage 8 was completed in `debug/stage08`. The prepared faulty state and subsequent repairs are identifiable through the Git commit history. F8-01 and F8-02 were repaired in separate commits. A separate refactoring commit was also created to replace the magic string comparison in `has_practitioner_conflict()` with `AppointmentStatus.SCHEDULED`. This refactoring improved code clarity while preserving the existing behaviour.
 
 **PR link and another member's reviewer identity:**
-- PR: [Stage 8 – Repair appointment conflict and history lookup defects, completed sections I to H](https://github.com/Blahuee/st1-assignment-3/pull/21)
-- Reviewer: Alicia (Blahuee).
+- PR: [Stage 8 – Repair appointment conflict and history lookup defects, Completed Sections A to I](https://github.com/Blahuee/st1-assignment-3/pull/21)
+- Reviewer: Ngedup and Aagney.
 **Key human feedback, difference from Copilot findings and response/outcome:** [complete]
 **Actual review approval / merge evidence:** [complete]
 **Integrated code SHA and team pull/retest command / working directory / result:** [complete]

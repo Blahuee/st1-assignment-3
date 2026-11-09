@@ -11,7 +11,7 @@ Complete this one group record. Link actual issues, diffs, tests and reviews; av
 ### FR-02 Patient Search
 - **Title:** Implement patient lookup by patient ID (FR-02)
 - **Context:** SmartCare needs the ability to retrieve existing patient records so that other workflows can identify the correct patient. The current starter implementation in `PatientService.find_patient()` is incomplete.
-- **Requirement:** Implement patient lookup by patient ID. The method must return the existing stored `Patient` object when the ID is valid and exists. It must also raise `ValueError` for a blank or invalid ID, and raise  `LookupError` when the patient does not exist. It must not create a replacement patient.
+- **Requirement:** Implement patient lookup by patient ID. The method must return the existing stored `Patient` object when the ID is valid and exists. It must also raise `ValueError` for a blank or invalid ID, and raise `LookupError` when the patient does not exist. It must not create a replacement patient.
 - **Acceptance criteria:** 
   - A valid existing patient ID returns the corresponding stored patient object
   - A blank or invalid patient ID raises `ValueError`
@@ -95,7 +95,7 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
 
 | Issue link | Requirement | Owner      | Acceptance criteria or precise link | Status     |
 | ---------- | ----------- | ---------- | ----------------------------------- | ---------- |
-| [Implement patient lookup by patient ID (FR-02)](https://github.com/Blahuee/st1-assignment-3/issues/3#issue-5829342862)  | Implement patient lookup by patient ID. The method must return the existing stored Patient object when the ID is valid and exists. It also must raise ValueError for a blank or invalid ID LookupError when the patient does not exist. It must not create a replacement patient.  | Alicia |  A valid existing patient ID returns the corresponding stored patient object. A blank or invalid patient ID raises ValueError. A valid ID that does not exist raises LookupError. Looking up a patient does not register, replace, or modify patient records. Existing patient records remain unchanged when lookup fails.                          |Completed |
+| [Implement patient lookup by patient ID (FR-02)](https://github.com/Blahuee/st1-assignment-3/issues/3#issue-5829342862)  | Implement patient lookup by patient ID. The method must return the existing stored Patient object when the ID is valid and exists. It also must raise ValueError for a blank or invalid ID and LookupError when the patient does not exist. It must not create a replacement patient.  | Alicia |  A valid existing patient ID returns the corresponding stored patient object. A blank or invalid patient ID raises ValueError. A valid ID that does not exist raises LookupError. Looking up a patient does not register, replace, or modify patient records. Existing patient records remain unchanged when lookup fails.                          |Completed |
 | [Add Appointment Cancellation with retained history (FR-06 and FR-07)](https://github.com/Blahuee/st1-assignment-3/issues/1#issue-5828750575)  | FR-06 - Appointment cancellation. FR-07 - Retaining the appointment cancellation history  | Ngedup | Cancelling a SCHEDULED appointment changes its status to CANCELLED and after the cancellation the same appointment can still be found by the IDs with status cancellation. Therefore, the schedule is not deleted and stored in the object. A blank or invalid ID raises a ValueError. | Completed |
 
 ## G Pull request evidence
@@ -120,7 +120,7 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
   - Ngedup: Confirmed, updated successfully
 - **Integrated verification after merge:** e514dda244cfbf256642a0eed7fe8d9bcf9f45d0
 
-- **PR link and title:** https://github.com/Blahuee/st1-assignment-3/pull/9, "Implement Practitoner Search by ID"
+- **PR link and title:** https://github.com/Blahuee/st1-assignment-3/pull/9, "Implement Practitioner Search by ID"
 - **Linked issue and requirement:** Linked on the PR to issue #1 (FR-06/FR-07). The PR implements practitioner lookup, which has no separate issue yet.
 - **Feature branch:** feature/appointment-cancellation
 - **Changed behaviour:** The commit implements the `find_practitioner()` method by replacing the `NotImplementedError` placeholder with a call to the data store. It returns the existing practitioner when found and raises a `LookupError` when the practitioner does not exist. This allows the service to retrieve practitioners without creating replacement records.
@@ -208,9 +208,6 @@ Record meaningful required use, not every trivial completion. Repeat per signifi
 ## J Contributions
 Repeat per member. Include only categories that describe actual work; write not applicable where appropriate. Pairing or mentoring can be supported by a short corroborated note.
 
-## J Contributions
-Repeat per member. Include only categories that describe actual work; write not applicable where appropriate. Pairing or mentoring can be supported by a short corroborated note.
-
 - Member: Alicia Hurst (Blahuee)
 - Implementation: Implemented patient lookup (commit e514dda, PR #8), practitioner lookup (82f2b21, PR #9), the cancellation service (0522007, PR #15) and the docstring cleanup (d5c2465, PR #12), all in services.py.
 - Testing: Ran `python main.py` and `python -m pytest` for PR #8 (8 passed).
@@ -237,7 +234,7 @@ Repeat per member. Include only categories that describe actual work; write not 
 - Design and responsibility discussion: Not applicable
 - Debugging or integration: Opened PR #10 and PR #11, and updated main after the merges.
 - Documentation or team support: Fixed typos and completed parts of the Stage 6 record (commit 1d32cd5).
-- 
+
 ## K Exit question
 **Why is a high commit count not necessarily evidence of strong contribution?**\
 A high commit count only shows how often someone saved changes, not how useful those changes were. Someone can make many tiny, cosmetic or repeated commits and look busy, while another person makes one precise review comment or test that prevents a serious bug. Real contribution includes implementation, testing, debugging, reviewing, design discussion,helping teammates and each should be backed by links to actual diffs, assertions or comments.
@@ -274,6 +271,7 @@ Commit count ignores quality and the kind of work. Reviewing, testing, debugging
 The rule is that every change is traceable and evidence-based. A requirement goes into an issue, gets built on a focused branch with meaningful tests, then is reviewed on the actual diff by a different member and is merged only after approval from another member. Then everyone verifies the integrated main. Nothing, including Copilot’s output, counts as correct without evidence being checked properly.
 
 ## M Completion and handover
+
 - Starting SHA: `78e45fe`
 - Final Stage 6 code SHA: `5244ad3d03d6d49cd7146af7edd06a7134f3ac31` (merge of PR #15, the last Stage 6 code change)
 - Test command: `python -m pytest`

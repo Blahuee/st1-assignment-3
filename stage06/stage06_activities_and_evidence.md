@@ -187,36 +187,57 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
 ## H Copilot collaboration record
 Record meaningful required use, not every trivial completion. Repeat per significant interaction.
 
-- Member and task: [response]
-- Prompt/purpose and relevant issue/diff: [response]
-- Summary of output: [response]
-- Human check against actual code, requirements and tests: [response]
-- Decision — Accept / Modify / Reject: [select]
-- Reason: [response]
-- Verification/evidence: [link and result]
-
+- Member and task: Ngedup Jigme Lhazeen, retrospective Copilot review of the PR #15 diff (commit 0522007, `AppointmentService.cancel_appointment()` in services.py), run on 9 Nov 2026 after the PR was merged.
+- Prompt/purpose and relevant issue/diff: Asked Copilot to review the diff against issue #1 (FR-06 cancel appointment and FR-07 retained history) and to give a Met / Partially met / Not met result for AC-05.1, AC-05.2 and AC-05.3, flag unrelated changes and not claim tests passed. I pasted the diff, the unchanged `Appointment.cancel()` method and a description of `find_appointment()`. The purpose was a second opinion after the human review.
+- Summary of output: Copilot rated AC-05.1, AC-05.2 and AC-05.3 as Met and all FR-06 and FR-07 points as Met. It found no unrelated functional change (only a docstring wording cleanup). It noted two minor points: the service relies on the data store to reject blank IDs, and the docstring does not mention blank IDs. It stated it reviewed code only and did not run tests.
+- Human check against actual code, requirements and tests: I checked the claims against the real code at merge commit 5244ad3. The service calls `data_store.find_appointment()`, raises LookupError if the result is None, calls `appointment.cancel()` and returns the same object. `Appointment.cancel()` raises ValueError unless the status is SCHEDULED and leaves state unchanged. `find_appointment()` returns None for an unknown ID and raises ValueError for a blank ID, so Copilot's reading was correct. The PR changed only services.py. The 8 supplied tests do not call `cancel_appointment()` directly, so no test covered it when the PR was merged. Copilot's "Met" results are code-reading conclusions, based on the code I pasted.
+- Decision — Accept / Modify / Reject: Modify
+- Reason: I accepted Copilot's acceptance-criteria results, because the code supports them. I did not act on the docstring point, because the behaviour is correct and the blank-ID rule is already documented in the data store. I added what Copilot could not give: test evidence.
+- Verification/evidence: `python -m pytest` from `project/` at merge commit 5244ad3: 8 passed (these did not call `cancel_appointment()` directly). Later, Stage 7 tests T-20 to T-23 in test_services.py check this method directly (cancel returns the same CANCELLED object, history is retained, repeated and COMPLETED cancellation raise ValueError, unknown ID raises LookupError, blank ID raises ValueError). The full suite passed 37 tests on main.
+  
 ## I Human versus Copilot review comparison
-- Human reviewer noticed before consulting Copilot: [response]
-- Copilot noticed: [response]
-- Overlap: [response]
-- What did the human reviewer notice that Copilot did not: [response]
-- What did Copilot identify that the human reviewer initially missed: [response]
-- Unsupported or incorrect Copilot suggestion: [response or none identified with explanation]
-- Human judgement accepted, modified or rejected, and why: [response]
-- Which evidence justified merge approval: [response]
+- Human reviewer noticed before consulting Copilot: The service must delegate to the domain method, return the cancelled object and keep the appointment in history. Unknown IDs and invalid transitions need separate handling. The diff touches only services.py.
+- Copilot noticed: All acceptance criteria were met by the diff. It also noticed that the service relies on the data store to reject blank IDs, and that the docstring does not mention blank IDs raising ValueError.
+- Overlap: Both reviews found that the service delegates to the domain, returns the same stored object, raises LookupError for an unknown ID, and has no unrelated functional change.
+- What did the human reviewer notice that Copilot did not: That the 8 supplied tests do not call `cancel_appointment()` directly, so none of the acceptance criteria were tested by an assertion at merge time. Copilot reviewed only the code.
+- What did Copilot identify that the human reviewer initially missed: The docstring wording point (blank IDs are not mentioned). It is minor and does not change behaviour.
+- Unsupported or incorrect Copilot suggestion: None identified. One limitation is that Copilot could only use the code I pasted, so its "Met" results for AC-05.2 and the blank-ID rule were inferred from my description of the data store, not from running anything.
+- Human judgement accepted, modified or rejected, and why: Modified. I accepted the acceptance-criteria results and the lack of unrelated changes. I did not change the docstring, because behaviour is already correct and documented elsewhere. I added test evidence.
+- Which evidence justified merge approval: Aagney's "All good" comment on PR #15, the diff limited to services.py, and 8 passed at merge commit 5244ad3. No formal approval review is recorded.
 
 ## J Contributions
 Repeat per member. Include only categories that describe actual work; write not applicable where appropriate. Pairing or mentoring can be supported by a short corroborated note.
 
-- Member: [response]
-- Implementation: [work and evidence]
-- Testing: [work and evidence]
-- Review: [work and evidence]
-- Issue refinement: [work and evidence]
-- Design and responsibility discussion: [work and evidence]
-- Debugging or integration: [work and evidence]
-- Documentation or team support: [work and evidence]
+## J Contributions
+Repeat per member. Include only categories that describe actual work; write not applicable where appropriate. Pairing or mentoring can be supported by a short corroborated note.
 
+- Member: Alicia Hurst (Blahuee)
+- Implementation: Implemented patient lookup (commit e514dda, PR #8), practitioner lookup (82f2b21, PR #9), the cancellation service (0522007, PR #15) and the docstring cleanup (d5c2465, PR #12), all in services.py.
+- Testing: Ran `python main.py` and `python -m pytest` for PR #8 (8 passed).
+- Review: Merged PRs #8, #9, #12 and #13. PRs #8, #9 and #12 have no recorded review. Requested as a reviewer on PR #10, but no review was submitted.
+- Issue refinement: Created the FR-02 patient search issue (commit 6ad1408).
+- Design and responsibility discussion: Wrote the Section C review of an over-scoped PR, which separates service, domain and data store responsibilities (cancellation should use the existing service and domain logic, and unrelated changes belong in separate PRs). Also wrote Section E, the team workflow agreement on branching, PR size, review and merge rules (commit "Completed questions in section B, C and E").
+- Debugging or integration: Merged and integrated PRs #8, #9 and #12 into main.
+- Documentation or team support: Completed tutorial Sections B, C and E (commit "Completed questions in section B, C and E") and updated Section G with push and merge information (commit 31546b5).
+
+- Member: Aagney Mani Sharma (Aagneyf1r3)
+- Implementation: Not applicable (no project code in Stage 6)
+- Testing: Not applicable
+- Review: Reviewed PR #8 informally on a video call. Requested changes on PR #10 (the backlog needed the issue links). Commented "All good" on PR #15.
+- Issue refinement: Not applicable
+- Design and responsibility discussion: Not applicable
+- Debugging or integration: Merged PRs #4, #7, #10, #11 and #15 into main.
+- Documentation or team support: Wrote Section D (Copilot review challenge, commit fabd0b5) and the first draft of Section G (commit 45d409e).
+
+- Member: Ngedup Jigme Lhazeen (njlhazin)
+- Implementation: Not applicable. Issue #1 lists Ngedup as owner, but the cancellation code was committed by Alicia (0522007).
+- Testing: Not applicable
+- Review: Not applicable (no recorded review in Stage 6)
+- Issue refinement: Wrote the issue #1 entry (FR-06 and FR-07, commit 3609a6b) and the issue and backlog index in Section F (commits d2fb1b3, d6c248d, 6f62835, 1d32cd5).
+- Design and responsibility discussion: Not applicable
+- Debugging or integration: Opened PR #10 and PR #11, and updated main after the merges.
+- Documentation or team support: Fixed typos and completed parts of the Stage 6 record (commit 1d32cd5).
+- 
 ## K Exit question
 **Why is a high commit count not necessarily evidence of strong contribution?**\
 A high commit count only shows how often someone saved changes, not how useful those changes were. Someone can make many tiny, cosmetic or repeated commits and look busy, while another person makes one precise review comment or test that prevents a serious bug. Real contribution includes implementation, testing, debugging, reviewing, design discussion,helping teammates and each should be backed by links to actual diffs, assertions or comments.

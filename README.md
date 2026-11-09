@@ -5,13 +5,19 @@ Baseline: Stage 6 foundation, 2026 revision 2. This starter deliberately leaves 
 
 ## Group index
 
-- Group and tutorial: [complete]
-- Member names, GitHub usernames and UG/PG cohorts: [complete]
-- Shared repository URL: [complete]
-- Latest completed stage: [complete]
-- Verified code SHA: [complete]
-- Test command, working directory and observed result: [complete]
-- Final submitted SHA, if different from tested code SHA: [complete; explain evidence-only changes]
+- **Group and tutorial:** Tue 1:30 - 3:30 Group 1\
+- **Member names, GitHub usernames and UG/PG cohorts:**
+  - Alicia Hurst (Blahuee) - UG
+  - Aagney Mani Sharma (Aagneyf1r3) - UG
+  - Ngedup Jigme Lhazeen (njlhazin) - UG
+- **Shared repository URL:** [Github Repo](https://github.com/Blahuee/st1-assignment-3)
+- **Latest completed stage:** Stage 12
+- **Verified code SHA:** [complete]
+- **Test command, working directory and observed result:**
+  - **Test Command:** `python -m pytest -vv -s`
+  - **Working Directory:** `.\project`
+  - **Observed Result:** 50 tests passed in 0.03 seconds. No test failures.
+- **Final submitted SHA, if different from tested code SHA:** [complete; explain evidence-only changes]
 
 Do not put student IDs, private peer ratings, credentials or personal contact details here.
 

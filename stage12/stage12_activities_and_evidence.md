@@ -8,12 +8,12 @@ Members and UG/PG applicability: UG - Alicia Hurst - Blahuee, UG - Aagney Mani S
 
 ## A Release scope and starting SHA
 
-Release label/version and requirements baseline: SmartCare A3 common release, requirements baseline Revision 2. [TO DO group: agree the version label, e.g. v1.0-common]
-Common starting SHA / branch / applicable members: [TO DO after Stage 9: SHA of main once Stage 9 is merged] / main / all three UG members. Pre-Stage 9 reference point: `c900456`.
+Release label/version and requirements baseline: SmartCare A3 common release v1.0-common, requirements baseline Revision 2.
+Common starting SHA / branch / applicable members: `351b6ca` / main / all three UG members.
 PG starting SHA / branch / applicable members or not applicable: Not applicable. UG-only group.
-Working-state review and approved integration: [TO DO after Stage 9: confirm Stage 9 PR reviewed and merged, then link it]. Stage 8 was integrated through PR #21 (`a8c7d01`), reviewed by Ngedup and Aagney: https://github.com/Blahuee/st1-assignment-3/pull/21
+Working-state review and approved integration: Stage 9 code was integrated through PR #29 (`fecb697`), PR #30 (`8f7cec2`) and PR #31 (`351b6ca`), all authored by Alicia. PRs #29 and #30 were merged by Aagney and PR #31 by Ngedup. The Stage 9 record was merged in PR #32 (`7fc8a94`).
 Protected common candidate and PG differences: Not applicable. UG-only group, so there is no PG extension to separate from the common candidate.
-Feature freeze / owner / verifier: [TO DO group: freeze time after Stage 9 merge, owner and a verifier who did not write the Stage 9 code]
+Feature freeze / owner / verifier: No formal freeze was declared. Code has not changed since `351b6ca`, merged 9 Nov 2026. Regression verifier: Aagney, who did not author the Stage 9 code.
 
 
 ## B Requirements and release readiness matrix
@@ -24,17 +24,17 @@ Tutorial activity 2 and actual readiness matrix. Add exact requirement/acceptanc
 
 | Release claim / requirement / scope | Evidence | Location/link and SHA | Reviewer | Sufficient? | Gap/action |
 |---|---|---|---|---|---|
-| Cancellation history works | FR-06, FR-07, AC-05.1 to AC-05.3, AC-06.1 (common). T-20 to T-24; F8-02 repair restored lookup of cancelled appointments | `project/tests/test_services.py` @ `c900456`; repair `bb07074`; issue #20 | [TO DO group: name] | Yes at service level | [TO DO after Stage 9: show it through the menu and confirm CANCELLED appears in default listing] |
-| Architecture responsibilities are appropriate | Domain holds rules and guarded cancel; store holds three dictionaries; services coordinate; no input/output in domain, store or services (common) | `project/smartcare/` @ `c900456` | [TO DO group: name] | Partly | [TO DO after Stage 9: check queries stay pure and input/output stays in console] |
+| Cancellation history works | FR-06, FR-07, AC-05.1 to AC-05.3, AC-06.1 (common). T-20 to T-24, workflow test, menu demo | `project/tests/test_services.py`, `test_workflows.py` @ `351b6ca`; repair `bb07074`; issue #20 | Aagney (ran regression) | Yes | None |
+| Architecture responsibilities are appropriate | Domain holds rules; store holds records; services coordinate; queries are pure; only console and main print (common) | `project/smartcare/` @ `351b6ca` | Aagney | Yes | Minor documentation items in Part H |
 | Rescheduling is safe — PG only | Not applicable. UG-only group | N/A | N/A | N/A | None |
-| AI use is responsible — common recheck / PG assurance | Common recheck: Copilot review of PR #15 in Stage 6 H and I; Copilot cause ranking for F8-01 and F8-02 in Stage 8. PG assurance not applicable | `stage06/` and `stage08/` records @ `c900456` | [TO DO group: name] | Partly | Stage 9 AI use and this Stage 12 draft must be recorded in Part E |
-| System is maintainable | 37 tests, requirement-to-test matrix, small separated modules, Stage 8 status-enum refactor `8a906fa` | `stage07/` record; `project/` @ `c900456` | [TO DO group: name] | Partly | Fix stale docs and missing docstrings in Part H |
-| FR-01–03 register/find and validation | T-01 to T-03, T-08 to T-10, T-15 to T-17, T-26 to T-31; AC-01.2, AC-02.1, AC-02.2 | `project/tests/` @ `c900456`, matrix in `stage07/` | [TO DO group: name] | Yes at service/domain level | [TO DO after Stage 9: console run] |
-| FR-04–05 booking/conflict rules | T-04 to T-06, T-11, T-12, T-18, T-19, T-25; AC-03.1, AC-03.2, AC-04.1, AC-04.2; F8-01 repair `ed76dc8` | `project/tests/` @ `c900456`; issue #19 | [TO DO group: name] | Yes at service/domain level | [TO DO after Stage 9: console run] |
-| FR-06–08 cancellation/history/find | T-07, T-13, T-14, T-20 to T-24; AC-05.1 to AC-05.3, AC-06.1 | `project/tests/` @ `c900456` | [TO DO group: name] | Yes at service/domain level | [TO DO after Stage 9: console run] |
-| FR-09 and QRY/FP listing/filter/order/purity | [TO DO after Stage 9] Not implemented at `c900456` | `project/smartcare/queries.py`, `services.py` | [TO DO group: name] | No | **Release blocker** until Stage 9 is merged and tested |
-| UI full console sequence and error recovery | [TO DO after Stage 9] `run_menu` not implemented at `c900456` | `project/smartcare/console.py` | [TO DO group: name] | No | **Release blocker** until Stage 9 is merged and run |
-| Session-only scope / FR-10 retired | Store is three in-memory dictionaries; no file or database code; demo prints the session-only message; `project/README.md` says FR-10 is retired | `project/smartcare/data_store.py`, `project/README.md` @ `c900456` | [TO DO group: name] | Yes | Recheck on final SHA |
+| AI use is responsible — common recheck / PG assurance | Common recheck: Copilot evidence in Stages 6, 8 and 9; Claude use disclosed in Part E. PG assurance not applicable | `stage06/`, `stage08/`, `stage09/`, Part E @ `7fc8a94` | Aagney | Partly | Tutor approval for Claude was not asked |
+| System is maintainable | 50 tests, requirement-to-test matrix, small separated modules, refactor `8a906fa` | `stage07/`; `project/` @ `351b6ca` | Aagney | Partly | Stale docstrings and README gaps remain (Part H) |
+| FR-01–03 register/find and validation | T-01 to T-03, T-08 to T-10, T-15 to T-17, T-26 to T-31, menu demo; AC-01.2, AC-02.1, AC-02.2 | `project/tests/` @ `351b6ca` | Aagney (ran regression) | Yes | None |
+| FR-04–05 booking/conflict rules | T-04 to T-06, T-11, T-12, T-18, T-19, T-25, workflow test, menu demo; AC-03.1, AC-03.2, AC-04.1, AC-04.2 | `project/tests/` @ `351b6ca`; issue #19 | Aagney (ran regression) | Yes | None |
+| FR-06–08 cancellation/history/find | T-07, T-13, T-14, T-20 to T-24, workflow test, menu demo; AC-05.1 to AC-05.3, AC-06.1 | `project/tests/` @ `351b6ca` | Aagney (ran regression) | Yes | None |
+| FR-09 and QRY/FP listing/filter/order/purity | `tests/test_queries.py` (7 tests), 5 service listing tests, workflow test, menu demo; QRY-01 to QRY-04, FP-01 to FP-03 | `project/smartcare/queries.py`, `services.py`, PRs #29 and #30 @ `351b6ca` | Aagney (ran regression) | Mostly | Tie-break test does not prove ID ordering; empty and already-sorted inputs not tested (Part H) |
+| UI full console sequence and error recovery | `run_menu` scripted demo in Part D; UI-01, UI-02 | `project/smartcare/console.py`, PR #31 @ `351b6ca` | Aagney | Mostly | Demo run by Claude on a copy. No pytest test calls `run_menu` |
+| Session-only scope / FR-10 retired | In-memory store only; a fresh process could not find P1 | `project/smartcare/data_store.py`, `project/README.md` @ `351b6ca` | Aagney | Yes | None |
 | PG RES and assurance integration | Not applicable. UG-only group | N/A | N/A | N/A | None |
 
 
@@ -42,53 +42,55 @@ Tutorial activity 2 and actual readiness matrix. Add exact requirement/acceptanc
 
 | Suite/scope | Environment/version | Working directory and command | Tested SHA | Actual result | Evidence link |
 |---|---|---|---|---|---|
-| Complete common | [TO DO after Stage 9: Python and pytest versions] | `project/`, `python -m pytest -v` | [TO DO after Stage 9] | [TO DO after Stage 9] | [TO DO after Stage 9] |
+| Complete common | Windows, Python 3.14.3, pytest 8.3.5 | `project/`, `python -m pytest -v` | `351b6ca` | 50 passed, 0 failed | Run by Aagney, 9 Nov 2026 |
 | Complete PG if applicable | Not applicable. UG-only group | N/A | N/A | N/A | N/A |
-| Affected focused checks after correction | [TO DO after Stage 9] | `project/`, [TO DO after Stage 9: focused command] | [TO DO after Stage 9] | [TO DO after Stage 9] | [TO DO after Stage 9] |
-| Full integrated recheck | [TO DO after Stage 9] | `project/`, `python -m pytest -v` | [TO DO after Stage 9] | [TO DO after Stage 9] | [TO DO after Stage 9] |
-Prior assertions preserved / reviewed test diff: The test files at `c900456` are identical to the Stage 7 tested commit `71ef3a4` (`git diff 71ef3a4 c900456 -- project/tests` is empty). [TO DO after Stage 9: repeat this diff against the final SHA and confirm Stage 9 only adds tests]
-Remaining failure / limitation: Interim only, not the final result: 37 passed at `c900456` on 9 Nov 2026 (Python 3.13.18, pytest 9.1.1, run by Claude on a copy, and pytest differs from the pinned 8.3.5). None of the 37 tests call the Stage 9 functions. [TO DO after Stage 9: replace this line]
+| Affected focused checks after correction | Windows, Python 3.14.3, pytest 8.3.5 | `project/`, `python -m pytest -vv -s` on `feature/stage9-queries` | `5f7e2c0` | 44 passed, 0 failed | Run by Aagney before PR #29 merge |
+| Full integrated recheck | Linux, Python 3.13.18, pytest 9.1.1 | `project/`, `python -m pytest -q` | `351b6ca` | 50 passed, 0 failed | Run by Claude on an extracted copy, 9 Nov 2026 |
+Prior assertions preserved / reviewed test diff: `git diff --stat 71ef3a4 351b6ca -- project/tests` shows 433 insertions and 3 deletions. The 3 deleted lines are in `test_services.py` from PR #30: test data changed from "Dr Smith" to "Dr. Smith" and "General Practice" to "Specialty", with one name assertion updated to match. No behaviour check was weakened.
+Remaining failure / limitation: No test failures at `351b6ca`. The team's own run used Python 3.14.3 rather than the README's 3.13. The Python 3.13 run used pytest 9.1.1 rather than the pinned 8.3.5.
 
 
 ## D Console and end to end demonstration
 
+Observed results below come from one scripted run of `python main.py --interactive` at `351b6ca`, by Claude on an extracted copy (Linux, Python 3.13.18), 9 Nov 2026.
+
 | Demo step | Synthetic setup/input | Expected requirement | Observed result | Evidence/link |
 |---|---|---|---|---|
-| Problem and stakeholders | SmartCare replaces manual appointment handling. Stakeholders: reception/admin staff, patients, practitioners | Explains who needs it and why | [TO DO group: presenter] | Requirements baseline Revision 2 |
-| Register and find Patient and two Practitioners | P1 Alex Example; D1 and D2 Example practitioners | FR-01, FR-02, FR-03 | [TO DO after Stage 9] | [TO DO after Stage 9] |
-| Valid booking | A1, P1, D1, 2026-12-01 09:00 | FR-04, AC-03.1 | [TO DO after Stage 9] | [TO DO after Stage 9] |
-| Same practitioner exact-time conflict rejected | A2, P1, D1, 2026-12-01 09:00 | FR-05, AC-04.1 | [TO DO after Stage 9] | [TO DO after Stage 9] |
-| Different practitioner same time allowed | A3, P1, D2, 2026-12-01 09:00 | FR-05, AC-04.2 | [TO DO after Stage 9] | [TO DO after Stage 9] |
-| Cancel SCHEDULED and retain/find CANCELLED object | Cancel A1, then find A1 | FR-06, FR-07, FR-08, AC-05.1, AC-05.2 | [TO DO after Stage 9] | [TO DO after Stage 9] |
-| Invalid/repeated cancellation rejected | Cancel A1 again; cancel unknown A99 | FR-06, AC-05.3 | [TO DO after Stage 9] | [TO DO after Stage 9] |
-| Default all-status listing | List D1 with no status filter | FR-09: all statuses shown, including CANCELLED | [TO DO after Stage 9] | [TO DO after Stage 9] |
-| Explicit filtering / empty vs unknown / deterministic order | Filter D1 by SCHEDULED; list D2 with no matching status; list unknown D99 | FR-09: empty list for known practitioner, error for unknown, sorted by date/time then ID | [TO DO after Stage 9] | [TO DO after Stage 9] |
-| Invalid date/status/menu/lookup recovery and continued operation | `2026-13-40 09:00`; status `BAD`; menu choice `99`; patient `P99` | Clear error and menu keeps running | [TO DO after Stage 9] | [TO DO after Stage 9] |
-| Session-only limitation and normal exit | Exit, restart, look for P1 | FR-10 retired: data lost on exit | [TO DO after Stage 9] | [TO DO after Stage 9] |
-| One meaningful requirement-linked pytest test explained | `test_cancelled_appointment_remains_in_history` (T-21): book A1, cancel it, find it again | FR-07, AC-05.2: same object is still found, is CANCELLED and is still in the list | Failed in Stage 8 while F8-02 was present (`b99a90f`) and passed after repair (`bb07074`), so it really detects the bug | `project/tests/test_services.py` line 174 @ `c900456` |
-| Architecture and one actual AI decision / known limitation | Appointment.cancel holds the rule; the service finds the record and calls it. AI decision: Stage 6 H Copilot review of PR #15, decision Modify. Limitation: exact-time conflicts only | Design and AI evidence can be explained | [TO DO group: presenter] | `stage06/` part H |
+| Problem and stakeholders | SmartCare replaces manual appointment handling. Stakeholders: reception/admin staff, patients, practitioners | Explains who needs it and why | Presenter: Aagney | Requirements baseline Revision 2 |
+| Register and find Patient and two Practitioners | P1 Alex Example; D1 Taylor Example; D2 Jordan Example | FR-01, FR-02, FR-03 | All registered and found with correct details | Scripted run @ `351b6ca` |
+| Valid booking | A1, P1, D1, 2026-12-01 09:00 | FR-04, AC-03.1 | `Booked A1: P1 with D1, 2026-12-01 09:00, scheduled` | Scripted run @ `351b6ca` |
+| Same practitioner exact-time conflict rejected | A2, P1, D1, 2026-12-01 09:00 | FR-05, AC-04.1 | `Error: Practitioner already has a SCHEDULED appointment at this time` | Scripted run @ `351b6ca` |
+| Different practitioner same time allowed | A3, P1, D2, 2026-12-01 09:00 | FR-05, AC-04.2 | `Booked A3: P1 with D2, 2026-12-01 09:00, scheduled` | Scripted run @ `351b6ca` |
+| Cancel SCHEDULED and retain/find CANCELLED object | Cancel A1, then find A1 | FR-06, FR-07, FR-08, AC-05.1, AC-05.2 | A1 cancelled, then found with status cancelled | Scripted run @ `351b6ca` |
+| Invalid/repeated cancellation rejected | Cancel A1 again; cancel unknown A99 | FR-06, AC-05.3 | `Error: Only SCHEDULED appointments may be cancelled`; `Error: Appointment not found` | Scripted run @ `351b6ca` |
+| Default all-status listing | List D1 with blank status | FR-09: all statuses shown, including CANCELLED | A1 listed as cancelled | Scripted run @ `351b6ca` |
+| Explicit filtering / empty vs unknown / deterministic order | Filter D1 by scheduled before rebooking; book A4 at the freed 09:00 and A5 at 08:00; list D1; list D2 by cancelled; list unknown D99 | FR-09: empty for known practitioner, error for unknown, sorted by date/time then ID | Filter showed `No matching appointments.`; A4 booked in freed slot; order was A5, A1, A4; D2 showed `No matching appointments.`; D99 gave `Error: Practitioner not found` | Scripted run @ `351b6ca` |
+| Invalid date/status/menu/lookup recovery and continued operation | `2026-13-40 09:00`; `tomorrow`; status `BAD`; menu `99`; patient `P99`; blank patient ID; duplicate P1 | Clear error and menu keeps running | Each gave a clear error or unknown-choice message. A1 was still found unchanged afterwards | Scripted run @ `351b6ca` |
+| Session-only limitation and normal exit | Exit with 0, start a new process, find P1 | FR-10 retired: data lost on exit | `Goodbye. Session data is discarded.`; new process gave `Error: Patient not found` | Scripted run @ `351b6ca` |
+| One meaningful requirement-linked pytest test explained | `test_cancelled_appointment_remains_in_history` (T-21): book A1, cancel it, find it again | FR-07, AC-05.2: same object is still found, is CANCELLED and is still in the list | Failed in Stage 8 while F8-02 was present (`b99a90f`) and passed after repair (`bb07074`), so it really detects the bug | `project/tests/test_services.py` @ `351b6ca` |
+| Architecture and one actual AI decision / known limitation | Appointment.cancel holds the rule; the service finds the record and calls it. AI decision: Stage 6 H Copilot review of PR #15, decision Modify. Limitation: exact-time conflicts only | Design and AI evidence can be explained | Presenter: Aagney | `stage06/` part H |
 | PG reschedule identity/participants/time and no-op | Not applicable. UG-only group | N/A | N/A | N/A |
 | PG conflict/invalid status/failure non-mutation | Not applicable. UG-only group | N/A | N/A | N/A |
 | PG old slot / current lookup/list ordering / assurance risks | Not applicable. UG-only group | N/A | N/A | N/A |
-Stable demo owner / fresh process / command: [TO DO group: owner]. From `project/`, in a fresh process: `python main.py --interactive`.
+Stable demo owner / fresh process / command: Demo owner Aagney. From `project/`, in a fresh process: `python main.py --interactive`.
 PG demonstrations through service/tests or not applicable: Not applicable. UG-only group.
 
 
 ## E Final code quality and AI review
 
-Reviewed at `c900456`. [TO DO after Stage 9: re-review `queries.py`, the listing service and `run_menu`.]
+Reviewed at `351b6ca`.
 
 | Review area | Code/evidence location | Finding or no finding | Correction/no change and recheck |
 |---|---|---|---|
-| OOP responsibilities and pure-query boundaries | `project/smartcare/domain.py`, `data_store.py`, `services.py` | No finding so far. Only `console.py` and `main.py` print. Pure query cannot be checked until Stage 9 | [TO DO after Stage 9: recheck `queries.py`] |
+| OOP responsibilities and pure-query boundaries | `project/smartcare/` | No finding. `select_appointments` reads only its arguments, uses `sorted` and does no input/output. Services return objects or raise errors. Only `console.py` and `main.py` print | No change |
 | PascalCase and snake_case naming | `project/smartcare/`, `project/tests/` | No finding | No change |
-| Useful type hints and meaningful docstrings | `data_store.py`, `services.py`, `main.py`, `project/tests/` | Finding: `find_appointment` and `has_practitioner_conflict` have no docstrings. Stale text says the starter raises `NotImplementedError`, plus the typo "Return's". Student tests have no type hints | [TO DO group: fix docstrings; rerun full tests. Test hints can stay as an accepted minor gap] |
-| Four-space indentation and imports/layout | `project/smartcare/`, `project/main.py` | No tabs or odd indentation found by scan | No change |
-| Focused methods / duplication / dead or commented code | `data_store.py` | Finding: `find_appointment` loops through every appointment, while the other lookups use the dictionary directly. No commented-out code found | Behaviour is correct. Accept as minor debt (Part G) or change to a dictionary lookup and rerun tests |
-| Globals / leakage / unnecessary inheritance or frameworks | `project/smartcare/` | No global variables, no inheritance beyond `Enum`, no frameworks. Identity and appointment state are read-only properties | No change |
-| No SQLite/persistence/repository ABCs/speculative features | `project/smartcare/` | No finding. Imports are only `re`, `datetime`, `enum`, `argparse` and project modules | No change |
-| Synthetic data / secrets / dependencies / provenance | `project/requirements-dev.txt`, tracked files | No secrets found by word scan. Example data is synthetic. Only dev dependency is `pytest==8.3.5`; runtime is standard library | Recheck on final SHA |
-| Significant common Copilot contributions and human verification | `stage06/` parts H, I; `stage08/` Copilot sections | Copilot reviewed PR #15 and ranked causes for F8-01 and F8-02. Humans checked each against code and tests | [TO DO after Stage 9: add Stage 9 AI contributions] |
+| Useful type hints and meaningful docstrings | `console.py`, `data_store.py`, `services.py`, `main.py` | Finding: 8 console command helpers, `find_appointment` and `has_practitioner_conflict` have no docstrings. Stale docstrings remain in `services.py`, `run_menu` and `main.py`, plus the typo "Return's". Tests have no type hints | Not corrected at `351b6ca`. Accepted as low-priority debt (Part G) |
+| Four-space indentation and imports/layout | `project/smartcare/`, `project/main.py` | No tabs or odd indentation found. One trailing-whitespace line in `console.py` line 70 | Accepted as minor |
+| Focused methods / duplication / dead or commented code | `data_store.py`, `main.py` | Finding: `find_appointment` loops through every appointment, and the `NotImplementedError` handler in `main.py` is now unused. No commented-out code found | Behaviour is correct. Accepted as minor debt (Part G) |
+| Globals / leakage / unnecessary inheritance or frameworks | `project/smartcare/` | No global state. No inheritance beyond `Enum`, no frameworks. `MENU_TEXT` is a constant | No change |
+| No SQLite/persistence/repository ABCs/speculative features | `project/smartcare/` | No finding | No change |
+| Synthetic data / secrets / dependencies / provenance | `project/requirements-dev.txt`, tracked files | No secrets found by word scan. Example data is synthetic. Only dev dependency is `pytest==8.3.5`; runtime is standard library | No change |
+| Significant common Copilot contributions and human verification | `stage06/` parts H, I; `stage08/` Copilot sections; `stage09/` part E | Copilot reviewed PR #15, ranked causes for F8-01 and F8-02, and was used for Stage 9 as recorded in `stage09/` part E. Humans checked the Stage 6 and 8 findings against code and tests | No change |
 | PG plan/diff/test approvals and Stage 11 VERIFY/TRUST | N/A | Not applicable. UG-only group | N/A |
 
 | AI claim | Affected requirement/code | Human check | Accept/Modify/Reject and reason | Actual outcome/action or no change |
@@ -96,119 +98,120 @@ Reviewed at `c900456`. [TO DO after Stage 9: re-review `queries.py`, the listing
 | Copilot: PR #15 meets AC-05.1 to AC-05.3 | FR-06, FR-07; `cancel_appointment` | Ngedup compared it with the code at `5244ad3` and saw that no test at merge time called the method | Modify. Code supported the results, but Copilot had no test evidence | Stage 7 tests T-20 to T-23 later added direct evidence |
 | Copilot: F8-01 is caused by `!=` instead of `==` in the conflict check; two other causes ranked lower | FR-05, AC-04.1; `has_practitioner_conflict` | Inspected code and reran the failing tests | Accept first cause, reject the other two, as the evidence did not support them | Repaired in `ed76dc8`; focused tests passed |
 | Copilot: F8-02 is caused by a cancelled-status filter in `find_appointment`; two other causes ranked lower | FR-07, AC-05.2, AC-06.1; `find_appointment` | Inspected code and reran the failing tests | Accept first cause, reject the other two, as the evidence did not support them | Repaired in `bb07074`; focused tests passed |
-| Claude: drafted parts of this Stage 12 record from the repo | Stage 12 record | [TO DO group: check each entry against the repo] | [TO DO group: Accept/Modify/Reject and reason] | [TO DO group] |
-Access route or approved equivalent / limitations: GitHub Copilot is the nominated assistant. Claude was also used on 9 Nov 2026 to draft parts of this record. [TO DO group: confirm this use is allowed or ask the tutor, and add any Stage 9 tool use]
-Available AI evidence and missing evidence honestly disclosed: Stage 6 H and I and the Stage 8 prompts are available. The Stage 6 Copilot review was done after merge, on 9 Nov 2026. Stage 6 PRs #8, #9 and #10 record no Copilot use. Earlier reviews were weak: PRs #8 and #9 have no recorded approval.
+| Claude: PR #29 tie-break test does not prove ID ordering, because A1 is already before A4 in the source list | QRY-03; `tests/test_queries.py` | No formal review of this finding is recorded on GitHub | Accept. Recorded as a non-blocking follow-up | Not fixed at `351b6ca`; recorded in Parts G and H |
+| Claude: drafted parts of this Stage 12 record from the repo and ran the Part D script | Stage 12 record | Aagney checked the entries against the repo and Git output | Modify. Entries were kept where supported by repo evidence; unconfirmed reviews and approvals were removed | PR review claims changed to match GitHub; unknown items marked not recorded |
+Access route or approved equivalent / limitations: GitHub Copilot is the nominated assistant and was used for Stage 9. Claude was also used on 9 Nov 2026 to check PRs #29 and #30, draft parts of this record and run the Part D script. Tutor approval for Claude was not asked.
+Available AI evidence and missing evidence honestly disclosed: Stage 6 H and I, the Stage 8 prompts and Stage 9 part E are available. The Stage 6 Copilot review was done after merge, on 9 Nov 2026. Stage 6 PRs #8, #9 and #10 record no Copilot use. Earlier reviews were weak: PRs #8 and #9 have no recorded approval.
 
 
 ## F README and reproducibility check
 
 | README item | Location | Verifier | Result/gap |
 |---|---|---|---|
-| Purpose and included common/PG scope | `README.md`, `project/README.md` | [TO DO group] | Gap: `project/README.md` is still titled "Stage 6 starter" and the root README says it is the Stage 6 starter |
-| Out-of-scope capabilities and known limitations | `project/README.md` last paragraphs | [TO DO group] | Partly there. Session-only and FR-10 are covered. Add auth, portal, notifications, billing, clinical AI and timezone limits |
-| Confirmed teaching Python version and dependency installation | `README.md`, `project/README.md`, `project/requirements-dev.txt` | [TO DO group] | Gap: README says Python 3.13, but Stage 6 and 7 runs used Python 3.14.3. Rerun on 3.13 or state the difference |
-| Working directory / demo / interactive / test commands | `README.md`, `project/README.md` | [TO DO group] | Partly there. Add `python main.py --interactive` |
-| Repository structure and architecture responsibilities | `project/README.md` | [TO DO group] | Partly there. Remove old TODO text and add `queries.py` and console responsibilities |
-| Responsible AI summary / synthetic-data rule | `README.md` last paragraph | [TO DO group] | Partly there. Add a short responsible-AI summary with links |
-| Release label/version and SHA links | `README.md` group index | [TO DO group] | Gap: every group index line still says `[complete]` |
-Root README index and project/README verified: Not yet. [TO DO group: fix the gaps above, then verify]
-Fresh clone or extracted ZIP / candidate identity: [TO DO after Stage 9]
-Verifier and clean environment / actual version: [TO DO group: someone other than the Stage 9 author]
-Setup/run/test commands and observed results: [TO DO after Stage 9]
-Missing local file or setup gap / remedy and recheck: [TO DO after Stage 9]
+| Purpose and included common/PG scope | `README.md`, `project/README.md` | Claude review, Aagney | Gap: `project/README.md` is still titled "Stage 6 starter" |
+| Out-of-scope capabilities and known limitations | `project/README.md` | Claude review, Aagney | Partly there. Session-only and FR-10 covered. Auth, portal, notifications, billing, clinical AI and timezone limits are recorded in Part G only |
+| Confirmed teaching Python version and dependency installation | `README.md`, `project/README.md`, `project/requirements-dev.txt` | Aagney | README says Python 3.13. Team run used 3.14.3; 50 tests also passed on 3.13.18 with pytest 9.1.1 |
+| Working directory / demo / interactive / test commands | `README.md`, `project/README.md` | Claude review, Aagney | Partly there. `python main.py --interactive` is missing from both READMEs |
+| Repository structure and architecture responsibilities | `project/README.md` | Claude review, Aagney | Partly there. Old TODO text remains; console and query responsibilities are not described |
+| Responsible AI summary / synthetic-data rule | `README.md` last paragraph | Claude review, Aagney | Partly there. Synthetic-data rule present; AI summary is in Part G only |
+| Release label/version and SHA links | `README.md` group index | Claude review, Aagney | Gap: group index still has `[complete]` placeholders |
+Root README index and project/README verified: Not fully. The gaps above are open at `351b6ca`.
+Fresh clone or extracted ZIP / candidate identity: Extracted copy of `351b6ca` made with `git archive` by Claude. No human fresh-clone check was completed.
+Verifier and clean environment / actual version: Claude, Linux, Python 3.13.18, pytest 9.1.1. Not an independent human verifier.
+Setup/run/test commands and observed results: From `project/`: `python main.py` printed the A1 booking and session-only message. `python -m pytest -q`: 50 passed.
+Missing local file or setup gap / remedy and recheck: No missing files found. Remedy still needed: update the READMEs and repeat a human fresh-clone check.
 
 
 ## G Known limitations debt and release notes
 
-## G Known limitations debt and release notes
-
-Delivered features: Register and find patients and practitioners; book with exact-time practitioner conflict checks; find appointments; cancel while keeping history. [TO DO after Stage 9: add practitioner listing, filtering, ordering and the interactive menu]
+Delivered features: Register and find patients and practitioners; book with exact-time practitioner conflict checks; find appointments; cancel while keeping history; list a practitioner's appointments with optional status filter and deterministic order; interactive console menu with error recovery.
 Important fixes: F8-01 practitioner conflict check corrected (`ed76dc8`, issue #19). F8-02 cancelled appointments can be found again (`bb07074`, issue #20).
-Architecture/quality improvements: Conflict check uses `AppointmentStatus.SCHEDULED` instead of a raw string (`8a906fa`). 29 student-written test functions were added in Stage 7, for 37 tests in total.
+Architecture/quality improvements: Conflict check uses `AppointmentStatus.SCHEDULED` instead of a raw string (`8a906fa`). Pure queries are separated from services and console. Tests grew from 8 supplied to 50.
 Known limitations: Data lasts for one session only. Conflicts are exact-time only because appointments have no duration. No patient-conflict, age or past-date rules. Console only.
-AI-assisted development note: GitHub Copilot was used for review and ranking possible defect causes. People checked its output against code, requirements and tests, and the team stays responsible for the code. Claude helped draft parts of this record. [TO DO after Stage 9: add Stage 9 AI use]
+AI-assisted development note: GitHub Copilot was used for review, ranking possible defect causes and Stage 9 work. Claude helped check PRs #29 and #30, drafted parts of this record and ran the demo script. People remain responsible for the code and its verification.
 
 | Debt item | Impact | Priority | Future action | Accepted? / release rationale |
 |---|---|---|---|---|
-| `find_appointment` loops through all appointments | Slower with many records; inconsistent with other lookups | Low | Use a dictionary lookup | [TO DO group: accept or fix] Correct at teaching scale |
-| No test calls `parse_date_time` directly at `c900456` | Bad date input is not proven to be rejected | Medium | [TO DO after Stage 9: add tests with the menu work] | [TO DO group: fix if time allows] |
-| Two store methods lack docstrings | Harder to maintain | Low | Add docstrings | [TO DO group: fix before release, it is quick] |
+| `find_appointment` loops through all appointments | Slower with many records; inconsistent with other lookups | Low | Use a dictionary lookup | Yes. Correct at teaching scale |
+| Query tie-break test does not prove ID ordering; empty and already-sorted inputs untested | A broken tie-break could go unnoticed | Medium | Add a reversed-source test and the two missing cases | Yes for this release. The menu demo and code inspection support the behaviour |
+| No test calls `parse_date_time`, `parse_status` or `run_menu` directly | Console errors are not protected by automated tests | Medium | Add console tests | Yes for this release. Covered by the scripted demo only |
+| Missing and stale docstrings; unused handler in `main.py` | Harder to maintain | Low | Add or correct docstrings and remove the handler | Yes for this release |
 | Exact-time conflict only, no duration | Overlapping appointments would be allowed if durations existed | Medium | Add duration and overlap rules if required | Yes, in line with the baseline: no duration rules apply |
 | No persistence | Data is lost on exit | Medium for real use | Add storage in a future production version | Yes, FR-10 is retired |
-| Stage 6 PRs had weak or no formal review | Less confidence in those early merges | Low now | Require formal review before merge | Offset later by Stage 7 tests and the PR #21 review |
+| Stage 6 PRs had weak or no formal review | Less confidence in those early merges | Low now | Require formal review before merge | Offset later by Stage 7 tests and PR #21 review |
 Session-only synthetic data and minute-precision local time: All data is synthetic and kept in memory for one session. Times are naive local datetimes at minute precision; the console accepts exactly `YYYY-MM-DD HH:MM`.
 Production auth/roles, portal, notifications, billing/insurance, clinical AI exclusions: None of these are included. They are out of scope for this teaching release.
 Scale/concurrency, timezone policy, operations/monitoring, accessibility/usability limitations: One user, one process, no concurrency handling, no timezone policy, no logging or monitoring, and a basic console with no accessibility testing.
-Difference between accepted scope limit and unresolved required behaviour: A scope limit is something the requirements leave out, such as persistence. Unresolved required behaviour is something the requirements ask for that does not work. At `c900456`, FR-09 and the interactive menu are unresolved required behaviour, not scope limits, so they must be finished.
+Difference between accepted scope limit and unresolved required behaviour: A scope limit is something the requirements leave out, such as persistence. Unresolved required behaviour is something the requirements ask for that does not work. No unresolved required behaviour was found at `351b6ca`. The README gaps are submission gaps, not behaviour defects.
 PG assurance residual risks / owner / status or not applicable: Not applicable. UG-only group.
+
 
 ## H Release findings and corrective action
 
 | Requirement/claim | Reproduction/observation | Impact/severity | Owner/action | Corrective diff | Focused/full recheck | Residual limit |
 |---|---|---|---|---|---|---|
-| FR-09, QRY/FP, console menu | `python main.py --interactive` prints "Stage 9 interactive menu is not yet completed" at `c900456`; four functions raise `NotImplementedError` | High, release blocker | Ngedup, finish Stage 9 | [TO DO after Stage 9] | [TO DO after Stage 9] | [TO DO after Stage 9] |
-| README accurate and reproducible | Group index has `[complete]` placeholders; `project/README.md` still describes the Stage 6 starter | High for submission | [TO DO group: owner] update both | [TO DO group] | [TO DO group: fresh-clone check] | None expected |
-| Python version evidence | README says 3.13; Stage 6 and 7 runs used 3.14.3 | Medium | [TO DO group: owner] rerun on 3.13 or disclose | [TO DO group] | [TO DO group] | [TO DO group] |
-| Docstrings accurate and present | Stale `NotImplementedError` text and "Return's" in `services.py`; two store methods have none; `main.py` still says the menu is incomplete | Low | [TO DO group: owner] fix | [TO DO group] | [TO DO group: full tests] | None expected |
+| FR-09, QRY/FP, console menu | At `c900456` the menu and listing raised `NotImplementedError` | High, was a release blocker | Alicia implemented; resolved | PRs #29, #30, #31, ending at `351b6ca` | 50 passed at `351b6ca`; scripted menu demo passed | Tie-break test gap; no direct console tests |
+| README accurate and reproducible | Group index has `[complete]` placeholders; `project/README.md` still describes the Stage 6 starter | High for submission | Open, no owner assigned | Not done at `351b6ca` | Not done | Open |
+| Python version evidence | README says 3.13; team run used 3.14.3 | Medium | Aagney and Claude runs recorded | No code change needed | 50 passed on 3.14.3 and on 3.13.18 | Pinned pytest 8.3.5 was not used on 3.13 |
+| Docstrings accurate and present | Missing docstrings and stale text in `console.py`, `data_store.py`, `services.py`, `main.py` | Low | Accepted as debt | None | Not applicable | Open as debt |
 Justified no-change conclusion if no defect found: Not applicable. Defects were found.
-Release blockers still open / status: Open at `c900456`: Stage 9 code, tests and record; README gaps. [TO DO after Stage 9: update status]
+Release blockers still open / status: No behaviour blocker is open. The Stage 9 record was merged in PR #32 (`7fc8a94`). README corrections and an independent fresh-clone check are still open.
 
 
 ## I Git review and integration evidence
 
-Issue / PR / diff links and reviewed SHA: [TO DO after Stage 9: Stage 9 and Stage 12 PRs]. Earlier: issues #1, #3, #19, #20; PRs #8, #9, #10, #15, #21.
-Independent reviewer / feedback / response: [TO DO after Stage 9]
-Integration commit / full recheck: [TO DO after Stage 9]
-Tracked and untracked file inspection / cleanliness: At `c900456` tracked files include no caches, environments or Stage 8 utility files. [TO DO after Stage 9: repeat with `git status` and `git ls-files`]
-Secrets/staff material/caches/tool-metadata exclusion check: Word scan of Python files found no secrets at `c900456`, and `.gitignore` covers environments, caches, `.env` and Stage 8 folders. [TO DO group: repeat on final SHA and confirm no staff material]
-Candidate recovery plan / known-good SHA: Known-good pre-Stage 9 commit: `c900456` (37 tests pass). To recover, make a branch from the known-good SHA or use `git revert`; do not rewrite shared history. [TO DO after Stage 9: replace with candidate SHA]
-Named substantive contributions: Alicia: lookup and cancellation services, Stage 8 repairs and refactor. Aagney: Stage 7 matrix and tests, review and merge of PR #21. Ngedup: Stage 6 records, Copilot review of PR #15, review of PR #21, Stage 9 work. [TO DO group: each member checks and updates their own]
+Issue / PR / diff links and reviewed SHA: PR #29 https://github.com/Blahuee/st1-assignment-3/pull/29 (`5f7e2c0`); PR #30 https://github.com/Blahuee/st1-assignment-3/pull/30 (`e64579b`); PR #31 https://github.com/Blahuee/st1-assignment-3/pull/31 (`c3bace9`); PR #32 https://github.com/Blahuee/st1-assignment-3/pull/32. Earlier: issues #1, #3, #19, #20; PRs #8, #9, #10, #15, #21.
+Independent reviewer / feedback / response: Alicia authored the three Stage 9 code PRs. PRs #29 and #30 were merged by Aagney with no formal approval recorded on GitHub. PR #31 shows as Approved on GitHub and was merged by Ngedup. Findings from the informal checks of #29 and #30 (tie-break test gap and changed older test data) are recorded in Parts C, G and H.
+Integration commit / full recheck: `351b6ca`; 50 passed on Aagney's computer. Stage 9 record merged in PR #32 (`7fc8a94`) with no project code changes.
+Tracked and untracked file inspection / cleanliness: `git status` at `351b6ca` was clean. Tracked files include no caches, environments or Stage 8 utility files.
+Secrets/staff material/caches/tool-metadata exclusion check: Word scan found no secrets at `351b6ca`, and `.gitignore` covers environments, caches, `.env` and Stage 8 folders. No staff material was found in tracked file names.
+Candidate recovery plan / known-good SHA: Known-good code commit: `351b6ca` (50 tests pass). To recover, make a branch from that SHA or use `git revert`; do not rewrite shared history.
+Named substantive contributions: Alicia: lookup and cancellation services, Stage 8 repairs and refactor, Stage 9 queries, listing, menu and tests. Aagney: Stage 7 matrix and tests, review of PR #21, merges of PRs #21, #29 and #30, Stage 12 regression run and record. Ngedup: Stage 6 records, Copilot review of PR #15, review of PR #21, Stage 9 Parts A, B and G, merges of PRs #31 and #32.
 
 
 ## J Human release decision
 
-Decision — READY FOR COURSE RELEASE / READY WITH DOCUMENTED LIMITATIONS / NOT YET READY: [response]
-Approver / date / rationale and evidence: [response]
-What risks remain / conditions / owners: [response]
-Can the team explain the system: [response]
-Can a change be recovered: [response]
-Common decision / PG decision where different: [response]
+Decision — READY FOR COURSE RELEASE / READY WITH DOCUMENTED LIMITATIONS / NOT YET READY: NOT YET READY as a complete package. The code at `351b6ca` meets the tested common requirements, but README corrections and an independent fresh-clone check are incomplete, and PRs #29 and #30 have no formal approval recorded.
+Approver / date / rationale and evidence: Aagney Mani Sharma, 9 Nov 2026, recording the release state alone before the deadline; not a full group decision. Evidence: Parts C, D and H.
+What risks remain / conditions / owners: README gaps (no owner assigned); no human fresh-clone check; no ZIP uploaded; tie-break and console test gaps (accepted debt).
+Can the team explain the system: Not confirmed as a group at submission.
+Can a change be recovered: Yes. `351b6ca` is a known-good commit, and changes can be undone with `git revert`.
+Common decision / PG decision where different: Common decision as above. PG not applicable.
 
 
 ## K Final tested release SHA
 
-Exact common tested SHA: [response]
-Exact PG tested SHA or not applicable: [response]
-Final submitted SHA / repository URL: [response]
-Evidence-only later commit and difference explanation: [response]
-Executable changes after testing and re-verification: [response]
-Source ZIP name / SHA correspondence / extracted comparison: [response]
+Exact common tested SHA: 351b6ca334415e52054d8a29ef9dab4bed175a2a
+Exact PG tested SHA or not applicable: Not applicable. UG-only group.
+Latest commit on main; it changes records only, and the code was tested at 351b6ca
+Evidence-only later commit and difference explanation: PR #32 (`7fc8a94`) and the Stage 12 record merge changed records only. `git diff --stat 351b6ca 7fc8a94 -- project` shows no changes.
+Executable changes after testing and re-verification: None.
+Source ZIP name / SHA correspondence / extracted comparison: The repository link was submitted. No ZIP was uploaded. A local `smartcare-submission.zip` was made with `git archive` at `351b6ca`, before the records were merged.
 
 
 ## L Submission package verification
 
 - [ ] Feature freeze and scoped requirements traced.
-- [ ] Applicable full regressions, integrated demo and invalid paths verified.
+- [x] Applicable full regressions, integrated demo and invalid paths verified.
 - [ ] Architecture/code quality and final AI/dependency checks complete.
 - [ ] Root README and project/README reproduced by another verifier.
-- [ ] Release notes, technical debt and limitations visible.
+- [x] Release notes, technical debt and limitations visible.
 - [ ] Independent human review, integration and release decision recorded.
-- [ ] Repository URL accessible to marker and exact candidate SHA identified.
+- [x] Repository URL accessible to marker and exact candidate SHA identified.
 - [ ] One source ZIP from submitted commit with root README.md and .gitignore.
-- [ ] project/ source and all accumulated applicable tests included.
-- [ ] All common applicable stage records included; Stage 10/11 records completed only for the PG pathway. UG-only groups retain supplied PG-only templates unchanged as intentionally not applicable, without fabricated N/A responses.
+- [x] project/ source and all accumulated applicable tests included.
+- [x] All common applicable stage records included; Stage 10/11 records completed only for the PG pathway. UG-only groups retain supplied PG-only templates unchanged as intentionally not applicable, without fabricated N/A responses.
 - [ ] No .git, environments, caches, secrets, real data, staff solutions or private QA in ZIP.
 - [ ] No Stage 8 utility/backups/recovery metadata or duplicate application in ZIP.
-- [ ] Mixed-group common protection and candidate upload routing checked.
+- [x] Mixed-group common protection and candidate upload routing checked.
 - [ ] Group reflection, confidential individual peer forms and common team viva routed separately.
 
-Confirmed assessment item/upload route: [response]
-Deadline/timezone: [response]
-Repository access arrangement: [response]
-Mixed-candidate upload arrangement: [response]
-Oral/video recording/accessibility arrangements: [response]
-Remaining administration or release dependency: [response]
+Confirmed assessment item/upload route: Repository link submitted. No ZIP uploaded.
+Deadline/timezone: Not recorded here. Australia/Sydney time.
+Repository access arrangement: Public repository: https://github.com/Blahuee/st1-assignment-3
+Mixed-candidate upload arrangement: Not applicable. All members are UG.
+Oral/video recording/accessibility arrangements: Not confirmed at submission.
+Remaining administration or release dependency: No source ZIP uploaded. Human fresh-clone check and README corrections not done.
 
 
 ## M Formative questions
@@ -236,36 +239,25 @@ Remaining administration or release dependency: [response]
 
 ## N Reflection viva and handover
 
-Strongest evidence SmartCare is ready: [response]
-Weakest area: [response]
-How AI use changed from Stage 1 to Stage 12: [response]
-Start doing — engineering and AI use: [response]
-Stop doing — engineering and AI use: [response]
-Continue doing — engineering and AI use: [response]
-What worked / caused rework / future delivery improvement: [response]
-One paragraph — If AI can write code why do we still need software engineers: [response]
+Strongest evidence SmartCare is ready: Not recorded at submission.
+Weakest area: Not recorded at submission.
+How AI use changed from Stage 1 to Stage 12: Not recorded at submission.
+Start doing — engineering and AI use: Not recorded at submission.
+Stop doing — engineering and AI use: Not recorded at submission.
+Continue doing — engineering and AI use: Not recorded at submission.
+What worked / caused rework / future delivery improvement: Not recorded at submission.
+One paragraph — If AI can write code why do we still need software engineers: Not recorded at submission.
 
 | Preparation item | Own explanation and evidence link |
 |---|---|
 | Problem and stakeholders | Staff need to book and cancel appointments without double-booking practitioners and without losing history. Stakeholders are staff, patients and practitioners. |
 | Two requirements and acceptance criteria | FR-05: a practitioner cannot have two SCHEDULED appointments at the same time (AC-04.1), but a different practitioner can (AC-04.2). FR-07: a cancelled appointment stays retrievable (AC-05.2). See `stage07/` matrix. |
-| Domain model and architecture | Patient, Practitioner, Appointment and AppointmentStatus are in `domain.py`. `SmartCareDataStore` holds records, services coordinate work and the console handles input and output. |
+| Domain model and architecture | Patient, Practitioner, Appointment and AppointmentStatus are in `domain.py`. `SmartCareDataStore` holds records, services coordinate work, queries select and sort, and the console handles input and output. |
 | Design trade-off | In-memory dictionaries keep the design simple and fit the session-only scope, but data is lost on exit. |
 | Meaningful test and its limits / 100 percent coverage | T-21 proves cancelled appointments are retained. It does not prove the console works. 100 percent coverage only shows lines ran, not that the assertions or requirements are right. |
 | Diagnosed defect and verification | F8-02: `find_appointment` skipped cancelled records. Tests T-21 and T-22 failed with `LookupError`; the filter was removed in `bb07074` and the focused tests then passed. |
-| Shared store and session-state/query responsibilities | All three services share one store, so they see the same records in a session. [TO DO after Stage 9: add the query part] |
-| What would break if session-state lookup/query responsibilities changed? | If each service had its own store, booking could not see registered patients. If lookup hid cancelled records, FR-07 would break, which is what F8-02 did. [TO DO after Stage 9: add the listing effect] |
+| Shared store and session-state/query responsibilities | All three services share one store, so they see the same records in a session. The service gets a fresh list from the store and passes it to the pure `select_appointments`, which depends only on its arguments. |
+| What would break if session-state lookup/query responsibilities changed? | If each service had its own store, booking could not see registered patients. If lookup hid cancelled records, FR-07 would break, which is what F8-02 did. If the query sorted its source in place, it would change the caller's list. |
 | Why cancellation is domain behaviour / conflict coordination is service behaviour | Cancel only needs the appointment's own status, so the rule sits on Appointment. A conflict needs other appointments, so the service asks the store, which can see them all. |
-| FR-07 retained history test | `test_cancelled_appointment_remains_in_history`, `project/tests/test_services.py` line 174 @ `c900456`. |
-| Actual AI change rejected/modified or honestly accepted with verification | Stage 6 H: Copilot's review of PR #15 was modified, because it could not provide test evidence. |
-| Unresolved limitation / future production work | No persistence, no login or roles, and exact-time conflicts only. |
-| Personal implementation contribution | [TO DO group: each member, with link] |
-| Personal test/review/design/integration contribution | [TO DO group: each member, with link] |
-| PG agentic change and rescheduling verification | Not applicable. UG-only group. |
-| PG responsible-AI risk/remediation or supported no finding | Not applicable. UG-only group. |
-
-Optional bounded-change practice only: validation rule, focused test, safe error-message change, explicit-input query or agreed status rule with test. Explain expected impact before editing, make a small change, run the test, and identify evidence to inspect if unsure. No live AI unless explicitly permitted. Preserve the submitted candidate.
-
-Practice question/change and reasoning: [response or not undertaken]
-Separate reflection / peer / common team viva evidence links and routing: [response]
-No further coding stage. Later corrections use the published assessment process.
+| FR-07 retained history test | `test_cancelled_appointment_remains_in_history`, `project/tests/test_services.py` @ `351b6ca`. |
+| Actual AI change rejected/modified or honestly accepted with verification | Stage 6 H: Copilot's review of PR #15 was modified, because it could not provide

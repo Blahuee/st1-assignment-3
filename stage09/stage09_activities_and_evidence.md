@@ -133,16 +133,16 @@ Responsibility check: explain how domain invariants, shared-store collections, s
 
 ## G. Ten formative answers
 
-1. What makes select_appointments pure, and what side effect breaks purity? It only reads its inputs and returns a new list. it does no input or printing, does not use the store, has no hidden state, and changes no list or object, so the same inputs give the same result. Sorting the source in place, printing or cnacelling an appointment would break purity. 
-2. Which explicit inputs are needed, and why avoid a global store? <!-- response -->
-3. How can a new list reuse Appointment objects safely? <!-- response -->
-4. Why use a named key, and what breaks equal-time ties? <!-- response -->
-5. How do default and explicit status filters differ? <!-- response -->
-6. How do empty, unknown practitioner and invalid filter cases differ? <!-- response -->
-7. Which console errors recover, and how is unchanged state checked? <!-- response -->
-8. What is data integrity for registered participants, conflicts and history? <!-- response -->
-9. What is Copilot's review role, and who verifies findings? <!-- response -->
-10. How do pure functions and OOP responsibilities work together? <!-- response -->
+1. What makes select_appointments pure, and what side effect breaks purity? It only reads its inputs and returns a new list. It does no input or printing, does not use the store, has no hidden state, and changes no list or object, so the same inputs give the same result. Sorting the source in place, printing or cnacelling an appointment would break purity. 
+2. Which explicit inputs are needed, and why avoid a global store? The appointment list, the practitioner ID and an optional status. A global store would be hidden input, making results harder to predict and test.
+3. How can a new list reuse Appointment objects safely? The list is new but holds the same Appointment objects. This is safe because the query only reads them and never changes them.
+4. Why use a named key, and what breaks equal-time ties? A named key (appointment_sort_key) writes the sorting rule once, so it can be tested on its own and reused. It returns (date_time, appointment_id), so appointments are sorted by time first. If two have the same time, the appointment ID breaks the tie, so A1 comes before A3 at 09:00.
+5. How do default and explicit status filters differ? The default (status None, or blank in the menu) shows every status: Scheduled, Cancelled and Completed. This shows the full history. An explicit status shows only that status, so a cancelled A1 is left out when you filter by Scheduled.
+6. How do empty, unknown practitioner and invalid filter cases differ? Empty means the practitioner exists but has no matching appointments, so it returns [] and the menu shows "No appointments found." Unknown means no practitioner has that ID (for example D9), so it raises LookupError. Invalid means the status isn't scheduled, cancelled or completed (for example "pending"), so it raises ValueError.
+7. Which console errors recover, and how is unchanged state checked? Bad menu choice, bad/unknown/duplicate IDs, bad date, conflicts, repeat cancel and invalid status all show an error and return to the menu. We check by finding or listing the records afterwards to see nothing changed.
+8. What is data integrity for registered participants, conflicts and history? Appointments link to real registered patients and practitioners, a practitioner can't be double-booked, and cancelled appointments are kept. Failed actions change nothing.
+9. What is Copilot's review role, and who verifies findings? Copilot suggests possible problems or improvements after our group has done its own design and review. It does not run tests, approve merges or replace a teammate's review. We check each suggestion against the requirements, the code and our own test run, then record Accept, Modify or Reject with a reason.
+10. How do pure functions and OOP responsibilities work together? Each part has one job. The Appointment object protects its own rules (like only cancelling Scheduled), the store holds the data, and the services check input and coordinate the work. The pure query just selects and sorts the list it is given, and the console handles input and output.
 
 ## H. Review, completion and common handover
 

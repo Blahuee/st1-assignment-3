@@ -110,6 +110,7 @@ Response and reason: [complete]
   This created a local tracking branch for origin/debug/stage08, allowing teammates to access the prepared Stage 8 changes.
 - **Downloaded tool version, source SHA256 and --check outcome:**
   - **Tool version:** Stage 8 tool 1.1
+  - **Source SHA256** `b4a1993e878c59a9df5e9055320702b2d318c5b6055bb1693a3afc25cd8fd375`
   - **--check outcome:** Preflight passed; project remained unchanged; both proposed fault signatures were verified in a temporary copy.
 - **--apply and --verify output summaries / artefact references:**\
   - **--apply:** Successfully prepared F8-01 (practitioner conflict) and F8-02 (retained-history lookup).

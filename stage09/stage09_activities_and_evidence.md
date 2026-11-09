@@ -119,22 +119,28 @@ What the tests do and do not establish: The tests show that the query returns th
 Before and after state: after each rejected action the record was found or listed again and was unchanged (for example A1 was not found after the failed bookings), and the next valid command succeeded. The console itself was demonstrated by hand. There is no automated test that drives `run_menu` with scripted input. The UI-02 run did not enter a blank ID, an unknown participant on booking, or an unknown practitioner when listing, so those cases are not claimed here.
 
 ## E. GitHub Copilot review and human decisions
-
-Human design completed before AI: <!-- reference -->
-Actual prompt/context supplied: <!-- paste or accessible reference -->
-Actual response: <!-- accessible reference -->
-
+Human design completed before AI: Sections A and B of this record, committed before any Copilot use (commits f6d7689 and 8ae2e5f).
+Actual prompt/context supplied: The Stage 9 handout review prompt, followed by the synthetic code of `queries.py`, `AppointmentService.list_practitioner_appointments` and `cancel_appointment`, a description of `run_menu`, and a summary of `test_queries.py`, `test_services.py` and `test_workflows.py`. (Copilot's first reply was only a generic template because no code was attached; the code was then supplied and the review below is its second reply.) **[link or paste of the prompt]**
+Actual response: Copilot found no Critical findings. It raised two Important findings and several Optional ones, listed below. **[link or paste of Copilot's full reply]**
+ 
 | AI finding | Code/test evidence | Severity | Accept/Modify/Reject and reason | Change or no change | Actual verification |
 |---|---|---|---|---|---|
-| | | | | | |
-
-Responsibility check: explain how domain invariants, shared-store collections, service coordination, pure queries and console effects remain separate: <!-- response -->
-
+| No automated console tests for `run_menu`, `parse_status`, error display and EOF handling | `console.py` `run_menu`, `parse_status`; there is no `test_console.py` | Important | Accept. Correct: the console was only demonstrated by hand (section D). | **[No change before the deadline / or: added scripted-input tests, name them]** | Checked the tests folder for a console test file (none). Manual UI-01 and UI-02 runs are recorded in section D |
+| State after failure paths is inferred, not asserted everywhere | `services.py` invalid-status and unknown-ID checks; `test_workflows.py`; `test_starter.py` | Important | Modify (partly correct). State is asserted for the conflict case (`store.list_appointments() == before_conflict`), and `test_starter.py` checks that duplicate patient, practitioner and appointment attempts preserve the original. The invalid-status listing only reads data, so it cannot change state. Cancelling an unknown ID is checked only for the exception. | No change | Read the tests: state is asserted for conflict and duplicates, but not after an unknown-ID cancel |
+| Assert that the result is a distinct list from the input | `test_queries.py` | Optional | Reject, already covered. `assert results is not appointments` and `assert first_results is not second_results` exist, and `test_services.py` has the same check | No change | Searched the tests for `is not` |
+| Add a test where appointments share the same date/time (ID tie-break) | `test_select_appointments_sorts_by_datetime_then_appointment_id` | Optional | Reject, already covered. The fixture has A1 and A4 both at 2026-11-05 10:00, and the expected order `A1, A4, A3, A5` shows the ID tie-break | No change | Read `create_test_appointments` and ran the suite (50 passed) |
+| Parameterised test for all enum values | status filter tests | Optional | Reject. Correctness is already covered by the existing status tests; a rewrite is a style change only | No change | Existing tests cover each status |
+| Extra history-retention assertion after the freed slot is reused | `test_cancelled_appointment_remains_in_history`, `test_cancelled_appointment_slot_can_be_reused`, `test_complete_appointment_workflow` | Optional | Accept as optional; already shown. After A3 reuses the slot, the D1 list in the workflow test shows A1 (cancelled) and A3 | No change needed | Final D1 list in the workflow test and in the manual UI-01 run |
+ 
+Human finding (ours, not Copilot's): in `list_practitioner_appointments` the status check runs before the practitioner lookup, so an unknown practitioner with an invalid status raises ValueError rather than LookupError. This is harmless and both cases are errors, so we left it unchanged.
+ 
+Responsibility check: Domain invariants stay inside the Appointment object (for example, only a SCHEDULED appointment can be cancelled). The data store holds the three collections and finds records. The services check IDs and status, coordinate the work and raise ValueError or LookupError. `select_appointments` only selects and sorts a list it is given. The console is the only place that reads input, prints, and converts text to a date or a status, and it only calls the services.
+ 
 ## F. Required reflections
-
-1. Which integration concern was architectural rather than a filtering/sorting detail? <!-- response -->
-2. Which Copilot suggestion did you reject as over-engineering, and why? <!-- response -->
-3. How did you prove cancelled appointments remain retrievable and listable in the same session? <!-- response -->
+ 
+1. Which integration concern was architectural rather than a filtering/sorting detail? Where each job belongs. We used one data store and one set of services for the whole menu session, and kept the console to input and output instead of repeating domain guards or conflict rules in it. The filtering and sorting was a detail inside one pure function.
+2. Which Copilot suggestion did you reject as over-engineering, and why? Copilot suggested a parameterised enum test and extra "distinct list" and same-time tie-break tests. We rejected these because the tests already exist: the fixture has A1 and A4 at the same time, and `results is not appointments` is already asserted. Adding them would only repeat existing tests, so it would be over-engineering.
+3. How did you prove cancelled appointments remain retrievable and listable in the same session? We booked A1, cancelled it, listed D1 with all statuses (A1 was shown as cancelled) and listed with scheduled (A1 was left out). `test_complete_appointment_workflow` also checks that finding A1 returns the same object with status CANCELLED.
 
 ## G. Ten formative answers
 

@@ -118,7 +118,7 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
   - Alicia: Confirmed, updated successfully
   - Aagney: Confirmed, updated successfully
   - Ngedup: Confirmed, updated successfully
-- - **Integrated verification after merge:** Not recorded at merge time. Retrospective check on 9 Nov 2026: `python -m pytest` from `project/` at b5ddb1760ac109c6d742b2c485906e4e55d615df (Python 3.14.3, pytest 8.3.5): 8 passed. These supplied tests do not call `find_patient()` directly; Stage 7 tests T-15 and T-16 later cover it.
+- **Integrated verification after merge:** Not recorded at merge time. Retrospective check on 9 Nov 2026: `python -m pytest` from `project/` at b5ddb1760ac109c6d742b2c485906e4e55d615df (Python 3.14.3, pytest 8.3.5): 8 passed. These supplied tests do not call `find_patient()` directly; Stage 7 tests T-15 and T-16 later cover it.
 
 - **PR link and title:** https://github.com/Blahuee/st1-assignment-3/pull/9, "Implement Practitioner Search by ID"
 - **Linked issue and requirement:** Linked on the PR to issue #1 (FR-06/FR-07). The PR implements practitioner lookup, which has no separate issue yet.

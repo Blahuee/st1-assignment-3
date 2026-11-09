@@ -328,8 +328,8 @@ Requirement → test → failure/observation → diagnosis → change → verifi
 - **Full-suite result:** `python -m pytest -v` in project/: 37 passed, 0 failed (Python 3.14.3, pytest 8.3.5)
 - **Coverage:** Not used. No coverage percentage is claimed, and a percentage alone would not show that the assertions are meaningful.
 - **Honest limits of the suite:**
-    - Among the student-authored tests, identity (`is`) is checked in T-15, T-17, T-20, T-21 and T-24. The supplied tests T-02, T-03 and T-04 also check it.
-    - `parse_date_time` in console.py is not called by any test. Invalid console date input is not tested.
+  - Among the student-authored tests, identity (`is`) is checked in T-15, T-17, T-20, T-21 and T-24. The supplied tests T-02, T-03 and T-04 also check it.
+  - `parse_date_time` in console.py is not called by any test. Invalid console date input is not tested.
   - `format_appointment` and `run_demo` have no tests.
   - The optional `exclude_appointment_id` argument of `has_practitioner_conflict` is not tested (the starter documents it as ignored).
   - The Stage 9 operations (`appointment_sort_key`, `select_appointments`, `list_practitioner_appointments`, `run_menu`) are not implemented yet, so FR-09 and the query and console requirements are not tested.

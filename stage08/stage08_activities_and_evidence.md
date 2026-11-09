@@ -285,10 +285,6 @@ Member: Alicia
 
 **Final human conclusion and comparison with initial hypothesis:**\
 - The investigation confirmed that the F8-01 defect was caused by an incorrect practitioner ID comparison in `has_practitioner_conflict()`. The faulty code used `!=` instead of `==`, meaning appointments for different practitioners could be identified as conflicts while appointments for the same practitioner were not correctly detected.
-- My initial human hypothesis was that the practitioner conflict logic was incorrectly comparing practitioner IDs. Copilot's first-ranked suggestion supported this hypothesis, and inspection of the code confirmed it. I accepted the first suggestion and rejected the other two because the evidence did not support them. I corrected the comparison while retaining the existing appointment exclusion, exact date/time comparison and scheduled-status check. The two focused F8-01 tests passed after the repair.
-
-**Final human conclusion and comparison with initial hypothesis:**\
-- The investigation confirmed that the F8-01 defect was caused by an incorrect practitioner ID comparison in `has_practitioner_conflict()`. The faulty code used `!=` instead of `==`, meaning appointments for different practitioners could be identified as conflicts while appointments for the same practitioner were not correctly detected.
 - My initial hypothesis was that the practitioner conflict logic was incorrectly comparing practitioner IDs. Copilot's first-ranked suggestion supported this hypothesis, and inspection of the code confirmed it. I accepted the first suggestion and rejected the other two because the evidence did not support them. I corrected the comparison while retaining the existing appointment exclusion, exact date/time comparison and scheduled-status check. The two focused F8-01 tests passed after the repair.
 
 ### F8-02 Copilot review
@@ -454,7 +450,7 @@ Evidence:\
 | Stage 8 prepared faulty state | b99a90f474f67b9e47b3f196adc8d6d78e7346e0 | Deliberately introduced F8-01 and F8-02 defects                         |
 | F8-01 repair                  | ed76dc8af625654d916a3345e274d138bb05978d | Corrected practitioner comparison                                       |
 | F8-02 repair                  | bb070749a483e84011dac9f2d2ed0f23730f8264 | Restored cancelled appointment lookup                                   |
-| Refactor checkpoint           | 8a906fac50e0e623627ce9690210c37118ad3608 | RReplaced the magic string with AppointmentStatus.SCHEDULED for clarity |
+| Refactor checkpoint           | 8a906fac50e0e623627ce9690210c37118ad3608 | Replaced the magic string with AppointmentStatus.SCHEDULED for clarity |
 
 Stage 8 was completed in `debug/stage08`. The prepared faulty state and subsequent repairs are identifiable through the Git commit history. F8-01 and F8-02 were repaired in separate commits. A separate refactoring commit was also created to replace the magic string comparison in `has_practitioner_conflict()` with `AppointmentStatus.SCHEDULED`. This refactoring improved code clarity while preserving the existing behaviour.
 

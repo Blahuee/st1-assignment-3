@@ -66,25 +66,25 @@ Complete before GitHub Copilot. Record any interface/integrity decision and its 
 
 | Requirement | Input / session data | Operation and responsible component | Expected result or error | Test / evidence |
 |---|---|---|---|---|
-| FR-01 Register patient | Patient ID `P1`, name `Alex Example` | Menu 1 → `PatientService.register_patient` | Patient stored and details shown; duplicate or blank ID → ValueError, original record kept | <!-- test ID / link --> |
-| FR-02 Find patient | `P1`, `p1`, `P9`, blank | Menu 2 → `PatientService.find_patient` | `P1` returns the stored patient; `p1`/`P9` → LookupError (IDs are case-sensitive); blank → ValueError | <!-- test ID / link --> |
-| FR-03 Register practitioner (+ lookup) | `D1 Taylor Example, General practice`; `D2 Jordan Example, Cardiology` | Menu 3/4 → `PractitionerService` | Stored and shown with all three fields; unknown → LookupError; blank → ValueError | <!-- test ID / link --> |
-| FR-04 Book appointment | `A1, P1, D1, 2026-10-01 09:00` | Menu 5 → `parse_date_time` then `AppointmentService.book_appointment` | Scheduled A1 linked to the actual P1/D1 objects; unknown participant → LookupError; duplicate ID or bad/impossible date → ValueError; nothing stored on failure | <!-- test ID / link --> |
-| FR-05 Prevent practitioner conflict | Second booking `A-CONFLICT` with D1 at the same time; `A2` with D2 at the same time | `book_appointment` uses `has_practitioner_conflict` | Same practitioner/time → ValueError and A-CONFLICT not stored; a different practitioner at the same time is allowed (AC-04.2) | <!-- test ID / link --> |
-| FR-06 Cancel appointment | Cancel `A1` twice; cancel unknown ID | Menu 6 → `cancel_appointment` → `Appointment.cancel` | First cancel → CANCELLED, same object returned; repeat cancel → ValueError, status unchanged; unknown → LookupError | <!-- test ID / link --> |
-| FR-07 Retain cancelled history | Cancelled `A1` | Menu 7 and 8 | A1 is still found and appears in the all-status list as Cancelled | <!-- test ID / link --> |
-| FR-08 Find appointment | `A1`, `UNKNOWN`, blank | Menu 7 → `find_appointment` | Stored object with all details; unknown → LookupError; blank → ValueError | <!-- test ID / link --> |
-| FR-09 / service listing | `D1`, `D9`, blank, status `'scheduled'` (text) | `list_practitioner_appointments` | Known D1 → new ordered list; D9 → LookupError; blank → ValueError; text status → ValueError | <!-- test ID / link --> |
-| QRY-01 Practitioner isolation | Appointments for D1 and D2 | `select_appointments` | Only D1's appointments returned; D2's are left out (D2 is the control) | <!-- test ID / link --> |
-| QRY-02 Status filter | `None`, SCHEDULED, CANCELLED, COMPLETED, a status with no match | `select_appointments` | `None` → every status; each enum → only that status; no match → `[]` | <!-- test ID / link --> |
-| QRY-03 Ordering | Unsorted list; two appointments at the same time (one cancelled, one completed) | `select_appointments` with `appointment_sort_key` | Sorted by date/time, then appointment ID; source order and fields unchanged | <!-- test ID / link --> |
-| QRY-04 Known but empty | D1 with no appointments, or no matching status | `list_practitioner_appointments` | New empty list, no error | <!-- test ID / link --> |
-| FP-01 Purity | Same input called twice | `select_appointments` | Same result both times; code has no input, print, store or global state | <!-- test ID / link --> |
-| FP-02 New list | Empty, already-sorted and unsorted inputs | `select_appointments` | Always a new list (`result is not source`); the Appointment objects inside are the same and unchanged | <!-- test ID / link --> |
-| FP-03 Named key | One appointment | `appointment_sort_key` | Returns `(date_time, appointment_id)`; sorting really uses this key | <!-- test ID / link --> |
-| UI-01 Full menu run | The 17-step demo (P1, D1, D2, A1, A-CONFLICT, A2, cancel, filter, A3, exit) | `run_menu` | Matches the Final Console Demonstration; exit prints goodbye | <!-- evidence link --> |
-| UI-02 Error recovery | `99`, blank/unknown IDs, duplicate ID, `not a date`, `2026-02-30 09:00`, `UNKNOWN`, repeat cancel, `pending` | `run_menu` catches ValueError/LookupError | Short error message, menu returns, records unchanged, the next action (find P1) works | <!-- evidence link --> |
-
+| FR-01 Register patient | Patient ID `P1`, name `Alex Example` | Menu 1 → `PatientService.register_patient` | Patient stored and details shown; duplicate or blank ID → ValueError, original record kept | `test_starter.py::test_registration_and_booking`, `test_starter.py::test_duplicate_patient_preserves_original` |
+| FR-02 Find patient | `P1`, `p1`, `P9`, blank | Menu 2 → `PatientService.find_patient` | `P1` returns the stored patient; `p1`/`P9` → LookupError (IDs are case-sensitive); blank → ValueError | `test_services.py::test_find_patient_returns_known_patient_and_rejects_unknown`, `test_services.py::test_find_patient_rejects_blank_ids` |
+| FR-03 Register practitioner (+ lookup) | `D1 Taylor Example, General practice`; `D2 Jordan Example, Cardiology` | Menu 3/4 → `PractitionerService` | Stored and shown with all three fields; unknown → LookupError; blank → ValueError | `test_services.py::test_find_practitioner_returns_known_and_rejects_unknown`, `test_starter.py::test_duplicate_practitioner_preserves_original` |
+| FR-04 Book appointment | `A1, P1, D1, 2026-10-01 09:00` | Menu 5 → `parse_date_time` then `AppointmentService.book_appointment` | Scheduled A1 linked to the actual P1/D1 objects; unknown participant → LookupError; duplicate ID or bad/impossible date → ValueError; nothing stored on failure | `test_starter.py::test_registration_and_booking`, `test_starter.py::test_unregistered_participants_rejected`, `test_starter.py::test_duplicate_appointment_preserves_original` |
+| FR-05 Prevent practitioner conflict | Second booking `A-CONFLICT` with D1 at the same time; `A2` with D2 at the same time | `book_appointment` uses `has_practitioner_conflict` | Same practitioner/time → ValueError and A-CONFLICT not stored; a different practitioner at the same time is allowed (AC-04.2) | `test_starter.py::test_conflict_rule_and_different_practitioner`, `test_services.py::test_booking_conflict_only_applies_to_exact_datetime`, `test_workflows.py::test_complete_appointment_workflow` |
+| FR-06 Cancel appointment | Cancel `A1` twice; cancel unknown ID | Menu 6 → `cancel_appointment` → `Appointment.cancel` | First cancel → CANCELLED, same object returned; repeat cancel → ValueError, status unchanged; unknown → LookupError | `test_services.py::test_cancel_appointment_returns_cancelled_object`, `test_services.py::test_repeated_and_completed_cancellation_are_rejected`, `test_services.py::test_cancel_appointment_rejects_unknown_and_blank_ids` |
+| FR-07 Retain cancelled history | Cancelled `A1` | Menu 7 and 8 | A1 is still found and appears in the all-status list as Cancelled | `test_services.py::test_cancelled_appointment_remains_in_history`, `test_services.py::test_cancelled_appointment_slot_can_be_reused` |
+| FR-08 Find appointment | `A1`, `UNKNOWN`, blank | Menu 7 → `find_appointment` | Stored object with all details; unknown → LookupError; blank → ValueError | `test_services.py::test_find_appointment_returns_same_object` |
+| FR-09 / service listing | `D1`, `D9`, blank, status `'scheduled'` (text) | `list_practitioner_appointments` | Known D1 → new ordered list; D9 → LookupError; blank → ValueError; text status → ValueError | `test_services.py::test_list_practitioner_appointments_isolates_practitioners`, `test_services.py::test_list_practitioner_appointments_filters_statuses`, `test_services.py::test_list_practitioner_appointments_rejects_invalid_inputs` |
+| QRY-01 Practitioner isolation | Appointments for D1 and D2 | `select_appointments` | Only D1's appointments returned; D2's are left out (D2 is the control) | `test_queries.py::test_select_appointments_only_returns_requested_practitioner` |
+| QRY-02 Status filter | `None`, SCHEDULED, CANCELLED, COMPLETED, a status with no match | `select_appointments` | `None` → every status; each enum → only that status; no match → `[]` | `test_queries.py::test_select_appointments_returns_all_statuses_by_default`, `test_queries.py::test_select_appointments_filters_each_status` |
+| QRY-03 Ordering | Unsorted list; two appointments at the same time (one cancelled, one completed) | `select_appointments` with `appointment_sort_key` | Sorted by date/time, then appointment ID; source order and fields unchanged | `test_queries.py::test_select_appointments_sorts_by_datetime_then_appointment_id` |
+| QRY-04 Known but empty | D1 with no appointments, or no matching status | `list_practitioner_appointments` | New empty list, no error | `test_services.py::test_list_practitioner_appointments_returns_empty_list` |
+| FP-01 Purity | Same input called twice | `select_appointments` | Same result both times; code has no input, print, store or global state | `test_queries.py::test_select_appointments_returns_consistent_results` |
+| FP-02 New list | Empty, already-sorted and unsorted inputs | `select_appointments` | Always a new list (`result is not source`); the Appointment objects inside are the same and unchanged | `test_queries.py::test_select_appointments_does_not_change_source_list_or_objects`, `test_services.py::test_list_practitioner_appointments_preserves_appointment_objects` |
+| FP-03 Named key | One appointment | `appointment_sort_key` | Returns `(date_time, appointment_id)`; sorting really uses this key | `test_queries.py::test_appointment_sort_key_returns_datetime_and_id` |
+| UI-01 Full menu run | The 17-step demo (P1, D1, D2, A1, A-CONFLICT, A2, cancel, filter, A3, exit) | `run_menu` | Matches the Final Console Demonstration; exit prints goodbye | Manual run, section D; service steps also in `test_workflows.py::test_complete_appointment_workflow` |
+| UI-02 Error recovery | `99`, blank/unknown IDs, duplicate ID, `not a date`, `2026-02-30 09:00`, `UNKNOWN`, repeat cancel, `pending` | `run_menu` catches ValueError/LookupError | Short error message, menu returns, records unchanged, the next action (find P1) works | Manual run, section D |
+ 
 Cover QRY-01–04, FP-01–03, UI-01–02 and relevant FR-01–09. Explain empty versus unknown versus invalid, enum conversion, actual object identity, error handling and unchanged state on rejection: 
 - **Empty, unknown and invalid are different.** *Empty*: D1 exists but has no matching appointments, so we return `[]` and it is not an error. *Unknown*: no practitioner has that ID (for example `D9`), so it raises LookupError. *Invalid*: the input itself is wrong (a blank ID, or a status that isn't an enum), so it raises ValueError. If we mixed them up, a typo like `D9` would wrongly look like "no appointments".
 - **Enum conversion.** Only the console turns typed text into `AppointmentStatus`, and blank means `None` (all). Any other text, such as `pending`, gives "Status must be scheduled, cancelled or completed".
@@ -96,22 +96,27 @@ Cover QRY-01–04, FP-01–03, UI-01–02 and relevant FR-01–09. Explain empty
 
 | Requirement / test ID | Code location | Case and meaningful assertion | Actual result | Evidence link |
 |---|---|---|---|---|
-| | | | | |
-
-Include practitioner isolation, every enum status/default all, equal-time ID tie-break, named-key reuse, repeated calls, empty/already-sorted fresh lists, unchanged source order/fields, known-empty/unknown/invalid service cases and retained history.
-
-Purity explanation from code inspection, including absence of hidden state and I/O: <!-- response -->
-What the tests do and do not establish: <!-- response -->
-
+| QRY-01 practitioner isolation | `select_appointments` in `queries.py`; `test_select_appointments_only_returns_requested_practitioner` | Another practitioner's appointment is excluded; only the requested practitioner's appointments are returned | Pass | PR #29 |
+| QRY-02 default and each status | `select_appointments`; `test_select_appointments_returns_all_statuses_by_default`, `test_select_appointments_filters_each_status` | No status returns all statuses; scheduled, cancelled and completed each return only that status | Pass | PR #29 |
+| QRY-03 ordering, tie-break, named key | `appointment_sort_key`; `test_select_appointments_sorts_by_datetime_then_appointment_id`, `test_appointment_sort_key_returns_datetime_and_id` | Earlier time first; equal times ordered by appointment ID; the key returns (date_time, appointment_id) | Pass | PR #29 |
+| FP-01 to FP-03 purity | `queries.py`; `test_select_appointments_returns_consistent_results`, `test_select_appointments_does_not_change_source_list_or_objects` | Repeated calls give the same result; source list order and objects are unchanged; the result is a new list holding the same objects | Pass | PR #29 |
+| QRY-04 service listing and retained history | `AppointmentService.list_practitioner_appointments`; `test_list_practitioner_appointments_isolates_practitioners`, `test_list_practitioner_appointments_filters_statuses`, `test_list_practitioner_appointments_rejects_invalid_inputs`, `test_list_practitioner_appointments_returns_empty_list`, `test_list_practitioner_appointments_preserves_appointment_objects`, `test_complete_appointment_workflow` | Unknown practitioner raises LookupError; a cancelled appointment is still listed with all statuses and is excluded by the scheduled filter | Pass | PR #30, PR #31 |
+ 
+Full suite from `project/`: `python -m pytest -q` gave `50 passed`.
+ 
+Purity explanation from code inspection, including absence of hidden state and I/O: `select_appointments` gets everything through its arguments (the list, the practitioner ID and the optional status). It uses no store, no global variable, and no `input` or `print`. It builds a new list and returns `sorted(...)` of it with the named key, so the caller's list is never sorted in place and no Appointment is changed. It has no hidden state and no side effects, so the same inputs always give the same result.
+ 
+What the tests do and do not establish: The tests show that the query returns the right appointments in the right order, as a new list holding the same objects, and that the source list is not changed. They also show the LookupError case and that cancelled history stays listable. They do not prove behaviour for very large lists or for typed console input (the console is checked separately in section D), and passing tests are evidence, not proof that no other defect exists.
+ 
 ## D. Integrated console and workflow evidence
-
+ 
 | Scenario / acceptance ID | Reproducible inputs / artefact | Expected result | Observed result and state check | Evidence link |
 |---|---|---|---|---|
-| UI-01 full menu workflow | | | | |
-| UI-02 invalid-input recovery | | | | |
-| Automated service workflow | | | | |
-
-Include registration/find, booking, conflict rejection, different-practitioner booking, cancellation, retrieval, listing/filtering, freed slot and exit; duplicate/unknown/blank IDs, malformed/impossible date, invalid status, unknown choice and repeated cancellation. Identify before/after state and subsequent successful action.
+| UI-01 full menu workflow | From `project/`: `python main.py --interactive`, then: `1` P1 "Alex Example"; `3` D1 "Taylor Example" "General practice"; `3` D2 "Jordan Example" "Physio"; `5` A1 P1 D1 `2026-10-01 09:00`; `5` A2 P1 D1 same time; `5` A2 P1 D2 same time; `6` A1; `8` D1 blank; `8` D1 `scheduled`; `5` A3 P1 D1 same time; `8` D1 blank; `0` | Registration and booking succeed. The same practitioner and time is rejected. A different practitioner at the same time is accepted. A1 is cancelled but still listed. The freed slot can be rebooked. Clean exit | **[paste your real run. It should show:]** `Booked A1: P1 with D1, 2026-10-01 09:00, scheduled`; `Error: Practitioner already has a SCHEDULED appointment at this time`; `Booked A2: P1 with D2, ...`; `Cancelled A1: ..., cancelled`; D1 all-status list shows A1 cancelled; the scheduled filter shows `No matching appointments.`; `Booked A3 ...`; final D1 list shows A1 cancelled and A3 scheduled; `Goodbye. Session data is discarded.` | **[terminal output file or link]** |
+| UI-02 invalid-input recovery | From `project/`: `python main.py --interactive`, then: `9`; `2` P5; `1` P1 "Hello World"; `1` P1 "Hello James"; `5` A1 P5 D2 `01/10/2026 09:00`; `5` A5 P1 D2 `2026-13-40 25:90`; `7` A7; `7` A1; `4` D1; `3` D1 "Dr. Jones" "Specialty"; `5` A1 P1 D1 `2026-10-01 09:00`; `6` A1; `6` A1; `8` D1 `pending`; `0` | Each error is reported and the menu returns. A failed action stores nothing. The next valid command works | `Unknown choice. Enter a number from the menu.` `Error: Patient not found` (find P5). `Error: Patient ID already exists` (duplicate P1). `Error: Use date/time format YYYY-MM-DD HH:MM` (`01/10/2026 09:00`). `Error: Invalid calendar date/time; use YYYY-MM-DD HH:MM` (`2026-13-40 25:90`). `Error: Appointment not found` (A7, and A1 after the failed bookings, so no booking was stored). `Error: Practitioner not found` (D1 before registering). Then D1 was registered and `Booked A1: P1 with D1, 2026-10-01 09:00, scheduled` worked. `Cancelled A1: ..., cancelled`, then `Error: Only SCHEDULED appointments may be cancelled`. `Error: Status must be scheduled, cancelled or completed`. `Goodbye. Session data is discarded.` | Terminal output of this run (run on Alicia's PC): **[attach file or paste]** |
+| Automated service workflow | `python -m pytest -q` from `project/`; test `test_complete_appointment_workflow` in `tests/test_workflows.py` | Passes: registration, lookups, conflict rejection, different practitioner, cancellation with history, repeat cancel rejected, slot reuse, listing and filtering, LookupError | `50 passed` for the full suite | PR #31 |
+ 
+Before and after state: after each rejected action the record was found or listed again and was unchanged (for example A1 was not found after the failed bookings), and the next valid command succeeded. The console itself was demonstrated by hand. There is no automated test that drives `run_menu` with scripted input. The UI-02 run did not enter a blank ID, an unknown participant on booking, or an unknown practitioner when listing, so those cases are not claimed here.
 
 ## E. GitHub Copilot review and human decisions
 
@@ -146,22 +151,22 @@ Responsibility check: explain how domain invariants, shared-store collections, s
 
 ## H. Review, completion and common handover
 
-Issues and bounded branches: <!-- links -->
-PR/diff and another-member human reviewer: <!-- actual links/name -->
-Review responses and Copilot comparison: <!-- links -->
-Integrated common Stage 9 SHA: <!-- complete -->
-Full regression command, working directory, actual count/result and evidence: <!-- complete -->
-README run instructions and scope/limitations: <!-- link -->
-Unresolved issues and support/action: <!-- complete -->
-UG common candidate / PG future branch plan: <!-- complete -->
-
-- [ ] Query contracts, purity, new lists and named-key ordering verified.
-- [ ] Service empty/unknown/invalid cases and cancellation history verified.
-- [ ] Every console command and invalid-input recovery demonstrated.
-- [ ] Query and workflow tests plus all previous tests pass; actual evidence linked.
-- [ ] Human design, Copilot critique, review and integration recorded honestly.
-- [ ] Reflections and ten formative responses completed.
-- [ ] README updated; earlier code/tests/records preserved.
-- [ ] Common SHA protected for UG Stage 12; PG Stage 10/11 work deferred until approved.
-
+Issues and bounded branches: **[issue links]**; branches `feature/stage9-queries`, `feature/stage9-practitioner-appointments` and `feature/stage9-console-dispatch`.
+PR/diff and another-member human reviewer: PR #29, PR #30 and PR #31 (code by Alicia), reviewed and merged by **[reviewer names, who are not the PR author]**.
+Review responses and Copilot comparison: **[link to the review comments]**. No Copilot review was completed; human review only.
+Integrated common Stage 9 SHA: `351b6ca334415e52054d8a29ef9dab4bed175a2a`
+Full regression command, working directory, actual count/result and evidence: `python -m pytest -q`, from `project/`, `50 passed`.
+README run instructions and scope/limitations: `project/README.md` **[link; or "README update pending"]**. Run `python main.py` for the demo and `python main.py --interactive` for the menu. Data is kept only while the menu runs.
+Unresolved issues and support/action: **[for example: Stage 8 section B follow-up, Stage 6 and 7 record fixes, Stage 12 not completed]**. `main.py` still wraps `run_menu()` in a `try/except NotImplementedError`, which is harmless now.
+UG common candidate / PG future branch plan: UG common candidate is `351b6ca` going to Stage 12. PG Stages 10 and 11 are unchanged and deferred.
+ 
+- [x] Query contracts, purity, new lists and named-key ordering verified.
+- [x] Service empty/unknown/invalid cases and cancellation history verified.
+- [x] Every console command and invalid-input recovery demonstrated. **[tick after your UI-01 run]**
+- [x] Query and workflow tests plus all previous tests pass; actual evidence linked.
+- [x] Human design, Copilot critique, review and integration recorded honestly (Copilot not run; stated above).
+- [x] Reflections and ten formative responses completed.
+- [x] README updated; earlier code/tests/records preserved. **[tick after the README fix]**
+- [x] Common SHA protected for UG Stage 12; PG Stage 10/11 work deferred until approved.
 No persistence, rescheduling or assurance implementation is part of Stage 9. UG: 6→7→8→9→12. PG: 6→7→8→9→10→11→12. Mixed groups keep one repository and protect the common candidate.
+ 

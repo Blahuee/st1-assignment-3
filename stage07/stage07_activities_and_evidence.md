@@ -328,8 +328,8 @@ Requirement → test → failure/observation → diagnosis → change → verifi
 - **Full-suite result:** `python -m pytest -v` in project/: 37 passed, 0 failed (Python 3.14.3, pytest 8.3.5)
 - **Coverage:** Not used. No coverage percentage is claimed, and a percentage alone would not show that the assertions are meaningful.
 - **Honest limits of the suite:**
-  - T-15 and T-17 check the returned ID and name, but not that the returned object is the same stored object (no `is` assertion). Among the student-authored tests, identity is checked only in T-20, T-21 and T-24. The supplied tests T-02, T-03 and T-04 also check it.
-  - `parse_date_time` in console.py is imported in test_domain.py but never called by a test. Invalid console date input is not tested.
+    - Among the student-authored tests, identity (`is`) is checked in T-15, T-17, T-20, T-21 and T-24. The supplied tests T-02, T-03 and T-04 also check it.
+    - `parse_date_time` in console.py is not called by any test. Invalid console date input is not tested.
   - `format_appointment` and `run_demo` have no tests.
   - The optional `exclude_appointment_id` argument of `has_practitioner_conflict` is not tested (the starter documents it as ignored).
   - The Stage 9 operations (`appointment_sort_key`, `select_appointments`, `list_practitioner_appointments`, `run_menu`) are not implemented yet, so FR-09 and the query and console requirements are not tested.
@@ -345,7 +345,7 @@ Requirement → test → failure/observation → diagnosis → change → verifi
 | ---------- | ------ | -- | -------- | ------------ | ------- |
 | Stage 7 domain tests (test_domain.py) | testing/domain | [PR #16](https://github.com/Blahuee/st1-assignment-3/pull/16) | None recorded on GitHub | No review comments recorded on PR #16 | Merged to main on 2026-11-03 (merge commit 2c99138) |
 | Stage 7 service tests (test_services.py) | Not recorded (commit 8202f64 was not on a pushed feature branch) | None: reached main through merge commit 5134479 (Alicia, 2026-11-03), with no pull request | None recorded | No review recorded on GitHub. T-15 and T-17 were later updated by Aagney in commit 71ef3a4 | Service tests created in commit 8202f64 (2026-11-03); T-15 and T-17 updated in commit 71ef3a4, which is the tested main SHA |
-| Stage 7 record (stage07/ sections A to O) | documentation/stage07 | [PR #17](https://github.com/Blahuee/st1-assignment-3/pull/17), opened by njlhazin (earlier Stage 7 activities merged in [PR #14](https://github.com/Blahuee/st1-assignment-3/pull/14)) | Aagney (review comments on PR #17 and PR #14) | Section C must cover T-26 to T-31 because Section B lists them as student-authored; Section C stopped at T-24 so B and C did not match | Feedback addressed (Section C now has T-26 to T-31); PR #17 is open, final review and merge pending |
+| Stage 7 record (stage07/ sections A to O) | documentation/stage07 | [PR #17](https://github.com/Blahuee/st1-assignment-3/pull/17), opened by njlhazin (earlier Stage 7 activities merged in [PR #14](https://github.com/Blahuee/st1-assignment-3/pull/14)); final merge through [PR #22](https://github.com/Blahuee/st1-assignment-3/pull/22) | Aagney (review comments on PR #17 and PR #14) | Section C must cover T-26 to T-31 because Section B lists them as student-authored; Section C stopped at T-24 so B and C did not match | Feedback addressed (Section C now has T-26 to T-31); the record reached main through PR #22 (merge commit 7cd7eb2, 2026-11-09) |
 
 ## M Contribution Evidence
 

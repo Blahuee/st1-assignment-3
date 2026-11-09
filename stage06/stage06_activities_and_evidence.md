@@ -118,7 +118,7 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
   - Alicia: Confirmed, updated successfully
   - Aagney: Confirmed, updated successfully
   - Ngedup: Confirmed, updated successfully
-- **Integrated verification after merge:** e514dda244cfbf256642a0eed7fe8d9bcf9f45d0
+- - **Integrated verification after merge:** Not recorded at merge time. Retrospective check on 9 Nov 2026: `python -m pytest` from `project/` at b5ddb1760ac109c6d742b2c485906e4e55d615df (Python 3.14.3, pytest 8.3.5): 8 passed. These supplied tests do not call `find_patient()` directly; Stage 7 tests T-15 and T-16 later cover it.
 
 - **PR link and title:** https://github.com/Blahuee/st1-assignment-3/pull/9, "Implement Practitioner Search by ID"
 - **Linked issue and requirement:** Linked on the PR to issue #1 (FR-06/FR-07). The PR implements practitioner lookup, which has no separate issue yet.
@@ -139,7 +139,7 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
   - Alicia: Confirmed, updated successfully
   - Aagney: Confirmed, updated successfully
   - Ngedup: Confirmed, updated successfully
-- **Integrated verification after merge:** e514dda244cfbf256642a0eed7fe8d9bcf9f45d0
+- **Integrated verification after merge:** Not recorded at merge time. Retrospective check on 9 Nov 2026: `python -m pytest` from `project/` at c99841ef7c2899ec677090ec2f9814dd69411db0 (Python 3.14.3, pytest 8.3.5): 8 passed. These supplied tests do not call `find_practitioner()` directly; Stage 7 test T-17 later covers it.
 
 - **PR link and title:** https://github.com/Blahuee/st1-assignment-3/pull/10, "Stage 06 F issue and backlog index"
 - **Linked issue and requirement:** None linked. Section F (issue and backlog index) of the Stage 6 record, which supports the issue-to-PR traceability requirement.
@@ -168,7 +168,7 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
 - **Changed behaviour:** Implemented AppointmentService.cancel_appointment() to cancel an existing appointment and return the cancelled appointment object. Unknown appointment IDs raise LookupError. Invalid cancellation transitions raise ValueError without changing the appointment's existing state.
 - **Test command, directory and observed result:** Run from the project/ directory:
   - **Command:** python -m pytest
-  - **Expected verification:** tests pass, including appointment cancellation, unknown appointment IDs and invalid cancellation transitions.
+  - **Observed result (run retrospectively on 9 Nov 2026 at 5244ad3):** 8 passed. These supplied tests do not call `cancel_appointment()` directly; Stage 7 tests T-20 to T-23 later cover it.
 - **Another-member reviewer:** Aagneyf1r3 commented "All good" on the PR. GitHub shows no formal review submission.
 - **Human observations recorded before Copilot:** The cancellation service needed to delegate the operation to the existing appointment/domain logic, return the cancelled object and preserve the appointment's history. Unknown IDs and invalid state transitions needed separate handling.
 - **Requirement, responsibilities, test assertions and unrelated-scope checks:** The change addresses FR-06 and FR-07. The service is responsible for locating the appointment and delegating cancellation. Assertions should verify the returned appointment, its cancelled status, `LookupError` for unknown IDs, `ValueError` for invalid transitions and unchanged state after a failed cancellation. Unrelated patient and practitioner functionality should remain unchanged.
@@ -182,7 +182,7 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
   - Alicia: Confirmed, updated successfully
   - Aagney: Confirmed, updated successfully
   - Ngedup: Confirmed, updated successfully
-- **Integrated verification after merge:** Needs confirmation that the group ran python -m pytest from project/ against the updated main branch and recorded the results.
+- **Integrated verification after merge:** 5244ad3d03d6d49cd7146af7edd06a7134f3ac31: `python -m pytest` from `project/`: 8 passed (run retrospectively on 9 Nov 2026, not at merge time).
 
 ## H Copilot collaboration record
 Record meaningful required use, not every trivial completion. Repeat per significant interaction.

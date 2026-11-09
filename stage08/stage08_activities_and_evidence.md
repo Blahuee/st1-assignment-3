@@ -381,21 +381,65 @@ Member: Alicia
 
 ## H. Refactoring decision and before/after verification
 
-**Smell and exact location:** No significant code smell was identified in the repaired methods. `has_practitioner_conflict()` and `find_appointment()` have relatively simple logic, and their conditions are clear. No unnecessary duplication or structural complexity was identified that justified refactoring\
-**Small proposed structural change / why justified:** No structural change was proposed because the repaired methods are already straightforward and readable. Further restructuring would add complexity without providing a clear maintainability benefit. The existing implementation was therefore retained\
-**External behaviour to preserve / relevant tests:** The existing external behaviour must remain unchanged. This includes:
-- Preventing two scheduled appointments for the same practitioner at the exact same date and time
-- Allowing appointments for different practitioners or different times
-- Excluding the appointment being updated from conflict detection where applicable
-- Allowing appointments to be retrieved by ID regardless of whether they are scheduled, cancelled or completed
-- Raising the appropriate exceptions for invalid IDs, missing appointments and invalid cancellation transitions
+**Smell and exact location:** A magic string was identified in `data_store.py`, inside `has_practitioner_conflict()`. The method compared the appointment status using `appointment.status.value == "scheduled"` rather than using the existing AppointmentStatus enum.\
 
-Relevant tests include `tests/test_services.py`, `tests/test_starter.py` and the full test suite\
-**Before result:** Before refactoring, the repaired application passed the complete test suite: 37 passed, 0 failed. The result was recorded in Section G\
-**Actual change / diff / separate refactor SHA:** No refactoring changes were made. The existing repaired implementation was retained. No additional diff or separate refactoring commit was created\
-**Focused and full after-refactor commands / working directory / results / evidence:** Not applicable. No refactoring changes were made, so there was no separate after-refactor test run. The repaired implementation remained unchanged from the passing full-suite result recorded in Section G\
-**Result — accepted, revised or rejected / reason / behaviour-preservation conclusion:** Rejected, no refactoring performed. The proposed refactoring was not considered necessary because the repaired methods were already simple and readable. Making structural changes without a clear benefit would introduce unnecessary risk. The existing implementation was retained, preserving the behaviour verified by the passing test suite.
+**Small proposed structural change / why justified:** Replace the raw string comparison with `appointment.status is AppointmentStatus.SCHEDULED`. This uses the existing enum and makes the status check clearer and less dependent on manually typed strings. The change is expected to preserve existing behaviour because the enum member represents the same scheduled status.\
 
+**External behaviour to preserve / relevant tests:** The refactor must preserve practitioner conflict detection, including rejecting appointments for the same practitioner at the exact same date and time, allowing different practitioners and times, and excluding the appointment being updated where applicable. Relevant tests include `test_booking_conflict_only_applies_to_exact_datetime` and `test_conflict_rule_and_different_practitioner`, as well as the complete test suite.\
+
+**Before result:** Before refactoring, the complete test suite passed with 37 passed and 0 failed. Command: python -m pytest -vv. Working directory: project/. Evidence: 37 passed, 0 failed - 66f0521b30701385082717864a2fdbb3fec28b09.\
+
+**Actual change / diff / separate refactor SHA:** Replaced the raw `"scheduled"` string comparison with `AppointmentStatus.SCHEDULED` in `has_practitioner_conflict()`. No other application logic was intentionally changed.\
+Refactoring commit: 8a906fac50e0e623627ce9690210c37118ad3608.
+
+**Focused and full after-refactor commands / working directory / results / evidence:** Focused command: `python -m pytest tests/test_services.py::test_booking_conflict_only_applies_to_exact_datetime tests/test_starter.py::test_conflict_rule_and_different_practitioner -vv`.\
+Result:
+  - `tests/test_services.py::test_booking_conflict_only_applies_to_exact_datetime PASSED`
+  - `tests/test_starter.py::test_conflict_rule_and_different_practitioner PASSED`
+
+Full command: `python -m pytest -vv`. Working directory: `project/`.\
+Result: `37 passed in 0.04s`.\
+Evidence:\
+> `tests/test_domain.py::test_patient_id_must_not_be_blank_or_invalid PASSED`\
+> `tests/test_domain.py::test_patient_name_must_not_be_blank PASSED`\
+> `tests/test_domain.py::test_patient_details_are_trimmed PASSED`\
+> `tests/test_domain.py::test_patient_id_preserves_case PASSED`\
+> `tests/test_domain.py::test_patient_id_cannot_be_changed PASSED`\
+> `tests/test_domain.py::test_practitioner_id_must_not_be_blank_or_invalid PASSED`\
+> `tests/test_domain.py::test_practitioner_name_must_not_be_blank PASSED`\
+> `tests/test_domain.py::test_practitioner_specialty_must_not_be_blank PASSED`\
+> `tests/test_domain.py::test_practitioner_details_are_trimmed PASSED`\
+> `tests/test_domain.py::test_practitioner_id_preserves_case PASSED`\
+> `tests/test_domain.py::test_practitioner_id_cannot_be_changed PASSED`\
+> `tests/test_domain.py::test_new_appointment_is_scheduled PASSED`\
+> `tests/test_domain.py::test_appointment_requires_valid_participants PASSED`\
+> `tests/test_domain.py::test_appointment_requires_minute_precision PASSED`\
+> `tests/test_domain.py::test_appointment_rejects_invalid_datetime PASSED`\
+> `tests/test_domain.py::test_appointment_rejects_invalid_status PASSED`\
+> `tests/test_domain.py::test_scheduled_appointment_can_be_cancelled PASSED`\
+> `tests/test_domain.py::test_cancelled_appointment_cannot_be_cancelled_again PASSED`\
+> `tests/test_domain.py::test_completed_appointment_cannot_be_cancelled PASSED`\
+> `tests/test_services.py::test_find_patient_returns_known_patient_and_rejects_unknown PASSED`\
+> `tests/test_services.py::test_find_patient_rejects_blank_ids PASSED`\
+> `tests/test_services.py::test_find_practitioner_returns_known_and_rejects_unknown PASSED`\
+> `tests/test_services.py::test_booking_conflict_only_applies_to_exact_datetime PASSED`\
+> `tests/test_services.py::test_cancelled_appointment_slot_can_be_reused PASSED`\
+> `tests/test_services.py::test_cancel_appointment_returns_cancelled_object PASSED`\
+> `tests/test_services.py::test_cancelled_appointment_remains_in_history PASSED`\
+> `tests/test_services.py::test_repeated_and_completed_cancellation_are_rejected PASSED`\
+> `tests/test_services.py::test_cancel_appointment_rejects_unknown_and_blank_ids PASSED`\
+> `tests/test_services.py::test_find_appointment_returns_same_object PASSED`\
+> `tests/test_starter.py::test_required_fields PASSED`\
+> `tests/test_starter.py::test_registration_and_booking PASSED`\
+> `tests/test_starter.py::test_duplicate_patient_preserves_original PASSED`\
+> `tests/test_starter.py::test_duplicate_practitioner_preserves_original PASSED`\
+> `tests/test_starter.py::test_duplicate_appointment_preserves_original PASSED`\
+> `tests/test_starter.py::test_unregistered_participants_rejected PASSED`\
+> `tests/test_starter.py::test_conflict_rule_and_different_practitioner PASSED`\
+> `tests/test_starter.py::test_domain_cancellation_and_guard PASSED`\
+> `37 passed in 0.04s`
+
+**Result — accepted, revised or rejected / reason / behaviour-preservation conclusion:** Accepted. The refactor replaced a raw status string with the existing `AppointmentStatus` enum. The focused and full regression tests passed after the change, demonstrating that the existing appointment conflict behaviour was preserved.
 ## I. Git, human review and integration
 
 **Issues for both defects / refactor scope and owners:**
@@ -404,13 +448,13 @@ Relevant tests include `tests/test_services.py`, `tests/test_starter.py` and the
 - Issue Owners: Alicia (Blahuee)
 
 **Branch / prepared, repair and refactor checkpoints:**
-| Checkpoint                    | Git SHA                                  | Description                                     |
-| ----------------------------- | ---------------------------------------- | ----------------------------------------------- |
-| Stage 7 baseline              | e6b3579c1c29e57894abef33fcae152c9d4f8c7b | Last known passing Stage 7 baseline             |
-| Stage 8 prepared faulty state | b99a90f474f67b9e47b3f196adc8d6d78e7346e0 | Deliberately introduced F8-01 and F8-02 defects |
-| F8-01 repair                  | ed76dc8af625654d916a3345e274d138bb05978d | Corrected practitioner comparison               |
-| F8-02 repair                  | bb070749a483e84011dac9f2d2ed0f23730f8264 | Restored cancelled appointment lookup           |
-| Refactor checkpoint           | Not applicable                           | No refactoring performed                        |
+| Checkpoint                    | Git SHA                                  | Description                                                             |
+| ----------------------------- | ---------------------------------------- | ----------------------------------------------------------------------- |
+| Stage 7 baseline              | e6b3579c1c29e57894abef33fcae152c9d4f8c7b | Last known passing Stage 7 baseline                                     |
+| Stage 8 prepared faulty state | b99a90f474f67b9e47b3f196adc8d6d78e7346e0 | Deliberately introduced F8-01 and F8-02 defects                         |
+| F8-01 repair                  | ed76dc8af625654d916a3345e274d138bb05978d | Corrected practitioner comparison                                       |
+| F8-02 repair                  | bb070749a483e84011dac9f2d2ed0f23730f8264 | Restored cancelled appointment lookup                                   |
+| Refactor checkpoint           | 8a906fac50e0e623627ce9690210c37118ad3608 | RReplaced the magic string with AppointmentStatus.SCHEDULED for clarity |
 
 Stage 8 was completed in `debug/stage08`. The prepared faulty state and later repairs are identifiable through the Git commit history. F8-01 and F8-02 were repaired in separate commits. No separate refactoring commit was created because the refactoring decision was to retain the existing repaired implementation.
 

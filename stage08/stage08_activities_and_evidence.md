@@ -6,7 +6,7 @@ All Assignment 3 stage materials are provided from the beginning. Complete this 
 
 Group/tutorial: Tue 1:30 - 3:30 Group 1
 Members and UG/PG cohorts: UG - Alicia Hurst - Blahuee, UG - Aagney Mani Sharma - Aagneyf1r3, UG - Ngedup Jigme Lhazeen - njlhazin
-Record owner / contribution links for each member: [complete]
+Record owner / contribution links for each member: Alicia: https://github.com/Blahuee/st1-assignment-3/commits/main?author=Blahuee | Aagney: https://github.com/Blahuee/st1-assignment-3/commits/main?author=Aagneyf1r3 | Ngedup: https://github.com/Blahuee/st1-assignment-3/commits/main?author=njlhazin | PR #21: https://github.com/Blahuee/st1-assignment-3/pull/21
 
 Use concise results and accessible artefact links rather than copying entire logs. Keep human-first entries before consulting GitHub Copilot. Link shared evidence once; do not repeat it across sections. No entries below are specimen answers or claimed results.
 
@@ -58,6 +58,22 @@ Classify these proposed changes as refactoring, repair or feature: rename appt t
 | Restore retained cancellation lookup                 | Repair         | Corrects behaviour that violates the requirements             |
 | Replace a magic status string with the existing enum | Refactoring    | Uses an existing named constant instead of a hardcoded string |
 
+**Smells identified:**
+- Long method: about 70 lines doing several jobs at once.
+- Duplicate status strings (magic strings) instead of the existing AppointmentStatus enum.
+- Direct collection manipulation instead of going through the SmartCareDataStore boundary.
+- Printing mixed into business logic.
+- Validation mixed with booking and cancellation logic.
+- Four nested conditionals that are hard to read and test.
+
+**Small refactorings that preserve behaviour:**
+- Replace the repeated status strings with AppointmentStatus members.
+- Replace direct list or dictionary access with existing SmartCareDataStore methods.
+- Remove printing from the service and keep the existing return values and exceptions.
+- Extract validation and the repeated conflict check into small helpers.
+- Flatten the nested conditionals with guard clauses.
+- Make one change at a time and rerun the full suite after each.
+
 **Explain the behaviour that must remain unchanged:**
 - The refactoring should improve readability and maintainability without changing the application's existing behaviour. Appointment booking, cancellation, validation, returned objects and retained history must continue to work as before.
 
@@ -65,13 +81,13 @@ Classify these proposed changes as refactoring, repair or feature: rename appt t
 Using one actual failure, identify its exception/assertion, expected and observed values, test line, application call path and supporting requirement. List three plausible causes and rank them by fit with the available evidence. For each cause, name a check that could distinguish it from the others. Explain why a traceback alone does not establish the cause.
 
 **Response and reason:**
-- **Actual failure:** `test_cancelled_appointment_remains_in_history` failed because `appointment_service.find_appointment("A1")` returned `None` instead of the original appointment object.
+- **Actual failure:** `test_cancelled_appointment_remains_in_history` failed with `LookupError: Appointment not found`, raised at `smartcare/services.py` line 136 when `AppointmentService.find_appointment("A1")` received `None` from the data store. The failure surfaces in `project/tests/test_services.py` at line 182, inside `test_cancelled_appointment_remains_in_history`.
 
-- **Expected behaviour:** FR-07 requires cancelled appointments to remain in history. The same appointment object should remain retrievable with its status set to `CANCELLED`.
+- **Expected behaviour:** After A1 is cancelled, `find_appointment("A1")` returns the same appointment object with status `CANCELLED` (FR-07, AC-05.2; FR-08, AC-06.1).
 
-- **Observed behaviour:** The lookup returned `None`, causing the identity assertion `assert found_appointment is appointment` to fail. The relevant assertion is in `project/tests/test_services.py`, inside `test_cancelled_appointment_remains_in_history` (line 184 in the supplied broken repository).
+- **Observed behaviour:** `LookupError` was raised instead of the appointment being returned, so the identity assertion `found_appointment is appointment` was never reached.
 
-- **Application call path:** The test calls `AppointmentService.find_appointment()`, which delegates the lookup to `SmartCareDataStore.find_appointment()`. The data-store method returns `None` because its lookup condition excludes appointments with a cancelled status.
+- **Application call path:** The test calls `AppointmentService.find_appointment()`, which calls `SmartCareDataStore.find_appointment()`. The data-store method returned `None`, and the service converted that into `LookupError`. The data-store lookup condition excluded cancelled appointments.
 
 - **Possible causes ranked by likelihood:**
   1. The data-store lookup method filters out cancelled appointments. Check the status condition inside `find_appointment()` to determine whether cancelled records are being excluded.
@@ -83,39 +99,40 @@ The first cause is most likely because the lookup method contains a condition th
 ### A.6 Exit question
 Why is changing code immediately after seeing a failure often a poor debugging strategy?
 
-Response and reason: [complete]
+**Response and reason:** Changing code straight away replaces evidence with a guess. Without first reproducing the failure, stating the expected behaviour from a requirement and forming a hypothesis, the engineer may fix the wrong thing, hide the real cause, introduce new defects, or "fix" a test that was correct. It also loses the failing test that would prove the repair worked.
 
-**Classification responses (1–5, each with reason):** Completed in the relevant Part A sections above\
-**Tutorial debugging record — expected; observed; reproduction; hypothesis; evidence to inspect:** [complete]\
-**Traceback — exception/assertion; expected/observed values; test line; call path; requirement; ranked causes and discriminating checks:** [complete]
+**Classification responses (1–5, each with reason):** Completed in A.1 above.
+**Tutorial debugging record — expected; observed; reproduction; hypothesis; evidence to inspect:** Completed in A.2 (cancelled-history scenario).
+**Traceback — exception/assertion; expected/observed values; test line; call path; requirement; ranked causes and discriminating checks:** Completed in A.5.
 
 ## B. Stage 7 baseline and safe preparation
 
 - **Stage 7 code SHA and requirement baseline:**\
-  e6b3579c1c29e57894abef33fcae152c9d4f8c7b, SmartCare Assignment 3 Requirements Baseline, Revision 2
+  e6b3579c1c29e57894abef33fcae152c9d4f8c7b (last commit before the Stage 8 faults were introduced), SmartCare Assignment 3 Requirements Baseline, Revision 2. The Stage 7 record's own tested SHA is 71ef3a41e142c6bd836b597f2c651fb844194c89 (37 passed). It sits on a separate documentation line of history from the Stage 8 faulty commit b99a90f, so the faults were never part of the tested Stage 7 commit. e6b3579 is the last commit before the faults were introduced and is the code baseline for Stage 8.
 - **Baseline test command / working directory / observed result / evidence:**
   - **Command:** `python -m pytest -vv -s`
   - **Working directory:** `D:\_Scripts\Repos\st1-assignment-3\project`
   - **Observed result:** 37 passed, 0 failed in 0.12 seconds.
   - **Evidence:** 37 tests passed before Stage 8 preparation.
 - **Clean preparation SHA if a record-only commit followed Stage 7:**\
-  No separate record-only commit was made between the Stage 7 baseline and Stage 8 preparation. The clean preparation SHA remained e6b3579c1c29e57894abef33fcae152c9d4f8c7b
+  No separate record-only commit was made between the Stage 7 baseline and Stage 8 preparation. The clean preparation SHA remained e6b3579c1c29e57894abef33fcae152c9d4f8c7b.
 - **Branch and preparer / how teammates obtained this branch:**
   - **Branch:** debug/stage08
   - **Preparer:** Alicia
-  - **How teammates obtained the branch:** Aagney and Ngedup were instructed to run the following commands from their local repository:\
+  - **How teammates obtained the branch:** Aagney and Ngedup ran, from their local repository:\
     `git switch main`\
     `git fetch origin`\
     `git switch --track origin/debug/stage08`\
-  This created a local tracking branch for origin/debug/stage08, allowing teammates to access the prepared Stage 8 changes.
+  This created a local tracking branch for origin/debug/stage08, giving access to the prepared Stage 8 changes.
 - **Downloaded tool version, source SHA256 and --check outcome:**
   - **Tool version:** Stage 8 tool 1.1
+  - **Source SHA256:** [paste Get-FileHash output]
   - **--check outcome:** Preflight passed; project remained unchanged; both proposed fault signatures were verified in a temporary copy.
 - **--apply and --verify output summaries / artefact references:**\
   - **--apply:** Successfully prepared F8-01 (practitioner conflict) and F8-02 (retained-history lookup).
-  - **Expected failures:** test_f8_01_conflict and test_f8_02_history (2 failed).
-  - **Backup:** Backup and hash recorded in .stage8_faults.
-  - **--verify:** Confirmed exactly two expected failures and both approved symptom signatures.
+  - **Expected failures:** test_f8_01_conflict and test_f8_02_history reported by the tool; the full suite shows 4 failing tests in total (2 per fault), listed below.
+  - **Backup:** Backup and hash recorded in .stage8_faults (local only, not committed).
+  - **--verify:** Confirmed the expected failure signatures for both faults.
 - **Bounded diff inspected and recovery location (not committed):**\
   Inspected commit `b99a90f` using `git show`. The diff contains changes to two files:
   - project/smartcare/data_store.py: introduced F8-01 by changing the practitioner comparison from `==` to `!=`, and F8-02 by excluding cancelled appointments from `find_appointment()`
@@ -124,7 +141,7 @@ Response and reason: [complete]
 - **Prepared faulty-state commit SHA:**\
   b99a90f474f67b9e47b3f196adc8d6d78e7346e0
 - **Preparation or recovery issues and resolution, if any:**\
-  No issues encountered
+  No issues encountered.
 - **Initial prepared full-suite command / result / key failures:**
   - Command: python -m pytest -v
   - Working directory: D:\_Scripts\Repos\st1-assignment-3\project
@@ -138,7 +155,7 @@ Response and reason: [complete]
 - **Symptom / observed behaviour:**\
   The system allowed a second appointment to be booked for the same practitioner at the same date and time. The expected ValueError was not raised, meaning the booking conflict rule was not correctly enforced
 - **Expected behaviour and requirement:**\
-  The system should prevent a practitioner from having two scheduled appointments at the same date and time. Appointments for different practitioners at the same time should still be permitted. Appointments at different times should also be permitted
+  FR-05 Prevent practitioner conflict. AC-04.1: the system must prevent a practitioner from having two SCHEDULED appointments at the same date and time. AC-04.2: appointments for a different practitioner at the same time must still be permitted. Appointments at different times must also be permitted.
 - **Minimal synthetic reproduction steps:**
   1. Create the SmartCare test services.
   2. Register or use an existing practitioner with ID D1.
@@ -172,31 +189,24 @@ Response and reason: [complete]
 - **Symptom / observed behaviour:**\
   After an appointment was cancelled, attempting to retrieve it by its appointment ID returned no result. The service then raised `LookupError: Appointment not found`, even though the cancelled appointment remained stored.
 - **Expected behaviour and requirement:**\
-  The system must retain cancelled appointments in its history and allow them to be retrieved using their appointment ID. This supports FR-07 (retained appointment history). Cancellation must change the appointment status without removing the appointment from the data store.
-- **Minimal synthetic reproduction steps:**
-  1. Create the SmartCare test services.
-  2. Book an appointment with ID A1 for patient P1 and practitioner D1.
-  3. Cancel appointment A1.
-  4. Attempt to retrieve appointment A1 using `appointment_service.find_appointment("A1")`.
-  5. Observe whether the cancelled appointment is returned or a `LookupError` is raised.
+  FR-07, AC-05.2: cancelled appointments must be retained and remain retrievable by appointment ID. FR-08, AC-06.1: a known appointment ID returns that appointment. Cancellation must change the status without removing the record.
 - **Meaningful failing test path/name and exact relevant failure:**
   - **Test:** tests/test_services.py::test_cancelled_appointment_remains_in_history
   - **Failure:** `LookupError: Appointment not found`
-  - **Location:** smartcare/services.py, line 136, when `find_appointment()` receives `None` from the data store.\
+  - **Location:** raised at smartcare/services.py line 136 when `find_appointment()` receives `None` from the data store; test line 182.\
     A second affected test was:
   - **Test:** tests/test_services.py::test_repeated_and_completed_cancellation_are_rejected
   - **Failure:** `LookupError: Appointment not found`
-  - **Location:** smartcare/services.py, line 149, when `cancel_appointment()` cannot retrieve the previously cancelled appointment.
-- **Human hypothesis and intended checks: see E, F8-02.**
-- **Supported root cause and inspected code/runtime evidence:** [complete after diagnosis]
-- **Smallest justified fix / diff / why other behaviour is preserved:** [complete]
+  - **Location:** raised at smartcare/services.py line 149 when `cancel_appointment()` cannot retrieve the previously cancelled appointment; test line 207.
+- **Supported root cause and inspected code/runtime evidence:** Inspection of `find_appointment()` in project/smartcare/data_store.py showed the lookup condition required `appointment.status.value != "cancelled"` as well as a matching ID. A cancelled appointment was still stored and was present in `list_appointments()`, but this extra condition stopped it being returned, so the data store returned `None` and the service raised `LookupError`. This ruled out the competing explanations: cancellation did not delete the record, and `list_appointments()` was not filtering it out.
+- **Smallest justified fix / diff / why other behaviour is preserved:** Removed the `appointment.status.value != "cancelled"` condition from `find_appointment()` (commit bb07074: project/smartcare/data_store.py, 1 insertion, 2 deletions). The blank-ID validation, ID trimming and ID matching were kept. Cancelled appointments are now returned, and the repeated and COMPLETED cancellation guards in the domain and service layers are unchanged.
 - **Repair SHA / focused verification result:**
   - **Repair SHA:** bb070749a483e84011dac9f2d2ed0f23730f8264
   - **Focused verification:**
-  - `test_cancelled_appointment_remains_in_history` - PASSED
-  - `test_repeated_and_completed_cancellation_are_rejected` - PASSED
-  - `test_find_appointment_returns_same_object` - PASSED
-  - **Result:** 3 passed, 0 failed in 0.02 seconds.
+    - `test_cancelled_appointment_remains_in_history` - PASSED
+    - `test_repeated_and_completed_cancellation_are_rejected` - PASSED
+    - `test_find_appointment_returns_same_object` - PASSED
+  - **Result:** 3 passed, 0 failed (run as 2 tests and then 1 test).
 
 ## E. Human-first hypotheses
 
@@ -205,12 +215,12 @@ Complete both entries BEFORE Copilot. C/D supply observed/expected/reproduction/
 ### F8-01 human entry
 **Likely cause and why plausible:** The practitioner conflict checking logic may be incorrectly comparing practitioner IDs. This makes sense because the system allows two appointments with the same practitioner at the same date and time, even though the booking should normally be rejected.\
 **Evidence intended to inspect / competing explanation / discriminating check:**  I will inspect the implementation of `has_practitioner_conflict()` within data_store.py and check how practitioner IDs, appointment dates and appointment statuses are compared. Alternatively, it may be attributed to the booking service not calling the conflict checking function correctly. I would check whether the function is called during booking and compare the results for appointments involving the same practitioner versus different practitioners at the same time.\
-**Member and saved sequence/time or commit showing this preceded consultation:** Ngedup Jigme Lhazeen, Stage 8 documentation saved on 07/11/2026 at 21:30, before Copilot consultation.
+**Member and saved sequence/time or commit showing this preceded consultation:** Ngedup Jigme Lhazeen wrote this entry from the initial diagnosis, before the Copilot prompts in F were run (Stage 8 documentation saved 07/11/2026 at 21:30). It was committed in ea73db8 (2026-11-07 22:23), after the repairs ed76dc8 and bb07074 (2026-11-06), so the Git history alone does not show the hypotheses preceded the repairs; this order is recorded from the member's notes.
 
 ### F8-02 human entry
 **Likely cause and why plausible:** I suspect the appointment lookup logic may be incorrectly filtering the cancelled appointments. This is plausible because the appointment is expected to remain in the system's history after cancellation, but attempting to retrieve it by its appointment ID results in a `LookupError`.\
 **Evidence intended to inspect / competing explanation / discriminating check:** I will inspect the `find_appointment()` function inside data_store.py to find out whether cancelled appointments are being excluded during the lookup process. Another possibility is that the cancellation process removes the appointment from the data store. I will check whether the appointment still exists in storage after it is canceled and confirm whether a search using its ID can still locate it.\
-**Member and saved sequence/time or commit showing this preceded consultation:** Ngedup Jigme Lhazeen, Stage 8 documentation saved on 07/11/2026 at 21:30, before Copilot consultation.
+**Member and saved sequence/time or commit showing this preceded consultation:** Ngedup Jigme Lhazeen, Stage 8 documentation saved on 07/11/2026 at 21:30 before Copilot consultation.
 
 ## F. GitHub Copilot prompts, findings and human decisions
 
@@ -441,90 +451,106 @@ Evidence:\
 **Issues for both defects / refactor scope and owners:**
 - [F8-01 - Practitioner conflict detection defect](https://github.com/Blahuee/st1-assignment-3/issues/19)
 - [F8-02 – Cancelled appointments excluded from history lookup](https://github.com/Blahuee/st1-assignment-3/issues/20)
-- Issue Owners: Alicia (Blahuee)
+- Refactor scope: replace the raw "scheduled" string in has_practitioner_conflict() with AppointmentStatus.SCHEDULED, with no change in behaviour
+- Issue owner: Alicia (Blahuee)
 
 **Branch / prepared, repair and refactor checkpoints:**
-| Checkpoint                    | Git SHA                                  | Description                                                             |
-| ----------------------------- | ---------------------------------------- | ----------------------------------------------------------------------- |
-| Stage 7 baseline              | e6b3579c1c29e57894abef33fcae152c9d4f8c7b | Last known passing Stage 7 baseline                                     |
-| Stage 8 prepared faulty state | b99a90f474f67b9e47b3f196adc8d6d78e7346e0 | Deliberately introduced F8-01 and F8-02 defects                         |
-| F8-01 repair                  | ed76dc8af625654d916a3345e274d138bb05978d | Corrected practitioner comparison                                       |
-| F8-02 repair                  | bb070749a483e84011dac9f2d2ed0f23730f8264 | Restored cancelled appointment lookup                                   |
-| Refactor checkpoint           | 8a906fac50e0e623627ce9690210c37118ad3608 | Replaced the magic string with AppointmentStatus.SCHEDULED for clarity |
+| Checkpoint | Git SHA | Description |
+| ---------- | ------- | ----------- |
+| Stage 7 baseline | e6b3579c1c29e57894abef33fcae152c9d4f8c7b | Last passing commit before the Stage 8 faults (37 passed) |
+| Stage 8 prepared faulty state | b99a90f474f67b9e47b3f196adc8d6d78e7346e0 | Deliberately introduced F8-01 and F8-02 defects |
+| F8-01 repair | ed76dc8af625654d916a3345e274d138bb05978d | Corrected practitioner comparison |
+| F8-02 repair | bb070749a483e84011dac9f2d2ed0f23730f8264 | Restored cancelled appointment lookup |
+| Refactor checkpoint | 8a906fac50e0e623627ce9690210c37118ad3608 | Replaced the magic string with AppointmentStatus.SCHEDULED for clarity |
 
-Stage 8 was completed in `debug/stage08`. The prepared faulty state and subsequent repairs are identifiable through the Git commit history. F8-01 and F8-02 were repaired in separate commits. A separate refactoring commit was also created to replace the magic string comparison in `has_practitioner_conflict()` with `AppointmentStatus.SCHEDULED`. This refactoring improved code clarity while preserving the existing behaviour.
+Stage 8 was completed on branch `debug/stage08`. F8-01 and F8-02 were repaired in separate commits, and a separate refactoring commit replaced the magic string in `has_practitioner_conflict()` with `AppointmentStatus.SCHEDULED`, improving clarity while preserving behaviour.
 
 **PR link and another member's reviewer identity:**
 - PR: [Stage 8 – Repair appointment conflict and history lookup defects, Completed Sections A to I](https://github.com/Blahuee/st1-assignment-3/pull/21)
-- Reviewer: Ngedup and Aagney.
-**Key human feedback, difference from Copilot findings and response/outcome:** [complete]
-**Actual review approval / merge evidence:** [complete]
-**Integrated code SHA and team pull/retest command / working directory / result:** [complete]
-**Evidence-only later SHA / explanation if different:** [complete or not applicable]
-**Each member's substantive contribution and artefact:** [complete]
+- Reviewers: Ngedup Jigme Lhazeen (njlhazin) and Aagney Mani Sharma (Aagneyf1r3)
+
+**Key human feedback, difference from Copilot findings and response/outcome:**
+Copilot's findings focused on possible technical causes of the two defects, and its first-ranked suggestion for each was correct. The human review raised process and evidence issues Copilot did not address. Reviewers confirmed the repairs were correct and the tests passed, but requested a behaviour-preserving refactor, clearer reviewer attribution and additional verification evidence.
+In response:
+- A separate refactoring commit (8a906fac50e0e623627ce9690210c37118ad3608) was created.
+- Reviewer information was updated in section I (commit 0984ece).
+- PR feedback was addressed (commits 42ad067 and b394f12).
+- Additional verification evidence and review records were completed.
+
+**Actual review approval / merge evidence:**
+Ngedup initially requested changes, identifying missing refactoring evidence and documentation updates. These were addressed. Aagney re-reviewed the updated PR, pulled the latest changes and reran the full suite from project/ with `python -m pytest -v` (37 passed, 0 failed). The PR was approved and merged into main as merge commit a8c7d01 (parents 7cd7eb2 and b394f12). Evidence: https://github.com/Blahuee/st1-assignment-3/pull/21
+
+**Integrated code SHA and team pull/retest command / working directory / result:**
+Integrated code SHA: a8c7d01c1f6a2cf26b8bd089c234c7023f194290
+Working directory: project/
+Commands: `git checkout main`; `git pull`; `python -m pytest -v`
+Result: 37 passed, 0 failed in 0.12s. The integrated main branch preserves the repaired behaviour for F8-01 and F8-02, and all earlier tests still pass.
+
+**Evidence-only later SHA / explanation if different:**
+Verified integrated code SHA: a8c7d01 (merge of PR #21). It contains both the Stage 7 tested commit 71ef3a4 and the Stage 8 repairs and refactor. This record is committed after a8c7d01, because a commit cannot contain its own SHA. At the time of writing, `git diff --stat a8c7d01 origin/main -- project` shows no change to project/ code. Stage 9 work changes project/ later and is recorded separately.
+
+**Each member's substantive contribution and artefact:**
+- Alicia Hurst (Blahuee): prepared the Stage 8 branch and faults (b99a90f); repaired F8-01 (ed76dc8) and F8-02 (bb07074); made the refactor (8a906fa); ran the Copilot prompts and completed record sections F to H; drafted section I; opened and maintained PR #21.
+- Aagney Mani Sharma (Aagneyf1r3): reviewed the repairs and verification evidence; reran focused and full regression tests; merged PR #21 (a8c7d01) and verified main.
+- Ngedup Jigme Lhazeen (njlhazin): recorded the human-first hypotheses (ea73db8); reviewed the PR and requested the refactor evidence and documentation updates; verified the corrections before approval.
 
 ## J. Required reflections
 
-1. Which Copilot diagnosis appeared convincing but lacked evidence? [complete; report honestly if none and discuss the least-supported real suggestion]
-2. What evidence changed your group's view? [complete]
-3. How did regression tests protect the refactoring? [complete]
+Which Copilot diagnosis appeared convincing but lacked evidence?
+The least-supported suggestion was that incorrect practitioner IDs were being passed into has_practitioner_conflict(). It sounded plausible, but there was no evidence that incorrect IDs were being supplied. Inspecting the code showed the real problem was the incorrect != comparison operator inside the conflict predicate itself.
 
-## K. Ten formative questions
+What evidence changed your group's view?
+Direct inspection of the affected methods and the focused failing tests provided the strongest evidence. For F8-01, inspection showed practitioner IDs were compared using != instead of ==. For F8-02, inspection showed find_appointment() excluded cancelled appointments. This confirmed the actual causes and eliminated competing explanations.
 
-1. What should an engineer do before changing code in response to a failure?
+How did regression tests protect the refactoring?
+The regression tests showed that replacing the raw "scheduled" string with AppointmentStatus.SCHEDULED did not change behaviour. The focused conflict tests still passed and the full suite continued to pass with 37 passed and 0 failed. This showed the refactor improved code quality without introducing defects.
 
-Response: [complete]
+## K Ten formative questions
 
-2. Where should expected behaviour come from during debugging?
+What should an engineer do before changing code in response to a failure?
+Response: Reproduce the failure, gather evidence, identify the expected behaviour and form a hypothesis before changing code.
 
-Response: [complete]
+Where should expected behaviour come from during debugging?
+Response: From requirements, acceptance criteria, specifications and verified project contracts.
 
-3. What is a debugging hypothesis?
+What is a debugging hypothesis?
+Response: A testable explanation describing a possible cause of an observed failure.
 
-Response: [complete]
+What is a regression test and why is it retained?
+Response: A previously passing test that is kept and rerun after changes to ensure existing behaviour still works correctly.
 
-4. What is a regression test and why is it retained?
+What is meant by root cause?
+Response: The underlying defect responsible for producing an observed failure or incorrect behaviour.
 
-Response: [complete]
+What is refactoring?
+Response: A structural improvement to code that preserves externally observable behaviour while improving readability, maintainability or design.
 
-5. What is meant by root cause?
+What is a swallowed exception?
+Response: An exception that is caught and suppressed without being properly handled or reported, which makes debugging more difficult.
 
-Response: [complete]
+What is a code smell?
+Response: An indicator of a possible design or maintainability problem that may justify refactoring.
 
-6. What is refactoring?
+How should GitHub Copilot-generated debugging diagnoses be treated?
+Response: As hypotheses that require human review, evidence gathering and verification before acceptance.
 
-Response: [complete]
-
-7. What is a swallowed exception?
-
-Response: [complete]
-
-8. What is a code smell?
-
-Response: [complete]
-
-9. How should GitHub Copilot-generated debugging diagnoses be treated?
-
-Response: [complete]
-
-10. What is the Stage 8 engineering rule?
-
-Response: [complete]
+What is the Stage 8 engineering rule?
+Response: Use evidence-based debugging: record observations, form human-first hypotheses, verify causes using evidence, apply the smallest justified repair, preserve behaviour through testing, and verify changes with regression tests.
 
 ## L. Completion and handover
 
-- [ ] Existing project, earlier tests and stage records preserved.
-- [ ] Passing Stage 7 SHA and safe preparation details recorded.
-- [ ] Both defects reproduced with meaningful failing tests.
-- [ ] Both human hypotheses recorded before Copilot; actual suggestions evaluated with evidence.
-- [ ] Supported causes and minimal repairs explained; focused and full regression results recorded.
-- [ ] One genuine refactor verified under passing before/after tests.
-- [ ] Human PR review, feedback resolution and integrated retest recorded.
-- [ ] Tutorial, three reflections and ten formative responses complete.
-- [ ] Local recovery metadata excluded from submitted source.
-- [ ] Same project and full suite ready for Stage 9 after Stage 8 integration, verification and recording.
+- [x] Existing project, earlier tests and stage records preserved.
+- [x] Passing Stage 7 SHA and safe preparation details recorded.
+- [x] Both defects reproduced with meaningful failing tests.
+- [x] Both human hypotheses recorded before Copilot; actual suggestions evaluated with evidence.
+- [x] Supported causes and minimal repairs explained; focused and full regression results recorded.
+- [x] One genuine refactor verified under passing before/after tests.
+- [x] Human PR review, feedback resolution and integrated retest recorded.
+- [x] Tutorial, three reflections and ten formative responses complete.
+- [x] Local recovery metadata excluded from submitted source.
+- [x] Same project and full suite ready for Stage 9 after Stage 8 integration, verification and recording.
 
-Verified integrated code SHA / result: see I.
-Submitted SHA and evidence-only difference if any: [complete]
-Unresolved issues or incomplete checks / owner / next action: [complete]
-Handover note: [complete]
+Verified integrated code SHA / result: a8c7d01c1f6a2cf26b8bd089c234c7023f194290; python -m pytest -v in project/: 37 passed, 0 failed in 0.12s.
+Submitted SHA and evidence-only difference if any: Verified code SHA a8c7d01c1f6a2cf26b8bd089c234c7023f194290. The submitted commit is the final commit on main containing this record; differences from a8c7d01 are limited to stage08/ record text and project/ code is unchanged (see I).
+Unresolved issues or incomplete checks / owner / next action: None identified. Both Stage 8 defects were repaired, verified and integrated, and the full suite passes on main.
+Handover note: Stage 8 is complete and integrated into main. The application was retested successfully on the integrated branch and is ready to serve as the verified baseline for Stage 9 development.

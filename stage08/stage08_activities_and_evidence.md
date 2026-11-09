@@ -456,7 +456,7 @@ Evidence:\
 | F8-02 repair                  | bb070749a483e84011dac9f2d2ed0f23730f8264 | Restored cancelled appointment lookup                                   |
 | Refactor checkpoint           | 8a906fac50e0e623627ce9690210c37118ad3608 | RReplaced the magic string with AppointmentStatus.SCHEDULED for clarity |
 
-Stage 8 was completed in `debug/stage08`. The prepared faulty state and later repairs are identifiable through the Git commit history. F8-01 and F8-02 were repaired in separate commits. No separate refactoring commit was created because the refactoring decision was to retain the existing repaired implementation.
+Stage 8 was completed in `debug/stage08`. The prepared faulty state and subsequent repairs are identifiable through the Git commit history. F8-01 and F8-02 were repaired in separate commits. A separate refactoring commit was also created to replace the magic string comparison in `has_practitioner_conflict()` with `AppointmentStatus.SCHEDULED`. This refactoring improved code clarity while preserving the existing behaviour.
 
 **PR link and another member's reviewer identity:**
 - PR: [Stage 8 – Repair appointment conflict and history lookup defects, completed sections I to H](https://github.com/Blahuee/st1-assignment-3/pull/21)

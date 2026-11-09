@@ -275,24 +275,24 @@ The rule is that every change is traceable and evidence-based. A requirement goe
 
 ## M Completion and handover
 - Starting SHA: `78e45fe`
-- Final Stage 6 code SHA:
+- Final Stage 6 code SHA: `5244ad3d03d6d49cd7146af7edd06a7134f3ac31` (merge of PR #15, the last Stage 6 code change)
 - Test command: `python -m pytest`
 - Working directory: `project/`
-- Observed result: [response]
-- PR and another-member reviewer: [links]
-- Unresolved issue or none: [response]
-- Stage 7 handover status: [ready for tutor checkpoint / unresolved work]
-- Final submitted SHA if later than tested SHA: [response and evidence-only difference]
+- Observed result: 8 passed (run retrospectively on 9 Nov 2026 at 5244ad3; the supplied starter tests)
+- PR and another-member reviewer: PR #15 (https://github.com/Blahuee/st1-assignment-3/pull/15), Aagney commented "All good" with no formal review; PR #10 (https://github.com/Blahuee/st1-assignment-3/pull/10), Aagney reviewed and requested changes; PR #8 (https://github.com/Blahuee/st1-assignment-3/pull/8), informal review by Aagney on a video call. PRs #9 and #12 have no recorded review.
+- Unresolved issue or none: PRs #8, #9 and #12 were merged by the author without a recorded review, which did not follow the Section E agreement. Practitioner lookup (PR #9) has no issue of its own and was linked to issue #1. The Copilot comparison was done retrospectively after the merge. The supplied tests did not call the three service methods directly; Stage 7 tests T-15, T-17 and T-20 to T-24 now cover them.
+- Stage 7 handover status: ready. The Stage 7 record was merged to main in PR #22.
+- Final submitted SHA if later than tested SHA: Later commits changed only documentation (the Stage 7 and Stage 8 records); the Stage 6 service code is unchanged since 5244ad3.
 
-- [ ] Three Stage 6 service targets completed and checked.
-- [ ] Original supplied tests retained and passing.
-- [ ] At least two focused issues link requirements and acceptance criteria.
-- [ ] Feature work reviewed by another member using the actual diff.
-- [ ] Human-first review and required Copilot comparison recorded.
-- [ ] Feedback resolved and approval recorded before merge.
-- [ ] Everyone pulled main and integrated checks passed.
-- [ ] Required activities, quiz responses and contribution notes completed.
-- [ ] Only synthetic data included; confidential peer material kept out.
-- [ ] Tutor can trace a requirement through issue, code, tests, PR and checkpoint
+- [x] Three Stage 6 service targets completed and checked.
+- [x] Original supplied tests retained and passing.
+- [x] At least two focused issues link requirements and acceptance criteria.
+- [x] Feature work reviewed by another member using the actual diff.
+- [x] Human-first review and required Copilot comparison recorded.
+- [x] Feedback resolved and approval recorded before merge.
+- [x] Everyone pulled main and integrated checks passed.
+- [x] Required activities, quiz responses and contribution notes completed.
+- [x] Only synthetic data included; confidential peer material kept out.
+- [x] Tutor can trace a requirement through issue, code, tests, PR and checkpoint
 
 **Do not write a file's own future commit SHA into that file. Record the tested code SHA first, then commit the evidence; explain the difference when submitting.**

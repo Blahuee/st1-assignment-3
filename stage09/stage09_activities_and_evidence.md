@@ -2,8 +2,8 @@
 
 Common UG and PG record. All Assignment 3 stage materials are provided from the beginning. Complete this stage only after the previous applicable stage has been integrated, verified and recorded. Use this supplied record in stage09/ in your EXISTING repository. Preserve project/, all earlier tests, records and responses. Do not download another starter or copy staff solutions. Use the Stage 9 handout and Overview/revision 2 baseline. Keep responses concise and link accessible artefacts; do not paste entire logs or private peer ratings.
 
-Group: <!-- complete -->
-Members and responsibilities: <!-- complete -->
+Group: 1:30 - 3:30\
+Members and responsibilities: Alicia Hurst (Blahuee) Aagney Mani Sharma (Aagneyf1r3) – <!-- complete -->; Ngedup Jigme Lhazeen (njlhazin) – <!-- complete -->
 Stage 8 integrated SHA, command, working directory and actual result: <!-- complete -->
 
 ## A. Tutorial activities
@@ -12,14 +12,14 @@ Stage 8 integrated SHA, command, working directory and actual result: <!-- compl
 
 | Information | Required session/domain or transient state? | Requirement or reason |
 |---|---|---|
-| Patient identity | | |
-| Appointment history | | |
-| Temporary menu choice | | |
-| Practitioner specialty | | |
-| Debug print output | | |
-| Appointment status | | |
+| Patient identity |Required session/domain state |FR-01 AND FR-02 must be registered once and found later by the same ID. Appointments link to that actual patient object. |
+| Appointment history |Required session/domain state  | FR-07: cancelled appointments are kept and can still be found and listed in the same session. |
+| Temporary menu choice |Transient | only decides which command runs this time round the loop, nothing needs it afterwards. |
+| Practitioner specialty | Required session/domain state |FR-03: stored witht the practitioner and shown when finding the practitioner or an appointment. |
+| Debug print output | Transient|Only helps a developer while testing, it is not part of the system's data and should not be kept. |
+| Appointment status | Required session/domain state | FR-06 AND FR-07- shows Scheduled, Cancelled or Completed. Conflict checks and status filters depend on it.|
 
-What is intentionally lost on exit? <!-- response -->
+What is intentionally lost on exit? Everything. Petients, practitioners and appointments (including cancelled hsitory) live only in the in-memory SmartCareDataStore, so they are discarded when the program exits and a new launch starts empty. This is the declared scope (FR-10 restart persistance is retired), not a bug. 
 
 ### A2 Interface and domain data plan
 
@@ -27,31 +27,31 @@ Plan before AI. This replaces schema/key design; no database tables are required
 
 | Function or component | Explicit inputs and types | Outputs | Responsibility and validation | Domain source / existing constraint |
 |---|---|---|---|---|
-| appointment_sort_key | | | | |
-| select_appointments | | | | |
-| Service listing | | | | |
-| Console | | | | |
+| appointment_sort_key |appointment: Appointment |tuple[date_time, appointment_id] |Gives one reusable ordering ruke: earlist time first, then apppointment ID to break ties. No validation, no side effects. |Appointment.date_time and appointment_id properties (read-only) |
+| select_appointments | appointments: list[Appointment], practitioner_id: str, status: AppointmentStatus None = None| New list[Appointment] sorted with appointment_sort_key|Pure: keeps only this practitioner's appointments, optionally one status; never changes the input list or objects; no input/print/store. | Appointment.practitioner.practitioner_id and AppointmentStatus enum.|
+| Service listing | `practitioner_id: str`, `status: AppointmentStatus \| None = None` | New ordered list (may be empty) | AppointmentService checks the practitioner exists (LookupError), blank ID (ValueError), non-enum status (ValueError), gets a fresh list from the store, then calls select_appointments. | SmartCareDataStore.find_practitioner / list_appointments contracts. |
+| Console | Typed text from the user | Printed messages and details | run_menu reads input, converts text (date/time with parse_date_time, status text to enum), calls services, prints results, and catches ValueError/LookupError so the menu continues. | Uses one data store and one set of services for the whole session. |
 
-Relate patient ID/name, practitioner ID/name/specialty, and appointment ID/actual participants/date_time/status to the existing contracts: <!-- response -->
+Relate patient ID/name, practitioner ID/name/specialty, and appointment ID/actual participants/date_time/status to the existing contracts: Patient and Practitioner IDs are trimmed, non-blank, case-sensitive and read-only; names and specialty must be non-blank (domain.py `required_text`). An Appointment holds the actual registered Patient and Practitioner objects (not copies or just IDs), a minute-precision date_time, and a status that only changes through guarded methods such as `cancel()`. The store rejects duplicate IDs and unregistered participants. The listing and query only read these properties; they add no new fields.
 
 ### A3 Responsibility violations
 
 | Conceptual case | Violation | Correct boundary and reason |
 |---|---|---|
-| Appointment.cancel reads input | | |
-| Service prints/reads the menu | | |
-| Query sorts its source in place | | |
-| Store prints Appointment saved | | |
+| Appointment.cancel reads input | A domain object is doing console work (asking "Confirm?"), so it cannot be tessted or reused without a keyboard.|Appointment.cancel only checks the SCHEDULED rule and changes status. Any confirmation belongs in the console.  |
+| Service prints/reads the menu |The service mizes user interface with business coordination, so tests and other interfaces can't use it cleanly. |Services take values and return objects or raise errors; run_menu in console.py prints and reads. |
+| Query sorts its source in place | appointments.sort() changes the caller's list, a hidden side effect, so the function is no longer pure. |use sorted (...) to return a new list and leave the source unchanged. |
+| Store prints Appointment saved |sotrage is doing output. callers can't check the result and the mssage appears even in tests.  |The store just stores and returns (or raises an erroe); the console decides what message to show. |
 
 ### A4 Sorting comparison
 
-For `appointments.sort(key=appointment_sort_key)` and `result = sorted(appointments, key=appointment_sort_key)`, predict source order, return value and result identity. Give a meaningful mutation check: <!-- response -->
+For `appointments.sort(key=appointment_sort_key)` and `result = sorted(appointments, key=appointment_sort_key)`, predict source order, return value and result identity. Give a meaningful mutation check: appointments.sort(key=appointment_sort_key) changes the order of the source list itself and returns None. result = sorted(appointments, key=appointment_sort_key) leaves the source order unchanged and returns a new list, so result is not appointments; it still holds the same Appointment objects. Mutation check: before calling, save a snapshot such as [(a.appointment_id, a.date_time, a.status) for a in appointments]; after the call, assert the source still equals that snapshot (same order and fields). Checking only len() is not enough, because sorting in place keeps the same length.
 
-Score-example prediction and explanation of passing the named key: <!-- response -->
+Score-example prediction and explanation of passing the named key: sorted(scores, key=score_key) returns a new list ordered by score and then by name for equal scores, and scores keeps its original order. We pass the function name score_key without brackets, so sorted can call it once for each item. Writing score_key() would call it straight away and fail. Using a named key means the same ordering rule is written once, can be tested on its own, and is reused everywhere.
 
 ### A5 Exit question
 
-Explain cancellation versus deletion, and checks for same-session lookup, all-status listing and SCHEDULED-only exclusion: <!-- response -->
+Explain cancellation versus deletion, and checks for same-session lookup, all-status listing and SCHEDULED-only exclusion:Cancelling changes the status of the same Appointment object to CANCELLED and keeps it in the store, because FR-07 needs the history kept. Deleting would lose that record. Checks: (1) after cancelling A1, find_appointment("A1") returns the same object with status CANCELLED; (2) listing D1 with no status includes A1 as Cancelled; (3) listing D1 with SCHEDULED leaves A1 out, because that filter should only show scheduled appointments. Cancelling also frees the slot, so a new A3 can be booked with D1 at the same time.
 
 ## B. Human design and contracts
 

@@ -26,8 +26,8 @@ def create_test_services():
 
     practitioner_service.register_practitioner(
         "D1",
-        "Dr Smith",
-        "General Practice"
+        "Dr. Smith",
+        "Specialty"
     )
 
     return (
@@ -79,7 +79,7 @@ def test_find_practitioner_returns_known_and_rejects_unknown():
 
     assert original_practitioner is registered_practitioner
     assert original_practitioner.practitioner_id == "D1"
-    assert original_practitioner.name == "Dr Smith"
+    assert original_practitioner.name == "Dr. Smith"
 
     with pytest.raises(LookupError):
         practitioner_service.find_practitioner("D99")
@@ -273,3 +273,145 @@ def test_find_appointment_returns_same_object():
     found_appointment = appointment_service.find_appointment("A1")
 
     assert found_appointment is appointment
+
+# STAGE 9: PRACTITIONER APPOINTMENT LISTING
+
+# Check that only appointments for the requested practitioner are returned
+def test_list_practitioner_appointments_isolates_practitioners():
+    data_store, _, practitioner_service, appointment_service = (
+        create_test_services()
+    )
+
+    practitioner_service.register_practitioner(
+        "D2",
+        "Dr. Jones",
+        "Specialty"
+    )
+
+    appointment_d1 = appointment_service.book_appointment(
+        "A1",
+        "P1",
+        "D1",
+        datetime(2026, 11, 5, 10, 0)
+    )
+
+    appointment_d2 = appointment_service.book_appointment(
+        "A2",
+        "P1",
+        "D2",
+        datetime(2026, 11, 5, 11, 0)
+    )
+
+    results = appointment_service.list_practitioner_appointments("D1")
+
+    assert results == [appointment_d1]
+    assert appointment_d2 not in results
+    assert results[0] is appointment_d1
+
+# Check that all statuses are returned by default and can be filtered
+def test_list_practitioner_appointments_filters_statuses():
+    data_store, patient_service, practitioner_service, appointment_service = (
+        create_test_services()
+    )
+
+    scheduled = appointment_service.book_appointment(
+        "A1",
+        "P1",
+        "D1",
+        datetime(2026, 11, 5, 10, 0)
+    )
+
+    cancelled = appointment_service.book_appointment(
+        "A2",
+        "P1",
+        "D1",
+        datetime(2026, 11, 5, 11, 0)
+    )
+    appointment_service.cancel_appointment("A2")
+
+    completed = Appointment(
+        "A3",
+        patient_service.find_patient("P1"),
+        practitioner_service.find_practitioner("D1"),
+        datetime(2026, 11, 5, 12, 0),
+        AppointmentStatus.COMPLETED
+    )
+    data_store.add_appointment(completed)
+
+    # No status supplied should return every appointment
+    results = appointment_service.list_practitioner_appointments("D1")
+
+    assert results == [scheduled, cancelled, completed]
+
+    # Each status should return only matching appointments
+    expected_results = {
+        AppointmentStatus.SCHEDULED: [scheduled],
+        AppointmentStatus.CANCELLED: [cancelled],
+        AppointmentStatus.COMPLETED: [completed],
+    }
+
+    for status in AppointmentStatus:
+        results = appointment_service.list_practitioner_appointments(
+            "D1",
+            status
+        )
+
+        assert results == expected_results[status]
+
+# Check that invalid practitioner IDs and status values are rejected
+def test_list_practitioner_appointments_rejects_invalid_inputs():
+    _, _, _, appointment_service = create_test_services()
+
+    with pytest.raises(LookupError):
+        appointment_service.list_practitioner_appointments("D99")
+
+    practitioner_ids = ["", " "]
+
+    for practitioner_id in practitioner_ids:
+        with pytest.raises(ValueError):
+            appointment_service.list_practitioner_appointments(
+                practitioner_id
+            )
+
+    with pytest.raises(ValueError):
+        appointment_service.list_practitioner_appointments(
+            "D1",
+            "scheduled"
+        )
+
+# Check that a known practitioner with no appointments returns an empty list
+def test_list_practitioner_appointments_returns_empty_list():
+    _, _, practitioner_service, appointment_service = (
+        create_test_services()
+    )
+
+    practitioner_service.register_practitioner(
+        "D2",
+        "Dr. Jones",
+        "Specialty"
+    )
+
+    results = appointment_service.list_practitioner_appointments("D2")
+
+    assert results == []
+
+# Check that listing returns a new list without replacing appointment objects
+def test_list_practitioner_appointments_preserves_appointment_objects():
+    _, _, _, appointment_service = create_test_services()
+
+    appointment = appointment_service.book_appointment(
+        "A1",
+        "P1",
+        "D1",
+        datetime(2026, 11, 5, 10, 0)
+    )
+
+    appointment_service.cancel_appointment("A1")
+
+    first_results = appointment_service.list_practitioner_appointments("D1")
+    second_results = appointment_service.list_practitioner_appointments("D1")
+
+    assert first_results is not second_results
+    assert first_results[0] is appointment
+    assert second_results[0] is appointment
+    assert appointment.status is AppointmentStatus.CANCELLED

@@ -1,0 +1,193 @@
+﻿
+SmartCare menu
+1  Register patient
+2  Find patient
+3  Register practitioner
+4  Find practitioner
+5  Book appointment
+6  Cancel appointment
+7  Find appointment
+8  List a practitioner's appointments
+0  Exit
+Choose an option: Patient ID: Patient name: Registered patient P1: Alex Example
+
+SmartCare menu
+1  Register patient
+2  Find patient
+3  Register practitioner
+4  Find practitioner
+5  Book appointment
+6  Cancel appointment
+7  Find appointment
+8  List a practitioner's appointments
+0  Exit
+Choose an option: Practitioner ID: Practitioner name: Specialty: Registered practitioner D1: Taylor Example (General practice)
+
+SmartCare menu
+1  Register patient
+2  Find patient
+3  Register practitioner
+4  Find practitioner
+5  Book appointment
+6  Cancel appointment
+7  Find appointment
+8  List a practitioner's appointments
+0  Exit
+Choose an option: Practitioner ID: Practitioner name: Specialty: Registered practitioner D2: Jordan Example (Physio)
+
+SmartCare menu
+1  Register patient
+2  Find patient
+3  Register practitioner
+4  Find practitioner
+5  Book appointment
+6  Cancel appointment
+7  Find appointment
+8  List a practitioner's appointments
+0  Exit
+Choose an option: Patient ID: Patient P1: Alex Example
+
+SmartCare menu
+1  Register patient
+2  Find patient
+3  Register practitioner
+4  Find practitioner
+5  Book appointment
+6  Cancel appointment
+7  Find appointment
+8  List a practitioner's appointments
+0  Exit
+Choose an option: Practitioner ID: Practitioner D1: Taylor Example (General practice)
+
+SmartCare menu
+1  Register patient
+2  Find patient
+3  Register practitioner
+4  Find practitioner
+5  Book appointment
+6  Cancel appointment
+7  Find appointment
+8  List a practitioner's appointments
+0  Exit
+Choose an option: Practitioner ID: Practitioner D2: Jordan Example (Physio)
+
+SmartCare menu
+1  Register patient
+2  Find patient
+3  Register practitioner
+4  Find practitioner
+5  Book appointment
+6  Cancel appointment
+7  Find appointment
+8  List a practitioner's appointments
+0  Exit
+Choose an option: Appointment ID: Patient ID: Practitioner ID: Date/time (YYYY-MM-DD HH:MM): Booked A1: P1 with D1, 2026-10-01 09:00, scheduled
+
+SmartCare menu
+1  Register patient
+2  Find patient
+3  Register practitioner
+4  Find practitioner
+5  Book appointment
+6  Cancel appointment
+7  Find appointment
+8  List a practitioner's appointments
+0  Exit
+Choose an option: Appointment ID: Patient ID: Practitioner ID: Date/time (YYYY-MM-DD HH:MM): Error: Practitioner already has a SCHEDULED appointment at this time
+
+SmartCare menu
+1  Register patient
+2  Find patient
+3  Register practitioner
+4  Find practitioner
+5  Book appointment
+6  Cancel appointment
+7  Find appointment
+8  List a practitioner's appointments
+0  Exit
+Choose an option: Appointment ID: Patient ID: Practitioner ID: Date/time (YYYY-MM-DD HH:MM): Booked A2: P1 with D2, 2026-10-01 09:00, scheduled
+
+SmartCare menu
+1  Register patient
+2  Find patient
+3  Register practitioner
+4  Find practitioner
+5  Book appointment
+6  Cancel appointment
+7  Find appointment
+8  List a practitioner's appointments
+0  Exit
+Choose an option: Appointment ID: Cancelled A1: P1 with D1, 2026-10-01 09:00, cancelled
+
+SmartCare menu
+1  Register patient
+2  Find patient
+3  Register practitioner
+4  Find practitioner
+5  Book appointment
+6  Cancel appointment
+7  Find appointment
+8  List a practitioner's appointments
+0  Exit
+Choose an option: Appointment ID: A1: P1 with D1, 2026-10-01 09:00, cancelled
+
+SmartCare menu
+1  Register patient
+2  Find patient
+3  Register practitioner
+4  Find practitioner
+5  Book appointment
+6  Cancel appointment
+7  Find appointment
+8  List a practitioner's appointments
+0  Exit
+Choose an option: Practitioner ID: Status (scheduled/cancelled/completed, blank for all): A1: P1 with D1, 2026-10-01 09:00, cancelled
+
+SmartCare menu
+1  Register patient
+2  Find patient
+3  Register practitioner
+4  Find practitioner
+5  Book appointment
+6  Cancel appointment
+7  Find appointment
+8  List a practitioner's appointments
+0  Exit
+Choose an option: Practitioner ID: Status (scheduled/cancelled/completed, blank for all): No matching appointments.
+
+SmartCare menu
+1  Register patient
+2  Find patient
+3  Register practitioner
+4  Find practitioner
+5  Book appointment
+6  Cancel appointment
+7  Find appointment
+8  List a practitioner's appointments
+0  Exit
+Choose an option: Appointment ID: Patient ID: Practitioner ID: Date/time (YYYY-MM-DD HH:MM): Booked A3: P1 with D1, 2026-10-01 09:00, scheduled
+
+SmartCare menu
+1  Register patient
+2  Find patient
+3  Register practitioner
+4  Find practitioner
+5  Book appointment
+6  Cancel appointment
+7  Find appointment
+8  List a practitioner's appointments
+0  Exit
+Choose an option: Practitioner ID: Status (scheduled/cancelled/completed, blank for all): A1: P1 with D1, 2026-10-01 09:00, cancelled
+A3: P1 with D1, 2026-10-01 09:00, scheduled
+
+SmartCare menu
+1  Register patient
+2  Find patient
+3  Register practitioner
+4  Find practitioner
+5  Book appointment
+6  Cancel appointment
+7  Find appointment
+8  List a practitioner's appointments
+0  Exit
+Choose an option: Goodbye. Session data is discarded.

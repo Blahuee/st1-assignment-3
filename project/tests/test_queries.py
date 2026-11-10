@@ -185,3 +185,69 @@ def test_appointment_sort_key_returns_datetime_and_id():
         appointment.date_time,
         appointment.appointment_id,
     )
+    
+
+# QRY-03: EQUAL-TIME TIE-BREAK BY APPOINTMENT ID
+
+def test_select_appointments_breaks_equal_time_ties_by_appointment_id():
+    patient = Patient("P1", "Test Patient")
+    practitioner = Practitioner("D1", "Dr Smith", "General Practice")
+    same_time = datetime(2026, 11, 5, 10, 0)
+
+    # A cancelled and a completed appointment share a time without
+    # breaking the scheduled conflict rule. The higher ID comes first
+    # in the source, so only the ID tie-break can put A1 first.
+    later_id = Appointment(
+        "A9", patient, practitioner, same_time, AppointmentStatus.COMPLETED
+    )
+    earlier_id = Appointment(
+        "A1", patient, practitioner, same_time, AppointmentStatus.CANCELLED
+    )
+    source = [later_id, earlier_id]
+
+    results = select_appointments(source, "D1")
+
+    assert results == [earlier_id, later_id]
+    assert source == [later_id, earlier_id]
+
+# QRY-02: NO MATCHING STATUS GIVES A NEW EMPTY LIST
+
+def test_select_appointments_returns_empty_list_when_no_status_matches():
+    patient = Patient("P1", "Test Patient")
+    practitioner = Practitioner("D1", "Dr Smith", "General Practice")
+    source = [
+        Appointment("A1", patient, practitioner, datetime(2026, 11, 5, 10, 0))
+    ]
+
+    results = select_appointments(
+        source, "D1", AppointmentStatus.CANCELLED
+    )
+
+    assert results == []
+    assert results is not source
+    assert source[0].status is AppointmentStatus.SCHEDULED
+
+# FP-02: NEW LIST FOR EMPTY AND ALREADY-SORTED INPUTS
+
+def test_select_appointments_returns_new_list_for_empty_and_sorted_input():
+    empty_source = []
+    empty_results = select_appointments(empty_source, "D1")
+
+    assert empty_results == []
+    assert empty_results is not empty_source
+
+    patient = Patient("P1", "Test Patient")
+    practitioner = Practitioner("D1", "Dr Smith", "General Practice")
+    sorted_source = [
+        Appointment("A1", patient, practitioner, datetime(2026, 11, 5, 9, 0)),
+        Appointment("A2", patient, practitioner, datetime(2026, 11, 5, 10, 0)),
+    ]
+
+    sorted_results = select_appointments(sorted_source, "D1")
+
+    assert sorted_results == sorted_source
+    assert sorted_results is not sorted_source
+    assert all(
+        result is original
+        for result, original in zip(sorted_results, sorted_source)
+    )

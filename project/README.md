@@ -1,20 +1,43 @@
-# SmartCare Stage 6 starter
+# SmartCare (Assignment 3, common UG scope)
 
-Requirements baseline: SmartCare A3 2026 revision 2. Python 3.13 and pytest 8.3.5 verified. Runtime uses only the standard library.
+Requirements baseline: SmartCare A3 2026 revision 2. Runtime uses only the Python standard library; tests use pytest 8.3.5 (`requirements-dev.txt`). Verified with Python 3.14.3 on Windows.
 
-From this directory, using a Python environment with the development dependency installed:
+## Run
+
+From this `project/` directory:
 
 ```sh
-python main.py
-python -m pytest
+python -m pip install -r requirements-dev.txt   # first time only
+python main.py                    # short synthetic demo
+python main.py --interactive      # full menu
+python -m pytest -q               # full test suite
 ```
 
-If needed in your approved environment: `python -m pip install -r requirements-dev.txt`.
+## Menu
 
-The demo registers synthetic records and books/finds an appointment. All supplied tests pass. Data exists only in this session and is lost on exit; FR-10 restart persistence is retired. Use synthetic information only.
+| Choice | Action |
+|---|---|
+| 1 / 2 | Register patient (ID, name) / find patient by ID |
+| 3 / 4 | Register practitioner (ID, name, specialty) / find practitioner by ID |
+| 5 | Book appointment (appointment ID, patient ID, practitioner ID, `YYYY-MM-DD HH:MM`) |
+| 6 / 7 | Cancel appointment / find appointment by ID |
+| 8 | List a practitioner's appointments; status blank = all, or `scheduled` / `cancelled` / `completed` |
+| 0 | Exit (session data is discarded) |
 
-`domain.py` contains the entities, status and guarded cancellation. `data_store.py` holds three dictionaries through add/find/list methods. The three services share that object. Supplied registration, booking, appointment lookup and conflict checking work. IDs are trimmed, non-blank and case-sensitive. Properties provide read-only identity/appointment state; changes go through domain methods. No special architecture terminology is required.
+Invalid input, unknown or duplicate IDs, booking conflicts, repeated cancellation and invalid status show an `Error:` message and return to the menu without changing stored records.
 
-Stage 6 TODOs: service patient/practitioner lookup and cancellation. Stage 9 TODOs: pure query, named sort key, service listing and interactive menu. The starter TODO contracts are in docstrings. All three Stage 6 TODO calls deliberately raise NotImplementedError; future TODOs remain stubs. No PG rescheduling or assurance solution is supplied.
+## Structure
 
-Service booking accepts IDs and a `datetime` (local, minute precision). Console parser accepts exactly `YYYY-MM-DD HH:MM`. Store lookups return None when absent; service lookups raise LookupError. Invalid values, duplicates, conflicts and illegal transitions raise ValueError. Lists are new containers holding the stored objects. No age, duration, patient-conflict or past-date rules apply.
+- `smartcare/domain.py`: Patient, Practitioner, Appointment and AppointmentStatus; Appointment owns the guarded cancellation.
+- `smartcare/data_store.py`: one in-memory store per session (add, find, list).
+- `smartcare/services.py`: registration, lookup, booking with practitioner-conflict check, cancellation and validated practitioner listing.
+- `smartcare/queries.py`: pure `select_appointments` and named `appointment_sort_key` (date/time, then appointment ID).
+- `smartcare/console.py`: menu input/output only; converts status text to the enum and calls the services.
+- `tests/`: supplied starter checks plus domain, service, regression, query and workflow tests.
+
+## Scope and limitations
+
+- Data lasts only for the current session and is lost on exit. FR-10 restart persistence is retired; there is no database or file storage.
+- Use synthetic data only.
+- Not implemented (out of scope): authentication, patient conflicts, duration overlaps, past-date or clinic-hours rules, appointment completion workflow, rescheduling (PG only).
+- The console is checked by scripted runs (`stage09/evidence/`), not by an automated console test.

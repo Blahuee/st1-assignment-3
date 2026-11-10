@@ -27,11 +27,11 @@ For each, select Strong for stated behaviour or Weak/unclear and explain why. St
 
 | Example Assertion                                          | Strong or Weak? | Why                                                                                                                                                                                 |
 | ---------------------------------------------------------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `assert True`                                              | Weak            | It always passes, regardless of whether SmartCare works correctly. It does not check any behaviour                                                                                  |
-| `assert appointment is not None`                           | Weak            | It only checks that an appointment exists. It does not check whether the appointment has the correct ID, patient, practitioner, time or status                                      |
-| `assert appointment.status == AppointmentStatus.CANCELLED` | Strong          | It checks that the appointment's status actually changed to CANCELLED, which directly verifies the expected cancellation behaviour                                                  |
-| `assert len(results) > 0`                                  | Weak            | It only checks that the results contain at least one item. It does not check whether the correct appointment or appointments were returned                                          |
-| `assert data_store.find_appointment('A1') is appointment`  | Strong          | It checks that looking up appointment A1 returns the exact same appointment object. This is useful for verifying that the stored appointment has been retained rather than replaced |
+| `assert True`                                              | Weak            | It always passes, whatever SmartCare does. Establishes: nothing. Does not establish: any behaviour at all. |
+| `assert appointment is not None`                           | Weak            | Establishes: some object came back. Does not establish: that it has the right ID, patient, practitioner, time or status, or that it is the stored object. |
+| `assert appointment.status == AppointmentStatus.CANCELLED` | Strong          | Establishes: the status changed to exactly CANCELLED (AC-05.1). Does not establish: that this is the same stored object, or that it is still retrievable afterwards (AC-05.2 needs a lookup or list check). |
+| `assert len(results) > 0`                                  | Weak            | Establishes: at least one item was returned. Does not establish: which items, how many, or their order. Wrong or extra results would still pass. |
+| `assert data_store.find_appointment('A1') is appointment`  | Strong          | Establishes: looking up A1 returns the exact same stored object, so it was retained, not replaced or copied. Does not establish: its status. A separate status assertion is needed for cancellation. |
 
 ### Activity 3 Boundary thinking
 
@@ -99,6 +99,7 @@ Assign TEST IDs before implementation or generation. Use canonical AC IDs with t
 | FR-03 Register practitioner | Supporting contract (FR-03): practitioner details are trimmed | T-29 | Domain, positive | `test_practitioner_details_are_trimmed`, project/tests/test_domain.py | ID, name and specialty are stored with surrounding spaces removed | Passed (full run: 37 passed; SHA 71ef3a4) | Student-authored |
 | FR-03 Register practitioner | Revision 2 contract: IDs are case-sensitive | T-30 | Domain, boundary | `test_practitioner_id_preserves_case`, project/tests/test_domain.py | Practitioner IDs keep their original case and differ from the swapped-case ID | Passed (full run: 37 passed; SHA 71ef3a4) | Student-authored |
 | FR-03 Register practitioner | Supporting contract: identity is read-only | T-31 | Domain, negative | `test_practitioner_id_cannot_be_changed`, project/tests/test_domain.py | Assigning to practitioner_id raises AttributeError | Passed (full run: 37 passed; SHA 71ef3a4) | Student-authored |
+| FR-01 Register patient | AC-01.1 Valid required patient data with an unused ID is stored (complete service evidence) | T-15 | Service, positive | `test_find_patient_returns_known_patient_and_rejects_unknown`, project/tests/test_services.py (setup registers P1 through `PatientService.register_patient`) | `data_store.find_patient("P1")` returns the stored patient; it is the same object the service finds, with ID "P1" and name "Test Patient" | Passed (full run: 37 passed; SHA 71ef3a4) | Student-authored |
 
 Results recorded from `python -m pytest -v` run in `project/` on `main` at commit 71ef3a41e142c6bd836b597f2c651fb844194c89 (Python 3.14.3, pytest 8.3.5): 37 passed in 0.13s. The same run covers the 8 supplied tests (8 rows) and 29 student-authored test functions (23 rows; T-10, T-12 and T-14 each cover several functions).
 
@@ -328,13 +329,14 @@ Requirement → test → failure/observation → diagnosis → change → verifi
 - **Full-suite result:** `python -m pytest -v` in project/: 37 passed, 0 failed (Python 3.14.3, pytest 8.3.5)
 - **Coverage:** Not used. No coverage percentage is claimed, and a percentage alone would not show that the assertions are meaningful.
 - **Honest limits of the suite:**
-  - Among the student-authored tests, identity (`is`) is checked in T-15, T-17, T-20, T-21 and T-24. The supplied tests T-02, T-03 and T-04 also check it.
+  - Object identity (`is`) is checked only where it matters most (T-15, T-17, T-20, T-21, T-24, plus supplied T-02, T-03, T-04). Other tests check values, so they would not notice a copied object.
+  - Duplicate IDs with surrounding spaces (for example registering " P1 " when P1 exists) are not tested. The supplied duplicate tests (T-02, T-03, T-25) use the exact same ID only.
   - `parse_date_time` in console.py is not called by any test. Invalid console date input is not tested.
   - `format_appointment` and `run_demo` have no tests.
   - The optional `exclude_appointment_id` argument of `has_practitioner_conflict` is not tested (the starter documents it as ignored).
   - The Stage 9 operations (`appointment_sort_key`, `select_appointments`, `list_practitioner_appointments`, `run_menu`) are not implemented yet, so FR-09 and the query and console requirements are not tested.
   - COMPLETED appointments are only created directly in tests. There is no completion workflow to test.
-- **Unresolved defects and effect on baseline:** None found by the Stage 7 suite
+- **Unresolved defects and effect on baseline:** No product defects found by the Stage 7 suite. Process gap: the test code did not receive another-member review before reaching main (PR #16 has no review; the service tests reached main without a PR; see Section L).
 - **Clean working tree and integration evidence:** `git status` clean on main after `git pull --ff-only` before the run
 - **Stage 8 handover status:** Stage 7 baseline complete; Stage 8 work is on a separate branch (debug/stage08)
 - **All tutorial/formative responses and traceability/Copilot decisions complete:** Yes
@@ -391,7 +393,8 @@ The Stage 7 engineering rule: every test traces to a real requirement, asserts s
 
 - **Tested Stage 7 main SHA:** 71ef3a41e142c6bd836b597f2c651fb844194c89
 - **Full-suite result:** `python -m pytest -v` in project/: 37 passed, 0 failed (Python 3.14.3, pytest 8.3.5)
-- **Unresolved defects and effect on baseline:** None found by the Stage 7 suite
+- **Unresolved defects and effect on baseline:** No product defects found by the Stage 7 suite. Process gap: the test code was not reviewed by another member before reaching main (see Sections K and L). The record itself was reviewed by Aagney on PR #14 and PR #17.
 - **Clean working tree and integration evidence:** `git status` clean on main after `git pull --ff-only` before the run
 - **Stage 8 handover status:** Stage 7 baseline complete; Stage 8 work is on a separate branch (debug/stage08)
 - **All tutorial/formative responses and traceability/Copilot decisions complete:** Yes
+- **Later change to the Stage 7 tests:** `test_services.py` was extended in Stage 9 (commit e64579b) with listing tests. The Stage 7 tests themselves are unchanged and still pass in the current full suite.

@@ -183,7 +183,7 @@ Why is changing code immediately after seeing a failure often a poor debugging s
     - `test_booking_conflict_only_applies_to_exact_datetime` - PASSED
     - `test_conflict_rule_and_different_practitioner` - PASSED
     - **Result:** 2 passed, 0 failed in 0.02 seconds.
-    - **Stage 8 regression test (added 9 Nov 2026, after the repairs):** `test_f8_01_same_practitioner_same_time_is_rejected` in `project/tests/test_regressions.py`. It books A1 for D1, checks that a second D1 booking at the same time raises `ValueError` and leaves the store as `[A1]`, then checks that D2 at that time is accepted (AC-04.1, AC-04.2). With the faulty `data_store.py` from b99a90f it failed with `Failed: DID NOT RAISE <class 'ValueError'>` at `tests\test_regressions.py:48`; with the data store from ed76dc8 it passed. Commands and method are in G.
+    - **Stage 8 regression test (added 10 Nov 2026, after the repairs):** `test_f8_01_same_practitioner_same_time_is_rejected` in `project/tests/test_regressions.py`. It books A1 for D1, checks that a second D1 booking at the same time raises `ValueError` and leaves the store as `[A1]`, then checks that D2 at that time is accepted (AC-04.1, AC-04.2). With the faulty `data_store.py` from b99a90f it failed with `Failed: DID NOT RAISE <class 'ValueError'>` at `tests\test_regressions.py:48`; with the data store from ed76dc8 it passed. Commands and method are in G.
 
 ## D. F8-02 diagnosis and repair
 
@@ -208,7 +208,7 @@ Why is changing code immediately after seeing a failure often a poor debugging s
     - `test_repeated_and_completed_cancellation_are_rejected` - PASSED
     - `test_find_appointment_returns_same_object` - PASSED
   - **Result:** 3 passed, 0 failed (run as 2 tests and then 1 test).
-  - **Stage 8 regression test (added 9 Nov 2026, after the repairs):** `test_f8_02_cancelled_appointment_is_still_found` in `project/tests/test_regressions.py`. It books and cancels A1, then checks the store list, store lookup, service lookup, CANCELLED status, and that a repeated cancellation is still rejected without change (AC-05.2, AC-06.1, AC-05.3). With the data store from b99a90f and from ed76dc8 it failed at `tests\test_regressions.py:71`: `data_store.find_appointment('A1')` returned `None`. The assertion just before it, `data_store.list_appointments() == [appointment]`, passed, which shows the appointment was still stored and only the lookup excluded it. With the data store from bb07074 it passed. Commands and method are in G.
+  - **Stage 8 regression test (added 10 Nov 2026, after the repairs):** `test_f8_02_cancelled_appointment_is_still_found` in `project/tests/test_regressions.py`. It books and cancels A1, then checks the store list, store lookup, service lookup, CANCELLED status, and that a repeated cancellation is still rejected without change (AC-05.2, AC-06.1, AC-05.3). With the data store from b99a90f and from ed76dc8 it failed at `tests\test_regressions.py:71`: `data_store.find_appointment('A1')` returned `None`. The assertion just before it, `data_store.list_appointments() == [appointment]`, passed, which shows the appointment was still stored and only the lookup excluded it. With the data store from bb07074 it passed. Commands and method are in G.
 
 ## E. Human-first hypotheses
 
@@ -379,7 +379,7 @@ Member: Alicia
 | F8-02 before repair                            | b99a90f474f67b9e47b3f196adc8d6d78e7346e0 | python -m pytest -v                                           | Failed: `LookupError: Appointment not found` in `test_cancelled_appointment_remains_in_history` and `test_repeated_and_completed_cancellation_are_rejected`. Initial full-suite result: 33 passed, 4 failed. Evidence: Initial Stage 8 pytest terminal output. |
 | F8-02 after repair                             | bb070749a483e84011dac9f2d2ed0f23730f8264 | **Directory:** project **Command:** `python -m pytest -vv -s` | **Passed:** 3 focused F8-02 tests passed, 0 failed (2 tests in the first run and 1 in the second). Evidence: Focused pytest terminal outputs.                                                                                                                  |
 | Full suite after both repairs, before refactor | bb070749a483e84011dac9f2d2ed0f23730f8264 | **Directory:** project **Command:** `python -m pytest -vv -s` | **Passed:** 37 passed, 0 failed. Evidence: Final full-suite pytest terminal output.                                                                                                                                                                            |
-**Dedicated regression tests (`project/tests/test_regressions.py`, added 9 Nov 2026 by Aagney on branch test/stage08-regressions):**
+**Dedicated regression tests (`project/tests/test_regressions.py`, added 10 Nov 2026 by Aagney on branch test/stage08-regressions):**
 
 | Checkpoint | Code SHA or precise diff | Command and working directory | Actual result |
 | ---------- | ------------------------ | ----------------------------- | ------------- |

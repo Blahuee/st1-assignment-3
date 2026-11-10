@@ -183,6 +183,7 @@ Why is changing code immediately after seeing a failure often a poor debugging s
     - `test_booking_conflict_only_applies_to_exact_datetime` - PASSED
     - `test_conflict_rule_and_different_practitioner` - PASSED
     - **Result:** 2 passed, 0 failed in 0.02 seconds.
+    - **Stage 8 regression test (added 9 Nov 2026, after the repairs):** `test_f8_01_same_practitioner_same_time_is_rejected` in `project/tests/test_regressions.py`. It books A1 for D1, checks that a second D1 booking at the same time raises `ValueError` and leaves the store as `[A1]`, then checks that D2 at that time is accepted (AC-04.1, AC-04.2). With the faulty `data_store.py` from b99a90f it failed with `Failed: DID NOT RAISE <class 'ValueError'>` at `tests\test_regressions.py:48`; with the data store from ed76dc8 it passed. Commands and method are in G.
 
 ## D. F8-02 diagnosis and repair
 
@@ -207,6 +208,7 @@ Why is changing code immediately after seeing a failure often a poor debugging s
     - `test_repeated_and_completed_cancellation_are_rejected` - PASSED
     - `test_find_appointment_returns_same_object` - PASSED
   - **Result:** 3 passed, 0 failed (run as 2 tests and then 1 test).
+  - **Stage 8 regression test (added 9 Nov 2026, after the repairs):** `test_f8_02_cancelled_appointment_is_still_found` in `project/tests/test_regressions.py`. It books and cancels A1, then checks the store list, store lookup, service lookup, CANCELLED status, and that a repeated cancellation is still rejected without change (AC-05.2, AC-06.1, AC-05.3). With the data store from b99a90f and from ed76dc8 it failed at `tests\test_regressions.py:71`: `data_store.find_appointment('A1')` returned `None`. The assertion just before it, `data_store.list_appointments() == [appointment]`, passed, which shows the appointment was still stored and only the lookup excluded it. With the data store from bb07074 it passed. Commands and method are in G.
 
 ## E. Human-first hypotheses
 
@@ -377,6 +379,16 @@ Member: Alicia
 | F8-02 before repair                            | b99a90f474f67b9e47b3f196adc8d6d78e7346e0 | python -m pytest -v                                           | Failed: `LookupError: Appointment not found` in `test_cancelled_appointment_remains_in_history` and `test_repeated_and_completed_cancellation_are_rejected`. Initial full-suite result: 33 passed, 4 failed. Evidence: Initial Stage 8 pytest terminal output. |
 | F8-02 after repair                             | bb070749a483e84011dac9f2d2ed0f23730f8264 | **Directory:** project **Command:** `python -m pytest -vv -s` | **Passed:** 3 focused F8-02 tests passed, 0 failed (2 tests in the first run and 1 in the second). Evidence: Focused pytest terminal outputs.                                                                                                                  |
 | Full suite after both repairs, before refactor | bb070749a483e84011dac9f2d2ed0f23730f8264 | **Directory:** project **Command:** `python -m pytest -vv -s` | **Passed:** 37 passed, 0 failed. Evidence: Final full-suite pytest terminal output.                                                                                                                                                                            |
+**Dedicated regression tests (`project/tests/test_regressions.py`, added 9 Nov 2026 by Aagney on branch test/stage08-regressions):**
+
+| Checkpoint | Code SHA or precise diff | Command and working directory | Actual result |
+| ---------- | ------------------------ | ----------------------------- | ------------- |
+| Regression tests on the faulty store | `data_store.py` from b99a90f, rest of project at 88ae305 | **Directory:** project **Command:** `python -B -m pytest tests/test_regressions.py -v` | 2 failed. F8-01: `DID NOT RAISE <class 'ValueError'>` (line 48). F8-02: `assert None is <Appointment>` (line 71) |
+| After the F8-01 repair only | `data_store.py` from ed76dc8 | same | 1 passed (F8-01), 1 failed (F8-02, line 71) |
+| After both repairs | `data_store.py` from bb07074 | same | 2 passed |
+| Current main with the new tests | 88ae305255f99b5956c82369088a01c6c45cd565 plus `test_regressions.py` | **Directory:** project **Commands:** `python -m pytest tests/test_regressions.py -v`; `python -m pytest -q` | 2 passed; full suite 52 passed |
+
+Method: Python 3.14.3, pytest 8.3.5. For each checkpoint, `git restore --source=<SHA> smartcare/data_store.py` restored that commit's data store, the `smartcare\__pycache__` folder was deleted, and the tests were run with `python -B`. Afterwards `git restore smartcare/data_store.py` put the current file back, and `git status` showed only the new test file. Both prepared faults were confined to `data_store.py` (see B), so swapping only that file reproduces each checkpoint's store behaviour. The tests were written after the repairs, so this is retrospective fail-to-pass evidence, not the order the handout intended.
 
 **Explain how the assertions detect each relevant incorrect result and protect previous behaviour:** 
 - The F8-01 assertions check that booking a second appointment with the same practitioner at the exact same date and time raises a `ValueError`. They also verify that appointments with different practitioners or different appointment times are still permitted. This ensures the conflict rule works without incorrectly rejecting valid bookings.
@@ -491,7 +503,7 @@ Verified integrated code SHA: a8c7d01 (merge of PR #21). It contains both the St
 
 **Each member's substantive contribution and artefact:**
 - Alicia Hurst (Blahuee): prepared the Stage 8 branch and faults (b99a90f); repaired F8-01 (ed76dc8) and F8-02 (bb07074); made the refactor (8a906fa); ran the Copilot prompts and completed record sections F to H; drafted section I; opened and maintained PR #21.
-- Aagney Mani Sharma (Aagneyf1r3): reviewed the repairs and verification evidence; reran focused and full regression tests; merged PR #21 (a8c7d01) and verified main.
+- Aagney Mani Sharma (Aagneyf1r3): reviewed the repairs and verification evidence; reran focused and full regression tests; merged PR #21 (a8c7d01) and verified main. On 10 Nov 2026 added the missing `project/tests/test_regressions.py` (one test per defect), ran it against the faulty, partly repaired and repaired data stores (see G), and updated sections C, D, G, I and L.
 - Ngedup Jigme Lhazeen (njlhazin): recorded the human-first hypotheses (ea73db8); reviewed the PR and requested the refactor evidence and documentation updates; verified the corrections before approval.
 
 ## J. Required reflections
@@ -552,5 +564,5 @@ Response: Use evidence-based debugging: record observations, form human-first hy
 
 Verified integrated code SHA / result: a8c7d01c1f6a2cf26b8bd089c234c7023f194290; python -m pytest -v in project/: 37 passed, 0 failed in 0.12s.
 Submitted SHA and evidence-only difference if any: Verified code SHA a8c7d01c1f6a2cf26b8bd089c234c7023f194290. The submitted commit is the final commit on main containing this record; differences from a8c7d01 are limited to stage08/ record text and project/ code is unchanged (see I).
-Unresolved issues or incomplete checks / owner / next action: None identified. Both Stage 8 defects were repaired, verified and integrated, and the full suite passes on main.
+Unresolved issues or incomplete checks / owner / next action: The dedicated `project/tests/test_regressions.py` was not created during the original Stage 8 work. Aagney added it on 10 Nov 2026 and showed it failing on the faulty store and passing after the repairs (see G). With it, the full suite is 52 passed on 88ae305 plus the new test file. Both defects are repaired, verified and integrated.
 Handover note: Stage 8 is complete and integrated into main. The application was retested successfully on the integrated branch and is ready to serve as the verified baseline for Stage 9 development.

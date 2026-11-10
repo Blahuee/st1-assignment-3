@@ -67,7 +67,8 @@ def run_demo() -> None:
     except (ValueError, LookupError) as error:
         print(f'Error: {error}')
     print('Session-only data: records are lost on exit.')
-    
+
+
 MENU_TEXT = """
 SmartCare menu
 1  Register patient
@@ -91,7 +92,9 @@ def parse_status(text: str) -> AppointmentStatus | None:
             return status
     raise ValueError('Status must be scheduled, cancelled or completed')
 
+
 def register_patient_command(patients: PatientService) -> None:
+    """Read an ID and name, register the patient and show it."""
     patient_id = input('Patient ID: ')
     name = input('Patient name: ')
     patient = patients.register_patient(patient_id, name)
@@ -99,11 +102,13 @@ def register_patient_command(patients: PatientService) -> None:
 
 
 def find_patient_command(patients: PatientService) -> None:
+    """Read a patient ID and show the stored patient."""
     patient = patients.find_patient(input('Patient ID: '))
     print(f'Patient {patient.patient_id}: {patient.name}')
 
 
 def register_practitioner_command(practitioners: PractitionerService) -> None:
+    """Read an ID, name and specialty, register and show the practitioner."""
     practitioner_id = input('Practitioner ID: ')
     name = input('Practitioner name: ')
     specialty = input('Specialty: ')
@@ -115,14 +120,18 @@ def register_practitioner_command(practitioners: PractitionerService) -> None:
         f'{practitioner.name} ({practitioner.specialty})'
     )
 
+
 def find_practitioner_command(practitioners: PractitionerService) -> None:
+    """Read a practitioner ID and show the stored practitioner."""
     practitioner = practitioners.find_practitioner(input('Practitioner ID: '))
     print(
         f'Practitioner {practitioner.practitioner_id}: '
         f'{practitioner.name} ({practitioner.specialty})'
     )
 
+
 def book_appointment_command(appointments: AppointmentService) -> None:
+    """Read booking details, parse the date/time and book the appointment."""
     appointment_id = input('Appointment ID: ')
     patient_id = input('Patient ID: ')
     practitioner_id = input('Practitioner ID: ')
@@ -134,15 +143,19 @@ def book_appointment_command(appointments: AppointmentService) -> None:
 
 
 def cancel_appointment_command(appointments: AppointmentService) -> None:
+    """Read an appointment ID, cancel it and show the retained record."""
     appointment = appointments.cancel_appointment(input('Appointment ID: '))
     print(f'Cancelled {format_appointment(appointment)}')
 
 
 def find_appointment_command(appointments: AppointmentService) -> None:
+    """Read an appointment ID and show the stored appointment."""
     appointment = appointments.find_appointment(input('Appointment ID: '))
     print(format_appointment(appointment))
 
+
 def list_appointments_command(appointments: AppointmentService) -> None:
+    """Read a practitioner ID and optional status and list matches."""
     practitioner_id = input('Practitioner ID: ')
     status = parse_status(
         input('Status (scheduled/cancelled/completed, blank for all): '),
@@ -155,12 +168,12 @@ def list_appointments_command(appointments: AppointmentService) -> None:
     for appointment in found:
         print(format_appointment(appointment))
 
-def run_menu() -> None:
-    """Stage 9: implement the register/find/book/cancel/list/exit menu.
 
-    Call services, recover from expected input errors, and keep this
-    session's data until exit. main.py reports the incomplete menu
-    without crashing.
+def run_menu() -> None:
+    """Run the register/find/book/cancel/list/exit menu until exit.
+
+    Use one store and one set of services for the whole session, report
+    ValueError and LookupError, and return to the menu after each error.
     """
     data_store = SmartCareDataStore()
     patients = PatientService(data_store)

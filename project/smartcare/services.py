@@ -30,16 +30,16 @@ class PatientService:
         return patient
 
     def find_patient(self, patient_id: str) -> Patient:
-        """Return's the stored patient for a valid patient ID.
+        """Return the stored patient for a valid patient ID.
 
-        Completion must raise LookupError for absence and ValueError for
-        a blank/invalid ID. It must not create a replacement patient.
-        The starter deliberately raises NotImplementedError.
+        Raise LookupError when the patient is absent and ValueError for
+        a blank/invalid ID. Never create a replacement patient.
         """
         patient = self.data_store.find_patient(patient_id)
         if patient is None:
             raise LookupError('Patient not found')
         return patient
+
 
 class PractitionerService:
     """Coordinate practitioner registration and lookup through the shared
@@ -67,17 +67,16 @@ class PractitionerService:
         return practitioner
 
     def find_practitioner(self, practitioner_id: str) -> Practitioner:
-        """Return's the stored practitioner for a valid ID.
+        """Return the stored practitioner for a valid ID.
 
-        Completion must raise LookupError for absence and ValueError for
-        a blank/invalid ID. It must not create a replacement
-        practitioner. The starter deliberately raises
-        NotImplementedError.
+        Raise LookupError when the practitioner is absent and ValueError
+        for a blank/invalid ID. Never create a replacement practitioner.
         """
         practitioner = self.data_store.find_practitioner(practitioner_id)
         if practitioner is None:
             raise LookupError('Practitioner not found')
         return practitioner
+
 
 class AppointmentService:
     """Coordinate booking, lookup and cancellation using the shared store."""
@@ -158,7 +157,7 @@ class AppointmentService:
         practitioner_id: str,
         status: AppointmentStatus | None = None,
     ) -> list[Appointment]:
-        """Stage 9: new ordered list; default includes every status.
+        """Return a new ordered list; the default includes every status.
 
         Unknown practitioner raises LookupError, invalid status
         ValueError; a known practitioner with no matches returns an

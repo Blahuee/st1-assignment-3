@@ -165,17 +165,16 @@ Issues and bounded branches: https://github.com/Blahuee/st1-assignment-3/issues/
 PR/diff and another-member human reviewer: PR #29, PR #30 and PR #31 (code by Alicia). PRs #29 and #30 were merged by Aagney with no formal approval recorded on GitHub. PR #31 shows as Approved on GitHub and was merged by Ngedup.
 Review responses and Copilot comparison: Copilot's findings and our decisions are in Part E. No formal review comments were recorded on PRs #29 and #30. Informal checks raised the tie-break test gap and changed older test data, recorded in Stage 12.
 Full regression command, working directory, actual count/result and evidence: `python -m pytest -q`, from `project/`, `50 passed`.
-README run instructions and scope/limitations: `project/README.md` (README update pending; it is still titled "Stage 6 starter"). Run `python main.py` for the demo and `python main.py --interactive` for the menu. Data is kept only while the menu runs.
-Unresolved issues and support/action: No automated console tests; tie-break test gap; `project/README.md` not updated; no formal approval on PRs #29 and #30. `main.py` still wraps `run_menu()` in a `try/except NotImplementedError`, which is harmless now.
-UG common candidate / PG future branch plan: UG common candidate is `351b6ca` going to Stage 12. PG Stages 10 and 11 are unchanged and deferred.
- 
+README run instructions and scope/limitations: `project/README.md` updated on 10 Nov 2026 with run commands, the menu, structure, session-only data and limitations.
+UUnresolved issues and support/action: No automated pytest drives the console (verified by saved scripted runs instead); no formal approval on PRs #29 and #30; the 10 Nov 2026 additions (console evidence, 3 query tests, README) were made by Aagney after the original Stage 9 merge. The unused `try/except NotImplementedError` in `main.py` was removed in the Stage 12 release tidy-up (`4713c07`).
+UG common candidate / PG future branch plan: The original UG common candidate was `351b6ca` (50 passed). Stage 12 uses the latest main, which adds Stage 8's regression tests, the 3 query tests and the README (55 passed). PG Stages 10 and 11 are unchanged and deferred.
+
 - [x] Query contracts, purity, new lists and named-key ordering verified.
 - [x] Service empty/unknown/invalid cases and cancellation history verified.
 - [x] Every console command and invalid-input recovery demonstrated.
 - [x] Query and workflow tests plus all previous tests pass; actual evidence linked.
-- [x] Human design, Copilot critique, review and integration recorded honestly.
+- [ ] Human design, Copilot critique, review and integration recorded honestly. (Partly: PRs #29 and #30 have no formal approval, and the Copilot transcript was not saved.)
 - [x] Reflections and ten formative responses completed.
 - [x] README updated; earlier code/tests/records preserved.
 - [x] Common SHA protected for UG Stage 12; PG Stage 10/11 work deferred until approved.
-No persistence, rescheduling or assurance implementation is part of Stage 9. UG: 6→7→8→9→12. PG: 6→7→8→9→10→11→12. Mixed groups keep one repository and protect the common candidate.
- 
+ No persistence, rescheduling or assurance implementation is part of Stage 9. UG: 6→7→8→9→12. PG: 6→7→8→9→10→11→12. Mixed groups keep one repository and protect the common candidate.

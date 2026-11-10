@@ -18,8 +18,7 @@ Complete this one group record. Link actual issues, diffs, tests and reviews; av
   - A valid ID that does not exist raises `LookupError`
   - Looking up a patient does not register, replace, or modify patient records
   - Existing patient records remain unchanged when a lookup fails.
-- **Scope:** Implement `PatientService.find_patient()` in project/smartcare/services.py using the existing data store.
--  Add or update focused tests for successful lookup, invalid IDs, missing patients, and preservation of existing records. Do not change patient registration or introduce new storage mechanisms.
+- **Scope:** Implement `PatientService.find_patient()` in `project/smartcare/services.py` using the existing data store. Add focused tests for successful lookup, invalid IDs, missing patients and unchanged records. Do not change patient registration or add new storage.
 - **Definition of Done:**
   - Implementation meets the requirement and acceptance criteria
   - Relevant automated tests pass
@@ -30,24 +29,31 @@ Complete this one group record. Link actual issues, diffs, tests and reviews; av
 - **Actual issue link:** https://github.com/Blahuee/st1-assignment-3/issues/3#issue-5829342862
 
 ### FR-06 Appointment Cancellation with FR-07 retained history
-- **Title:** Add Appointment Cancellation with retained history (FR-06 and FR-07) 
+- **Title:** Add Appointment Cancellation with retained history (FR-06 and FR-07)
 - **Context:** Clinic staff should cancel any appointments that are not supposed to happen, and they must keep a record of those cancellations for the rest of the session. Right now, the AppointmentService.cancel_appointment method is still a TODO in the starter code, which means cancellation isn't possible through the service layer yet.
   
 - **Requirement:**
-  -  FR-06 - Appointment cancellation
-  - FR-07 - Retaining the appointment cancellation history 
+  - FR-06: cancel only a SCHEDULED appointment.
+  - FR-07: keep the same appointment, with CANCELLED status, in current-session history.
 
 - **Acceptance criteria:**
-  - Cancelling a SCHEDULED appointment changes its status to CANCELLED and after the cancellation the same appointment can still be found by the IDs with status cancellation. Therefore, the schedule is not deleted and stored in the object. 
-  - A blank or invalid ID raises a ValueError. 
+  - Cancelling a SCHEDULED appointment changes its status to CANCELLED and returns the same stored object (AC-05.1).
+  - After cancellation, the same appointment can still be found by its ID with CANCELLED status. It is not deleted or replaced (AC-05.2).
+  - Cancelling an already CANCELLED appointment raises `ValueError` and leaves its status unchanged (AC-05.3).
+  - Cancelling a COMPLETED appointment raises `ValueError` and leaves its status unchanged.
+  - A valid but unknown appointment ID raises `LookupError`.
+  - A blank or invalid ID raises `ValueError`.
 
 - **Scope:**
-  - Including the cancellation of appointment code into the code and also for retaining the memory then adding tests for it. 
-  - Not included practitioner and patient lookup, rescheduling and deleting appointments. 
+  - Included: implement `AppointmentService.cancel_appointment()` in `services.py` using the existing `Appointment.cancel()` domain method, and add tests for it.
+  - Not included: patient or practitioner lookup, rescheduling, or deleting appointments.
 
 - **Definition of Done:**
-  - Cancel appointment meets all the requirements 
-  - Tests cover cancellation successfully and history is retained after cancelling. 
+  - Cancellation meets FR-06, FR-07 and all acceptance criteria above.
+  - Tests check the cancelled status, same-object return, retained history and each error case.
+  - Work is on a feature branch, submitted in a PR linked to this issue.
+  - Another member reviews the actual diff and approves before merge.
+  - Every member updates and verifies main, and the issue is closed.
 
 - **Owner:** Ngedup
 - **Actual issue link:** https://github.com/Blahuee/st1-assignment-3/issues/1#issue-5828750575 
@@ -95,8 +101,9 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
 
 | Issue link | Requirement | Owner      | Acceptance criteria or precise link | Status     |
 | ---------- | ----------- | ---------- | ----------------------------------- | ---------- |
-| [Implement patient lookup by patient ID (FR-02)](https://github.com/Blahuee/st1-assignment-3/issues/3#issue-5829342862)  | Implement patient lookup by patient ID. The method must return the existing stored Patient object when the ID is valid and exists. It also must raise ValueError for a blank or invalid ID and LookupError when the patient does not exist. It must not create a replacement patient.  | Alicia |  A valid existing patient ID returns the corresponding stored patient object. A blank or invalid patient ID raises ValueError. A valid ID that does not exist raises LookupError. Looking up a patient does not register, replace, or modify patient records. Existing patient records remain unchanged when lookup fails.                          |Completed |
-| [Add Appointment Cancellation with retained history (FR-06 and FR-07)](https://github.com/Blahuee/st1-assignment-3/issues/1#issue-5828750575)  | FR-06 - Appointment cancellation. FR-07 - Retaining the appointment cancellation history  | Ngedup | Cancelling a SCHEDULED appointment changes its status to CANCELLED and after the cancellation the same appointment can still be found by the IDs with status cancellation. Therefore, the schedule is not deleted and stored in the object. A blank or invalid ID raises a ValueError. | Completed |
+| [Implement patient lookup by patient ID (FR-02)](https://github.com/Blahuee/st1-assignment-3/issues/3#issue-5829342862) | Implement patient lookup by patient ID. The method must return the existing stored Patient object when the ID is valid and exists. It also must raise ValueError for a blank or invalid ID and LookupError when the patient does not exist. It must not create a replacement patient. | Alicia | A valid existing patient ID returns the corresponding stored patient object. A blank or invalid patient ID raises ValueError. A valid ID that does not exist raises LookupError. Looking up a patient does not register, replace, or modify patient records. Existing patient records remain unchanged when lookup fails. | Completed |
+| [Add Appointment Cancellation with retained history (FR-06 and FR-07)](https://github.com/Blahuee/st1-assignment-3/issues/1#issue-5828750575) | FR-06: cancel only a SCHEDULED appointment. FR-07: keep the same appointment, with CANCELLED status, in current-session history. | Ngedup | Section A FR-06 criteria: SCHEDULED cancels to CANCELLED and returns the same object (AC-05.1); it stays findable by ID (AC-05.2); repeat cancellation (AC-05.3) and COMPLETED cancellation raise ValueError with no change; unknown ID raises LookupError; blank or invalid ID raises ValueError. | Completed |
+| No separate issue; supporting criterion implemented in [PR #9](https://github.com/Blahuee/st1-assignment-3/pull/9) | FR-03 supporting operation: practitioner lookup | Alicia | A valid registered practitioner ID returns the same stored Practitioner. A blank or invalid ID raises ValueError. A valid unknown ID raises LookupError. No practitioner is created or changed. Later tested by Stage 7 T-17. | Completed |
 
 ## G Pull request evidence
 - **PR link and title:** https://github.com/Blahuee/st1-assignment-3/pull/8, "Implement Patient Search by ID"
@@ -121,7 +128,7 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
 - **Integrated verification after merge:** Not recorded at merge time. Retrospective check on 9 Nov 2026: `python -m pytest` from `project/` at b5ddb1760ac109c6d742b2c485906e4e55d615df (Python 3.14.3, pytest 8.3.5): 8 passed. These supplied tests do not call `find_patient()` directly; Stage 7 tests T-15 and T-16 later cover it.
 
 - **PR link and title:** https://github.com/Blahuee/st1-assignment-3/pull/9, "Implement Practitioner Search by ID"
-- **Linked issue and requirement:** Linked on the PR to issue #1 (FR-06/FR-07). The PR implements practitioner lookup, which has no separate issue yet.
+- **Linked issue and requirement:** Linked on the PR to issue #1 (FR-06/FR-07). The PR implements practitioner lookup, which has no separate issue; it is covered by the supporting criterion in Section F.
 - **Feature branch:** feature/appointment-cancellation
 - **Changed behaviour:** The commit implements the `find_practitioner()` method by replacing the `NotImplementedError` placeholder with a call to the data store. It returns the existing practitioner when found and raises a `LookupError` when the practitioner does not exist. This allows the service to retrieve practitioners without creating replacement records.
 - **Meaningful commits:** https://github.com/Blahuee/st1-assignment-3/commit/82f2b21
@@ -134,23 +141,30 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
 - **Reviewer recheck and approval:** No approval recorded; the author merged the PR.
 - **Merge outcome and SHA:** Merged into main on 2026-10-20, c99841ef7c2899ec677090ec2f9814dd69411db0
 - **Significant Copilot assistance:** None recorded.
-- **Linked issue closure:** Issue #1 remains open; this PR does not implement cancellation.
+- **Linked issue closure:** Issue #1 stayed open; this PR does not implement cancellation.
 - **Each member updated main:**
   - Alicia: Confirmed, updated successfully
   - Aagney: Confirmed, updated successfully
   - Ngedup: Confirmed, updated successfully
 - **Integrated verification after merge:** Not recorded at merge time. Retrospective check on 9 Nov 2026: `python -m pytest` from `project/` at c99841ef7c2899ec677090ec2f9814dd69411db0 (Python 3.14.3, pytest 8.3.5): 8 passed. These supplied tests do not call `find_practitioner()` directly; Stage 7 test T-17 later covers it.
 
+- **PR link and title:** https://github.com/Blahuee/st1-assignment-3/pull/12, docstring cleanup
+- **Linked issue and requirement:** None linked. Tidy-up after FR-02 and practitioner lookup.
+- **Feature branch:** feature/appointment-cancellation
+- **Changed behaviour:** None. Removed the "Stage 6 TODO:" prefix from the `find_patient()` and `find_practitioner()` docstrings (commit d5c2465, 2 lines in services.py).
+- **Another-member reviewer:** None recorded. Merged by the author (Alicia), merge commit 31f4bc3.
+- **Unresolved:** The new docstrings still contain "Return's" and still say the starter raises NotImplementedError. To be corrected at Stage 12.
+
 - **PR link and title:** https://github.com/Blahuee/st1-assignment-3/pull/10, "Stage 06 F issue and backlog index"
 - **Linked issue and requirement:** None linked. Section F (issue and backlog index) of the Stage 6 record, which supports the issue-to-PR traceability requirement.
 - **Feature branch:** documentation/stage06
 - **Changed behaviour:** None. Documentation only (2 commits, 1 file, +2/−2).
-- Meaningful commits: https://github.com/Blahuee/st1-assignment-3/commit/d2fb1b3 and https://github.com/Blahuee/st1-assignment-3/commit/d6c248d ("issue link updated")
+- **Meaningful commits:** https://github.com/Blahuee/st1-assignment-3/commit/d2fb1b3 and https://github.com/Blahuee/st1-assignment-3/commit/d6c248d ("issue link updated")
 - **Test command, directory and observed result:** Not applicable (documentation only).
 - **Another-member reviewer:** Aagneyf1r3 (author: njlhazin). Blahuee was also requested and did not submit a review.
 - **Human observations recorded before Copilot:** Aagneyf1r3 submitted a review requesting changes on the PR https://github.com/Blahuee/st1-assignment-3/pull/10#pullrequestreview-5580903010. No Copilot was used.
 - **Requirement, responsibilities, test assertions and unrelated-scope checks:** The review checked that the backlog table linked to the actual GitHub issues.
-- **Key feedback:** "put the issue links https://github.com/Blahuee/st1-assignment-3/pull/10#pullrequestreview-5580903010".
+- **Key feedback:** "put the issue links (the git hub links)"
 - **Author response/change and verification:** njlhazin pushed commit d6c248d "issue link updated".
 - **Reviewer recheck and approval:** No re-review or formal approval recorded after the update; Aagneyf1r3 merged the PR after the update.
 - **Merge outcome and SHA:** Merged into main on 2026-10-20, f5725d7f5621dbd684133bb2e4235e9d09894027
@@ -160,14 +174,19 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
   - Alicia: Confirmed, updated successfully
   - Aagney: Confirmed, updated successfully
   - Ngedup: Confirmed, updated successfully
-- **Integrated verification after merge:** f5725d7f5621dbd684133bb2e4235e9d09894027
+- **Integrated verification after merge:** Documentation-only change. `git diff c99841e f5725d7 -- project/` shows no code changes, so the code is the same as c99841e, which passed 8 tests (see PR #9 above).
 
-- **PR link and title:** PR #15 – Add Appointment Cancellation
+- **Other Stage 6 record PRs (documentation only):**
+  - [PR #7](https://github.com/Blahuee/st1-assignment-3/pull/7), opened by Blahuee to merge documentation/stage06-jklm content into documentation/stage06 and fix formatting (4 commits). Reviews were requested from Aagneyf1r3 and njlhazin; neither submitted a review. Merged by Aagneyf1r3 (8ee974c). The merge title says "Approved", but GitHub shows no approval review.
+  - [PR #11](https://github.com/Blahuee/st1-assignment-3/pull/11), opened by njlhazin to update the FR-02 status in Section F (commit 6f62835). Reviews were requested from Aagneyf1r3 and Blahuee; neither submitted a review. Merged by Aagneyf1r3 (cfcc4c1). The merge title says "Approved", but GitHub shows no approval review.
+
+- **PR link and title:** https://github.com/Blahuee/st1-assignment-3/pull/15, "Add Appointment Cancellation"
 - **Linked issue and requirement:** Issue #1 – Add Appointment Cancellation with retained history. FR-06 (Appointment Cancellation) and FR-07 (retained appointment history).
 - **Feature branch:** feature/appointment-cancellation (merged into main).
-- **Changed behaviour:** Implemented AppointmentService.cancel_appointment() to cancel an existing appointment and return the cancelled appointment object. Unknown appointment IDs raise LookupError. Invalid cancellation transitions raise ValueError without changing the appointment's existing state.
-- **Test command, directory and observed result:** Run from the project/ directory:
-  - **Command:** python -m pytest
+- **Changed behaviour:** Implemented `AppointmentService.cancel_appointment()` to cancel an existing appointment and return the cancelled appointment object. Unknown appointment IDs raise LookupError. Invalid cancellation transitions raise ValueError without changing the appointment's existing state.
+- **Meaningful commits:** https://github.com/Blahuee/st1-assignment-3/commit/0522007
+- **Test command, directory and observed result:** Run from the `project/` directory:
+  - **Command:** `python -m pytest`
   - **Observed result (run retrospectively on 9 Nov 2026 at 5244ad3):** 8 passed. These supplied tests do not call `cancel_appointment()` directly; Stage 7 tests T-20 to T-23 later cover it.
 - **Another-member reviewer:** Aagneyf1r3 commented "All good" on the PR. GitHub shows no formal review submission.
 - **Human observations recorded before Copilot:** The cancellation service needed to delegate the operation to the existing appointment/domain logic, return the cancelled object and preserve the appointment's history. Unknown IDs and invalid state transitions needed separate handling.
@@ -176,7 +195,7 @@ Create at least two focused issues. Add a linked practitioner-lookup issue or an
 - **Author response/change and verification:** The author implemented the requested appointment cancellation behaviour in `AppointmentService.cancel_appointment()`. The PR description confirms the expected exception handling and that invalid transitions leave the appointment state unchanged. The PR was subsequently merged.
 - **Reviewer recheck and approval:** Aagneyf1r3 commented "All good". No formal GitHub approval review is recorded.
 - **Merge outcome and SHA:** Merged into main on 3 November 2026. Merge commit: 5244ad3.
-- **Significant Copilot assistance:** None recorded
+- **Significant Copilot assistance:** None at the time. A retrospective Copilot review is recorded in Section H.
 - **Linked issue closure:** Issue #1 was automatically linked to the PR and is now closed.
 - **Each member updated main:**
   - Alicia: Confirmed, updated successfully
@@ -237,7 +256,7 @@ Repeat per member. Include only categories that describe actual work; write not 
 
 ## K Exit question
 **Why is a high commit count not necessarily evidence of strong contribution?**\
-A high commit count only shows how often someone saved changes, not how useful those changes were. Someone can make many tiny, cosmetic or repeated commits and look busy, while another person makes one precise review comment or test that prevents a serious bug. Real contribution includes implementation, testing, debugging, reviewing, design discussion,helping teammates and each should be backed by links to actual diffs, assertions or comments.
+A high commit count only shows how often someone saved changes, not how useful those changes were. In our Stage 6 work, the three service methods were each one small commit (e514dda, 82f2b21, 0522007), but they were the core technical work. Many record commits, such as typo and link fixes, were useful but small. Aagney's single review on PR #10 changed the backlog to link the real issues, which a commit count would not show at all. Our own record also shows the gap: several PRs were merged with no recorded review, so having commits did not mean the work met our Definition of Done. Real contribution includes implementation, testing, reviewing, debugging and helping teammates, each backed by links to diffs, tests or comments.
 
 ## L Stage 6 formative questions
 1. **What is version control?**\
@@ -277,17 +296,17 @@ The rule is that every change is traceable and evidence-based. A requirement goe
 - Test command: `python -m pytest`
 - Working directory: `project/`
 - Observed result: 8 passed (run retrospectively on 9 Nov 2026 at 5244ad3; the supplied starter tests)
-- PR and another-member reviewer: PR #15 (https://github.com/Blahuee/st1-assignment-3/pull/15), Aagney commented "All good" with no formal review; PR #10 (https://github.com/Blahuee/st1-assignment-3/pull/10), Aagney reviewed and requested changes; PR #8 (https://github.com/Blahuee/st1-assignment-3/pull/8), informal review by Aagney on a video call. PRs #9 and #12 have no recorded review.
-- Unresolved issue or none: PRs #8, #9 and #12 were merged by the author without a recorded review, which did not follow the Section E agreement. Practitioner lookup (PR #9) has no issue of its own and was linked to issue #1. The Copilot comparison was done retrospectively after the merge. The supplied tests did not call the three service methods directly; Stage 7 tests T-15, T-17 and T-20 to T-24 now cover them.
+- PR and another-member reviewer: PR #15 (https://github.com/Blahuee/st1-assignment-3/pull/15), Aagney commented "All good" with no formal review; PR #10 (https://github.com/Blahuee/st1-assignment-3/pull/10), Aagney reviewed and requested changes; PR #8 (https://github.com/Blahuee/st1-assignment-3/pull/8), informal review by Aagney on a video call. PRs #9 and #12 have no recorded review; documentation PRs #7 and #11 were merged by Aagney with no submitted review.
+- Unresolved issue or none: PRs #8, #9 and #12 were merged by the author without a recorded review, and PRs #7 and #11 were merged without a submitted review. This did not follow the Section E agreement. Practitioner lookup (PR #9) has no issue of its own and was linked to issue #1; it is covered by a supporting criterion in Section F. The Copilot comparison was done retrospectively after the merge. The supplied tests did not call the three service methods directly; Stage 7 tests T-15, T-17 and T-20 to T-24 now cover them.
 - Stage 7 handover status: ready. The Stage 7 record was merged to main in PR #22.
-- Final submitted SHA if later than tested SHA: Later commits changed only documentation (the Stage 7 and Stage 8 records); the Stage 6 service code is unchanged since 5244ad3.
+- Final submitted SHA if later than tested SHA: Later commits added Stage 7 tests, Stage 8 data store repairs and Stage 9 queries, console and service listing, plus record updates. The three Stage 6 methods (`find_patient`, `find_practitioner`, `cancel_appointment`) are unchanged since 5244ad3, and the full suite now passes 50 tests (see the root README).
 
 - [x] Three Stage 6 service targets completed and checked.
 - [x] Original supplied tests retained and passing.
 - [x] At least two focused issues link requirements and acceptance criteria.
 - [x] Feature work reviewed by another member using the actual diff.
-- [x] Human-first review and required Copilot comparison recorded.
-- [x] Feedback resolved and approval recorded before merge.
+- [ ] Human-first review and required Copilot comparison recorded. (Partly: the Copilot comparison for PR #15 was done retrospectively after merge; see H and I.)
+- [ ] Feedback resolved and approval recorded before merge. (Partly: PR #10 feedback was resolved, but no PR received a formal GitHub approval; see Unresolved above.)
 - [x] Everyone pulled main and integrated checks passed.
 - [x] Required activities, quiz responses and contribution notes completed.
 - [x] Only synthetic data included; confidential peer material kept out.

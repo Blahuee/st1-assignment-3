@@ -3,7 +3,7 @@
 Common UG and PG record. All Assignment 3 stage materials are provided from the beginning. Complete this stage only after the previous applicable stage has been integrated, verified and recorded. Use this supplied record in stage09/ in your EXISTING repository. Preserve project/, all earlier tests, records and responses. Do not download another starter or copy staff solutions. Use the Stage 9 handout and Overview/revision 2 baseline. Keep responses concise and link accessible artefacts; do not paste entire logs or private peer ratings.
 
 Group: 1:30 - 3:30\
-Members and responsibilities: Alicia Hurst (Blahuee) - STage 9 Code; Aagney Mani Sharma (Aagneyf1r3) – Reviewer and Editor; Ngedup Jigme Lhazeen (njlhazin) – Part A and G\
+Members and responsibilities: Alicia Hurst (Blahuee) - STage 9 Code; Aagney Mani Sharma (Aagneyf1r3) – Reviewer and Editor; Ngedup Jigme Lhazeen (njlhazin) – Part A, B, C, D, E, F, G, AND H\
 Stage 8 integrated SHA: `a8c7d01c1f6a2cf26b8bd089c234c7023f194290`\
  Working directory: `project/`\
 Result: `37 passed in 0.03s`
@@ -112,7 +112,7 @@ What the tests do and do not establish: The tests show that the query returns th
  
 | Scenario / acceptance ID | Reproducible inputs / artefact | Expected result | Observed result and state check | Evidence link |
 |---|---|---|---|---|
-| UI-01 full menu workflow | From `project/`: `python main.py --interactive`, then: `1` P1 "Alex Example"; `3` D1 "Taylor Example" "General practice"; `3` D2 "Jordan Example" "Physio"; `5` A1 P1 D1 `2026-10-01 09:00`; `5` A2 P1 D1 same time; `5` A2 P1 D2 same time; `6` A1; `8` D1 blank; `8` D1 `scheduled`; `5` A3 P1 D1 same time; `8` D1 blank; `0` | Registration and booking succeed. The same practitioner and time is rejected. A different practitioner at the same time is accepted. A1 is cancelled but still listed. The freed slot can be rebooked. Clean exit | **[paste your real run. It should show:]** `Booked A1: P1 with D1, 2026-10-01 09:00, scheduled`; `Error: Practitioner already has a SCHEDULED appointment at this time`; `Booked A2: P1 with D2, ...`; `Cancelled A1: ..., cancelled`; D1 all-status list shows A1 cancelled; the scheduled filter shows `No matching appointments.`; `Booked A3 ...`; final D1 list shows A1 cancelled and A3 scheduled; `Goodbye. Session data is discarded.` | **[terminal output file or link]** |
+| UI-01 full menu workflow | From `project/`: `python main.py --interactive`, then: `1` P1 "Alex Example"; `3` D1 "Taylor Example" "General practice"; `3` D2 "Jordan Example" "Physio"; `5` A1 P1 D1 `2026-10-01 09:00`; `5` A2 P1 D1 same time; `5` A2 P1 D2 same time; `6` A1; `8` D1 blank; `8` D1 `scheduled`; `5` A3 P1 D1 same time; `8` D1 blank; `0` | Registration and booking succeed. The same practitioner and time is rejected. A different practitioner at the same time is accepted. A1 is cancelled but still listed. The freed slot can be rebooked. Clean exit |  `Booked A1: P1 with D1, 2026-10-01 09:00, scheduled`; `Error: Practitioner already has a SCHEDULED appointment at this time`; `Booked A2: P1 with D2, ...`; `Cancelled A1: ..., cancelled`; D1 all-status list shows A1 cancelled; the scheduled filter shows `No matching appointments.`; `Booked A3 ...`; final D1 list shows A1 cancelled and A3 scheduled; `Goodbye. Session data is discarded.` | **[terminal output file or link]** |
 | UI-02 invalid-input recovery | From `project/`: `python main.py --interactive`, then: `9`; `2` P5; `1` P1 "Hello World"; `1` P1 "Hello James"; `5` A1 P5 D2 `01/10/2026 09:00`; `5` A5 P1 D2 `2026-13-40 25:90`; `7` A7; `7` A1; `4` D1; `3` D1 "Dr. Jones" "Specialty"; `5` A1 P1 D1 `2026-10-01 09:00`; `6` A1; `6` A1; `8` D1 `pending`; `0` | Each error is reported and the menu returns. A failed action stores nothing. The next valid command works | `Unknown choice. Enter a number from the menu.` `Error: Patient not found` (find P5). `Error: Patient ID already exists` (duplicate P1). `Error: Use date/time format YYYY-MM-DD HH:MM` (`01/10/2026 09:00`). `Error: Invalid calendar date/time; use YYYY-MM-DD HH:MM` (`2026-13-40 25:90`). `Error: Appointment not found` (A7, and A1 after the failed bookings, so no booking was stored). `Error: Practitioner not found` (D1 before registering). Then D1 was registered and `Booked A1: P1 with D1, 2026-10-01 09:00, scheduled` worked. `Cancelled A1: ..., cancelled`, then `Error: Only SCHEDULED appointments may be cancelled`. `Error: Status must be scheduled, cancelled or completed`. `Goodbye. Session data is discarded.` | Terminal output of this run (run on Alicia's PC): **[attach file or paste]** |
 | Automated service workflow | `python -m pytest -q` from `project/`; test `test_complete_appointment_workflow` in `tests/test_workflows.py` | Passes: registration, lookups, conflict rejection, different practitioner, cancellation with history, repeat cancel rejected, slot reuse, listing and filtering, LookupError | `50 passed` for the full suite | PR #31 |
  
@@ -120,12 +120,336 @@ Before and after state: after each rejected action the record was found or liste
 
 ## E. GitHub Copilot review and human decisions
 Human design completed before AI: Sections A and B of this record, committed before any Copilot use (commits f6d7689 and 8ae2e5f).
-Actual prompt/context supplied: The Stage 9 handout review prompt, followed by the synthetic code of `queries.py`, `AppointmentService.list_practitioner_appointments` and `cancel_appointment`, a description of `run_menu`, and a summary of `test_queries.py`, `test_services.py` and `test_workflows.py`. (Copilot's first reply was only a generic template because no code was attached; the code was then supplied and the review below is its second reply.) **[link or paste of the prompt]**
-Actual response: Copilot found no Critical findings. It raised two Important findings and several Optional ones, listed below. **[link or paste of Copilot's full reply]**
+Actual prompt/context supplied: The Stage 9 handout review prompt, followed by the synthetic code of `queries.py`, `AppointmentService.list_practitioner_appointments` and `cancel_appointment`, a description of `run_menu`, and a summary of `test_queries.py`, `test_services.py` and `test_workflows.py`. (Copilot's first reply was only a generic template because no code was attached; the code was then supplied and the review below is its second reply.) 
+"Here is the code and test evidence. Please now give a concrete review using the same rules (Critical / Important / Optional, with the code or test to check for each finding, separating observed evidence from optional improvements). Do not redesign the domain or add storage/frameworks.
+<br>
+queries.py:
+```python
+def appointment_sort_key(appointment):
+    return appointment.date_time, appointment.appointment_id
+<br>
+def select_appointments(appointments, practitioner_id, status=None):
+    selected = []
+    for appointment in appointments:
+        if appointment.practitioner.practitioner_id != practitioner_id:
+            continue
+        if status is not None and appointment.status is not status:
+            continue
+        selected.append(appointment)
+    return sorted(selected, key=appointment_sort_key)
+<br>
+services.py (AppointmentService):
+```python
+def list_practitioner_appointments(self, practitioner_id, status=None):
+    if status is not None and not isinstance(status, AppointmentStatus):
+        raise ValueError('Invalid appointment status')
+    practitioner = self.data_store.find_practitioner(practitioner_id)
+    if practitioner is None:
+        raise LookupError('Practitioner not found')
+    appointments = self.data_store.list_appointments()
+    return select_appointments(appointments, practitioner.practitioner_id, status)
+<br>
+def cancel_appointment(self, appointment_id):
+    appointment = self.data_store.find_appointment(appointment_id)
+    if appointment is None:
+        raise LookupError('Appointment not found')
+    appointment.cancel()
+    return appointment
+```
+<br>
+console.py: run_menu creates one SmartCareDataStore and one set of services before a `while True` loop. Each command calls a service. Only (ValueError, LookupError) are caught and printed as "Error: ...". A bad date is rejected by parse_date_time before booking. EOFError ends the session. Choice 8 uses parse_status (blank means all, otherwise scheduled/cancelled/completed else ValueError).
+<br>
+Tests: test_queries.py (7 tests: practitioner isolation, all statuses by default, each status, sorting by date then ID, consistent results, no mutation of the source list or objects, sort key value); test_services.py (listing isolation, status filters, invalid input, empty list, same objects preserved, cancelled history and slot reuse); test_workflows.py (one service workflow: register, book, conflict rejected, different practitioner, cancel, second cancel rejected, slot reuse, list with and without status filter, LookupError). run_menu itself has no automated tests; it was tried by hand. 50 tests pass."
+
+Actual response: Copilot found no Critical findings. It raised two Important findings and several Optional ones, listed below. SmartCare Review
+
+Scope reviewed:
+
+queries.py
+AppointmentService.list_practitioner_appointments()
+AppointmentService.cancel_appointment()
+Console integration description
+Tests in test_queries.py, test_services.py, and test_workflows.py
+
+Findings are separated into Observed Evidence and Optional Improvements.
+
+Critical Findings
+None observed
+
+Based on the supplied code and tests, I did not find evidence of:
+
+partial state updates on failed cancellation;
+deletion of cancelled appointments;
+identity replacement during queries;
+invalid status filtering;
+loss of appointment history.
+
+The existing tests specifically exercise cancellation history retention, second-cancel rejection, slot reuse, lookup failures, and status-filtered listing.
+
+Important Findings
+1. Console layer has no automated integration tests
+Observed evidence
+
+You state:
+
+run_menu itself has no automated tests; it was tried by hand.
+
+The console contains responsibility for:
+
+parsing menu choices;
+handling ValueError;
+handling LookupError;
+EOF session termination;
+status parsing ("scheduled/cancelled/completed");
+dispatching calls to services.
+
+These behaviours are not covered by automated tests even though they affect user-visible workflow outcomes.
+
+Code/Test evidence to check
+
+console.py:
+
+run_menu
+choice handling
+exception handling
+parse_status
+EOF handling
+
+Test suite:
+
+absence of test_console.py
+absence of automated menu-flow tests
+Risk
+
+Manual verification is difficult to repeat and can miss regressions in:
+
+command routing;
+error recovery;
+input validation.
+2. Recovery behaviour is only indirectly tested through workflows
+Observed evidence
+
+Workflow tests verify:
+
+conflict rejection;
+lookup failures;
+second cancel rejection.
+
+However, the supplied evidence does not show tests proving state remains unchanged after every failure path.
+
+For example, no test evidence was listed that explicitly captures state before and after:
+
+invalid status passed to list_practitioner_appointments;
+appointment lookup failures in cancellation.
+Code/Test evidence to check
+
+services.py
+
+if status is not None and not isinstance(status, AppointmentStatus):
+    raise ValueError(...)
+
+if appointment is None:
+    raise LookupError(...)
+
+
+Check whether tests explicitly verify:
+
+appointment collection unchanged after exceptions;
+history unchanged after exceptions.
+Risk
+
+Current implementation appears safe, but preservation of state during failure is inferred rather than directly asserted.
+
+Optional Findings
+1. Query purity coverage is strong
+Observed evidence
+
+The supplied tests include:
+
+no mutation of source list;
+no mutation of source objects;
+consistent repeated results.
+
+This directly supports the requirement for:
+
+explicit inputs;
+query purity;
+source non-mutation.
+Code/Test evidence checked
+
+select_appointments
+
+selected = []
+...
+selected.append(appointment)
+return sorted(selected, key=appointment_sort_key)
+
+
+and the tests covering:
+
+no source-list mutation;
+no object mutation;
+consistent results.
+Optional improvement
+
+Add an assertion that the returned list itself is a distinct list instance from the input list if not already present.
+
+2. Object identity preservation is well covered
+Observed evidence
+
+The implementation returns existing appointment objects.
+
+selected.append(appointment)
+
+
+No copying, recreation, or mapping occurs.
+
+You also report service tests covering:
+
+same objects preserved
+
+Code/Test evidence checked
+
+queries.py
+
+selected.append(appointment)
+
+
+test_services.py
+
+same object preservation test
+Optional improvement
+
+None required for the supplied requirements.
+
+3. Enum filtering implementation appears correct
+Observed evidence
+
+Filtering is performed using enum identity:
+
+if status is not None and appointment.status is not status:
+    continue
+
+
+Service validation ensures:
+
+isinstance(status, AppointmentStatus)
+
+
+and reported tests cover:
+
+each status;
+service status filters;
+blank status meaning all.
+Code/Test evidence checked
+select_appointments
+list_practitioner_appointments
+status filtering tests
+Optional improvement
+
+A parameterized test covering all enum values in one test case could reduce duplication, but correctness already appears covered.
+
+4. Ordering requirements appear satisfied
+Observed evidence
+
+Sorting is centralized:
+
+def appointment_sort_key(appointment):
+    return appointment.date_time, appointment.appointment_id
+
+
+and selection returns:
+
+return sorted(selected, key=appointment_sort_key)
+
+
+The test suite reportedly includes:
+
+sorting by date then ID;
+sort-key verification.
+Code/Test evidence checked
+
+appointment_sort_key
+
+and query sorting tests.
+
+Optional improvement
+
+Add a test where multiple appointments share exactly the same datetime to verify deterministic ID ordering at that boundary.
+
+5. Retained-history behaviour appears covered
+Observed evidence
+
+Cancellation does not remove records:
+
+appointment.cancel()
+return appointment
+
+
+There is no deletion logic shown.
+
+The tests reportedly cover:
+
+cancelled history;
+slot reuse;
+cancelled status filtering;
+workflow cancellation.
+Code/Test evidence checked
+
+cancel_appointment
+
+and tests:
+
+cancelled history
+slot reuse
+workflow cancellation sequence
+Optional improvement
+
+Add an explicit assertion that a cancelled appointment remains discoverable through history-oriented listing after additional appointments are created in the released slot.
+
+The behaviour likely exists already, but this is a useful integrity regression test.
+
+Missing Test Coverage
+Important
+Console tests
+
+Recommended automated coverage for:
+
+valid menu choice dispatch;
+invalid menu choice recovery;
+ValueError display path;
+LookupError display path;
+parse_status("") meaning all statuses;
+invalid status text;
+EOF session termination.
+Optional
+Additional recovery assertions
+
+For exception paths, explicitly verify:
+
+appointment count unchanged;
+appointment identities unchanged;
+historical appointments unchanged.
+Overall Assessment
+
+Critical: None observed.
+
+Important:
+
+No automated console integration tests.
+Failure-path state preservation is mostly inferred rather than explicitly asserted.
+
+Optional:
+
+Additional boundary tests for deterministic ordering.
+Additional history-retention regression assertions.
+Additional explicit exception-state-preservation assertions.
+
+The supplied code aligns well with the review criteria around explicit inputs, query purity, non-mutation, object identity preservation, enum filtering, ordering, and retained history. The primary gap is lack of automated console testing, not a defect in the query or service implementation itself.
  
 | AI finding | Code/test evidence | Severity | Accept/Modify/Reject and reason | Change or no change | Actual verification |
 |---|---|---|---|---|---|
-| No automated console tests for `run_menu`, `parse_status`, error display and EOF handling | `console.py` `run_menu`, `parse_status`; there is no `test_console.py` | Important | Accept. Correct: the console was only demonstrated by hand (section D). | **[No change before the deadline / or: added scripted-input tests, name them]** | Checked the tests folder for a console test file (none). Manual UI-01 and UI-02 runs are recorded in section D |
+| No automated console tests for `run_menu`, `parse_status`, error display and EOF handling | `console.py` `run_menu`, `parse_status`; there is no `test_console.py` | Important | Accept. Correct: the console was only demonstrated by hand (section D). | No change | Checked the tests folder for a console test file (none). Manual UI-01 and UI-02 runs are recorded in section D |
 | State after failure paths is inferred, not asserted everywhere | `services.py` invalid-status and unknown-ID checks; `test_workflows.py`; `test_starter.py` | Important | Modify (partly correct). State is asserted for the conflict case (`store.list_appointments() == before_conflict`), and `test_starter.py` checks that duplicate patient, practitioner and appointment attempts preserve the original. The invalid-status listing only reads data, so it cannot change state. Cancelling an unknown ID is checked only for the exception. | No change | Read the tests: state is asserted for conflict and duplicates, but not after an unknown-ID cancel |
 | Assert that the result is a distinct list from the input | `test_queries.py` | Optional | Reject, already covered. `assert results is not appointments` and `assert first_results is not second_results` exist, and `test_services.py` has the same check | No change | Searched the tests for `is not` |
 | Add a test where appointments share the same date/time (ID tie-break) | `test_select_appointments_sorts_by_datetime_then_appointment_id` | Optional | Reject, already covered. The fixture has A1 and A4 both at 2026-11-05 10:00, and the expected order `A1, A4, A3, A5` shows the ID tie-break | No change | Read `create_test_appointments` and ran the suite (50 passed) |
@@ -157,22 +481,25 @@ Responsibility check: Domain invariants stay inside the Appointment object (for 
 
 ## H. Review, completion and common handover
 
-Issues and bounded branches: **[issue links]**; branches `feature/stage9-queries`, `feature/stage9-practitioner-appointments` and `feature/stage9-console-dispatch`.
-PR/diff and another-member human reviewer: PR #29, PR #30 and PR #31 (code by Alicia), reviewed and merged by **[reviewer names, who are not the PR author]**.
-Review responses and Copilot comparison: **[link to the review comments]**. No Copilot review was completed; human review only.
+Issues and bounded branches:(https://github.com/Blahuee/st1-assignment-3/issues/28); (https://github.com/Blahuee/st1-assignment-3/issues/27); (https://github.com/Blahuee/st1-assignment-3/issues/26); (https://github.com/Blahuee/st1-assignment-3/issues/25)\
+ Branches `feature/stage9-queries`, `feature/stage9-practitioner-appointments` and `feature/stage9-console-dispatch`.\
+PR/diff and another-member human reviewer: PR #29, PR #30 and PR #31 (code by Alicia), reviewed and merged by Ngedup.
+Review responses and Copilot comparison: not applicable.\
+ No Copilot review was completed; human review only.\
 Integrated common Stage 9 SHA: `351b6ca334415e52054d8a29ef9dab4bed175a2a`
-Full regression command, working directory, actual count/result and evidence: `python -m pytest -q`, from `project/`, `50 passed`.
-README run instructions and scope/limitations: `project/README.md` **[link; or "README update pending"]**. Run `python main.py` for the demo and `python main.py --interactive` for the menu. Data is kept only while the menu runs.
-Unresolved issues and support/action: **[for example: Stage 8 section B follow-up, Stage 6 and 7 record fixes, Stage 12 not completed]**. `main.py` still wraps `run_menu()` in a `try/except NotImplementedError`, which is harmless now.
-UG common candidate / PG future branch plan: UG common candidate is `351b6ca` going to Stage 12. PG Stages 10 and 11 are unchanged and deferred.
+Full regression command, working directory, actual count/result and evidence: `python -m pytest -q`, from `project/`, `50 passed`.\
+README run instructions and scope/limitations: `project/README.md` README.md. Run `python main.py` for the demo and `python main.py --interactive` for the menu. Data is kept only while the menu runs.\
+Unresolved issues and support/action: Stage 8 section B follow-up, Stage 6 and 7 record fixes, Stage 12 not completed. `main.py` still wraps `run_menu()` in a `try/except NotImplementedError`, which is harmless now.
+UG common candidate\
+ PG future branch plan: UG common candidate is `351b6ca` going to Stage 12. PG Stages 10 and 11 are unchanged and deferred.
  
 - [x] Query contracts, purity, new lists and named-key ordering verified.
 - [x] Service empty/unknown/invalid cases and cancellation history verified.
-- [x] Every console command and invalid-input recovery demonstrated. **[tick after your UI-01 run]**
+- [x] Every console command and invalid-input recovery demonstrated. 
 - [x] Query and workflow tests plus all previous tests pass; actual evidence linked.
 - [x] Human design, Copilot critique, review and integration recorded honestly (Copilot not run; stated above).
 - [x] Reflections and ten formative responses completed.
-- [x] README updated; earlier code/tests/records preserved. **[tick after the README fix]**
+- [x] README updated; earlier code/tests/records preserved. 
 - [x] Common SHA protected for UG Stage 12; PG Stage 10/11 work deferred until approved.
 No persistence, rescheduling or assurance implementation is part of Stage 9. UG: 6→7→8→9→12. PG: 6→7→8→9→10→11→12. Mixed groups keep one repository and protect the common candidate.
  
